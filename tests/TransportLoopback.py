@@ -34,6 +34,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
         if self.path == "/redirect":
             self.send_response(302)
             self.send_header("Location", "https://127.0.0.1:1/must-not-follow")
+            self.send_header("Content-Length", "0")
             self.end_headers()
         elif self.path == "/large":
             self.send_response(200)

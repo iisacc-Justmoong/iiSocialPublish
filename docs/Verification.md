@@ -18,6 +18,10 @@ executes the real libcurl transport with a generated test CA. It verifies exact
 byte ranges, multipart parts, redirect refusal, response-size bounds and header
 injection rejection. It never sends a post to a social account.
 
+The redirect fixture explicitly declares an empty response body. This keeps the
+redirect assertion independent of TLS connection-close behavior on Windows
+Schannel; redirect following remains disabled and is checked by the same test.
+
 Canonical commands:
 
 ```sh
