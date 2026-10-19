@@ -1,0 +1,7 @@
+@PACKAGE_INIT@
+set(iiSocialPublish_LICENSE_DIR "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_DATADIR@/licenses/iiSocialPublish")
+include(CMakeFindDependencyMacro)
+find_dependency(CURL 7.68)
+find_dependency(Threads)
+include("${CMAKE_CURRENT_LIST_DIR}/iiSocialPublishTargets.cmake")
+check_required_components(iiSocialPublish)
