@@ -67,3 +67,11 @@ See [provider API contracts](docs/Providers.md),
 [verification](docs/Verification.md). Local fixture tests establish request
 construction and transport behavior, not successful live publication to any
 social account.
+
+## License
+
+SPDX-License-Identifier: MIT
+
+The original code and documentation in this repository are licensed under the
+[MIT License](LICENSE). Third-party code, libraries, fonts, tools, and model
+weights retain their respective licenses.
