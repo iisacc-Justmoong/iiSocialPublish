@@ -5,12 +5,12 @@ include(CMakePackageConfigHelpers)
 include(CTest)
 find_package(CURL 7.68 REQUIRED)
 find_package(Threads REQUIRED)
-add_library(iiSocialPublish STATIC src/Publishing.cpp src/CurlTransport.cpp)
+add_library(iiSocialPublish STATIC src/iiSocialPublish/Publishing.cpp src/iiSocialPublish/CurlTransport.cpp)
 add_library(iiSocialPublish::iiSocialPublish ALIAS iiSocialPublish)
 set_target_properties(iiSocialPublish PROPERTIES CXX_EXTENSIONS OFF POSITION_INDEPENDENT_CODE ON)
 target_compile_features(iiSocialPublish PUBLIC cxx_std_23)
 target_include_directories(iiSocialPublish PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     PRIVATE third_party)
 target_link_libraries(iiSocialPublish PRIVATE CURL::libcurl Threads::Threads)
@@ -21,7 +21,9 @@ else()
 endif()
 set(_package_dir "${CMAKE_INSTALL_LIBDIR}/cmake/iiSocialPublish")
 install(TARGETS iiSocialPublish EXPORT iiSocialPublishTargets ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES
+    src/iiSocialPublish/Publishing.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiSocialPublish)
 install(EXPORT iiSocialPublishTargets NAMESPACE iiSocialPublish:: DESTINATION "${_package_dir}")
 configure_package_config_file(cmake/iiSocialPublishConfig.cmake.in
     "${CMAKE_CURRENT_BINARY_DIR}/iiSocialPublishConfig.cmake" INSTALL_DESTINATION "${_package_dir}")
