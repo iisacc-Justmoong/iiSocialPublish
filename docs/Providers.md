@@ -1,6 +1,7 @@
 # Official publishing contracts
 
-Reviewed on 2026-10-18. Publishing access, API versions, scopes, quotas and
+YouTube was reviewed on 2026-10-22; other providers were reviewed on 2026-10-18.
+Publishing access, API versions, scopes, quotas and
 provider review requirements can change. The deployment must select a supported
 version explicitly; the library never silently pins a retired Meta or LinkedIn
 version. The test versions `v25.0` and `202607` are fixtures, not deployment
@@ -16,6 +17,7 @@ configuration or claims of app approval.
 | TumblrPublisher | `/v2/blog/{blog}/posts` using Neue Post Format JSON and multipart `json` + identifier-mapped media parts. Text, images and video. | OAuth2 `write` user token and an explicit blog hostname or immutable UUID. |
 | MastodonPublisher | Per-instance `/api/v2/instance`, `/api/v2/media`, async media reads, `/api/v1/statuses`. | HTTPS instance origin, instance-issued token, `write:statuses` and `write:media` for attachments (or `write`). Instance attachment count is read at runtime. Visibility, content warning, sensitive flag, alt text and Idempotency-Key are supported. |
 | LinkedInPublisher | `/rest/images?action=initializeUpload`, media PUT and status; videos initialize, byte-range PUT with ordered ETags, finalize and status; `/rest/posts`. Text, image, multiple images or a single video. | User token, explicit person/organization author URN, `w_member_social` or `w_organization_social` and organization role/access, explicit supported YYYYMM version. |
+| YouTubePublisher | Data API v3 `POST /upload/youtube/v3/videos?uploadType=resumable`, metadata JSON, streamed 4 MiB `PUT` chunks, 308 byte acknowledgements and bounded same-session status/recovery PUTs. | Google user OAuth `https://www.googleapis.com/auth/youtube.upload` or an accepted broader upload scope; the grant selects the YouTube channel. One local video and title. `targetId` must be empty. See [YouTube](YouTube.md). |
 | UnsupportedPublisher (Pixiv) | Returns `unsupported` before any networking. | No official public publishing contract was verified. This is a statement about verified integration support, not a claim that private partner APIs can never exist. |
 | UnsupportedPublisher (ArtStation) | Returns `unsupported` before any networking. | Same restriction; no undocumented project-upload or login-session endpoint is used. |
 
@@ -29,11 +31,15 @@ authoritative at the API. The adapter rejects invalid file paths and mixed
 video batches where its implemented publishing route cannot support them.
 
 Text includes the supplied `link` and hashtag list except where the provider
-has native link/tag fields (Facebook/Pinterest link, Tumblr tags). Titles are
-used by Pinterest, Tumblr, Facebook video and LinkedIn media. Visibility/CW/
-sensitivity controls apply to Mastodon; other adapters accept public visibility
-only. X's `madeWithAi` is a supported API disclosure, not a general provider
+has native link/tag fields (Facebook/Pinterest link, Tumblr/YouTube tags). Titles are
+used by Pinterest, Tumblr, Facebook video, LinkedIn media and YouTube. YouTube
+requires a title; its description contains `text` and `link`, with tags in the
+native metadata array. Visibility/CW/sensitivity controls apply to Mastodon;
+YouTube supports public/unlisted/private visibility. Other adapters accept
+public visibility only. X's `madeWithAi` is a supported API disclosure, not a general provider
 labeling policy. The SDK does not infer such disclosure from media pixels.
+YouTube uses the explicit optional `youtube.containsSyntheticMedia` and
+`youtube.madeForKids` declarations; the generic AI flag is not substituted.
 
 ## Primary references
 
@@ -60,6 +66,9 @@ labeling policy. The SDK does not infer such disclosure from media pixels.
   [Videos](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/videos-api).
   [LinkedIn image/video upload authorization](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/vector-asset-api#upload-the-image)
   documents the required image PUT token and the token-free video PUT.
+- [YouTube videos.insert](https://developers.google.com/youtube/data/reference/rest/v3/videos/insert),
+  [resumable upload protocol](https://developers.google.com/youtube/data/guides/using_resumable_upload_protocol),
+  [video metadata](https://developers.google.com/youtube/data/reference/rest/v3/videos).
 - [Pixiv official help](https://www.pixiv.help/hc/en-us),
   [ArtStation official help](https://help.artstation.com/en/).
 

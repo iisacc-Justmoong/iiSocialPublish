@@ -14,7 +14,7 @@
 
 namespace iiSocialPublish {
 
-enum class Platform { X, Facebook, Instagram, Threads, Pinterest, Pixiv, ArtStation, Tumblr, Mastodon, LinkedIn };
+enum class Platform { X, Facebook, Instagram, Threads, Pinterest, Pixiv, ArtStation, Tumblr, Mastodon, LinkedIn, YouTube };
 enum class MediaKind { Image, Video };
 enum class Error {
     None, Unsupported, InvalidRequest, AuthenticationRequired, PermissionDenied,
@@ -40,6 +40,13 @@ struct Media {
     std::string publicUrl, mimeType = "image/png", altText;
 };
 
+struct YouTubeOptions {
+    std::string categoryId = "22"; // People & Blogs; override for the video category.
+    // Omitted values preserve YouTube/channel defaults; these are explicit declarations.
+    std::optional<bool> madeForKids, containsSyntheticMedia;
+    bool notifySubscribers = true;
+};
+
 struct Post {
     std::string text, title, link;
     std::vector<std::string> tags;
@@ -50,18 +57,23 @@ struct Post {
     bool sensitive = false;
     bool madeWithAi = false;
     std::string idempotencyKey; // Forwarded where the official API supports it.
+    YouTubeOptions youtube;
+    std::string replyToId, language, replyControl;
 };
 
 // Tokens are user-context OAuth grants, never an app-only bearer token. This
 // value stays on the backend; it is not part of a capability or job snapshot.
 struct Account {
     std::string accessToken;
-    std::string targetId; // Page, IG/Threads user, board, Tumblr blog or LinkedIn author URN.
+    std::string targetId; // Page, IG/Threads user, board, Tumblr blog or LinkedIn author URN. Empty for YouTube: the OAuth grant selects its channel.
     std::string instanceUrl; // Mastodon origin, e.g. https://mastodon.social.
     std::vector<std::string> scopes;
     std::string apiVersion; // Explicit Meta vNN.N / LinkedIn YYYYMM deployment version.
     bool allowBillableRequests = false; // X requests are disabled unless provisioned.
     std::optional<std::chrono::system_clock::time_point> expiresAt;
+    // Set only by native account provisioning after verifying reply entitlement.
+    // X self-serve reply restrictions also apply to API-created threads.
+    bool allowSelfThreadReplies = false;
 };
 
 using Headers = std::vector<std::pair<std::string, std::string>>;
@@ -112,6 +124,8 @@ struct Context {
     std::chrono::milliseconds pollInterval{1000};
     // Tests/hosts may provide a scheduler. Return false on cancellation.
     std::function<bool(std::chrono::milliseconds, std::stop_token)> wait;
+    // YouTube only: bounded status queries within the same resumable session.
+    unsigned maxUploadRecoveries = 3;
 };
 
 struct Outcome {
@@ -129,7 +143,8 @@ public:
     virtual ~Publisher() = default;
     virtual const Capability& capability() const noexcept = 0;
     // Blocking native backend operation; use a worker, never the UI thread.
-    // It never retries a publication request automatically.
+    // It never retries a new publication automatically. YouTube can query and
+    // resume its existing upload session within Context.maxUploadRecoveries.
     virtual Outcome publish(const Post&, const Account&, Context&) const = 0;
 };
 
@@ -137,5 +152,7 @@ const std::vector<Capability>& capabilities();
 std::optional<Platform> platform(std::string_view id);
 std::string_view errorName(Error) noexcept;
 std::unique_ptr<Publisher> makePublisher(Platform);
+// Local validation only; no transport requests. Media file checks belong on a worker.
+Outcome validatePost(Platform, const Post&, const Account&);
 
 } // namespace iiSocialPublish

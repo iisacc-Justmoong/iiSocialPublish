@@ -18,17 +18,20 @@ struct Step {
 struct Fake final : Transport {
     std::deque<Step> steps;
     unsigned requests = 0;
+    std::string failure;
     void add(std::string method, std::string url, Json body, int status = 200, std::function<void(const Request&)> inspect = {}, Headers headers = {}) {
         steps.push_back({std::move(method), std::move(url), {status, std::move(headers), body.is_null() ? "" : body.dump()}, std::move(inspect)});
     }
     Response send(const Request& request, std::stop_token) override {
         ++requests;
+        try {
         check(!steps.empty(), "Unexpected network request");
         auto step = std::move(steps.front()); steps.pop_front();
         check(request.method == step.method, "HTTP method mismatch");
         if (request.url != step.url) throw std::runtime_error("URL mismatch: " + request.url + " expected " + step.url);
         if (step.inspect) step.inspect(request);
         return step.response;
+        } catch (const std::exception& error) { failure = error.what(); throw; }
     }
 };
 std::string header(const Request& r, const std::string& name) {
@@ -54,11 +57,13 @@ Account account(Platform value) {
     a.apiVersion = value == Platform::LinkedIn ? "202607" : "v25.0";
     if (value == Platform::LinkedIn) a.targetId = "urn:li:person:member";
     if (value == Platform::Tumblr) a.targetId = "t:blog-uuid";
+    if (value == Platform::YouTube) a.targetId.clear();
     return a;
 }
 Outcome publish(Platform value, Fake& fake, const Post& post, const Account& a) {
     Context context{fake, {}, 3, std::chrono::milliseconds(0), [](auto, auto stop) { return !stop.stop_requested(); }};
     auto result = makePublisher(value)->publish(post, a, context);
+    if (!fake.failure.empty()) throw std::runtime_error(fake.failure);
     if (result.error == Error::InvalidResponse) std::cerr << "invalid response: " << result.message << '\n';
     return result;
 }
@@ -68,14 +73,14 @@ void done(const Fake& fake, const Outcome& result) {
     check(fake.steps.empty(), "Not all expected API steps executed");
 }
 void catalog() {
-    check(capabilities().size() == 10, "Exactly ten platform objects required");
+    check(capabilities().size() == 11, "Exactly eleven platform objects required");
     unsigned supported = 0;
     for (auto& cap : capabilities()) {
         check(platform(cap.id) == cap.platform, "Platform catalog does not round-trip");
         check(makePublisher(cap.platform)->capability().id == cap.id, "Factory returns wrong publisher");
         supported += cap.officialPublishingApi;
     }
-    check(supported == 8, "Only verified official publishing APIs may be enabled");
+    check(supported == 9, "Only verified official publishing APIs may be enabled");
     check(platform("tum blr") == Platform::Tumblr && !platform("unknown"), "Aliases or unknown platforms broken");
     Fake fake; Post p; p.text = "fixture";
     for (auto value : {Platform::Pixiv, Platform::ArtStation}) check(publish(value, fake, p).error == Error::Unsupported, "Unverified API must fail before networking");
@@ -207,6 +212,145 @@ void linkedin() {
     fake.add("POST", "https://api.linkedin.com/rest/posts", nullptr, 201, {}, {{"x-restli-id", "urn:li:share:456"}});
     done(fake, publish(Platform::LinkedIn, fake, p));
 }
+const std::string youtubeStart = "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet%2Cstatus&notifySubscribers=true";
+const std::string youtubeUpload = "https://www.googleapis.com/upload/youtube/v3/videos?upload_id=fixture-session";
+void beginYouTube(Fake& fake, std::function<void(const Request&)> inspect = {}, const std::string& location = youtubeUpload) {
+    fake.add("POST", youtubeStart, nullptr, 200, std::move(inspect), {{"location", location}});
+}
+void youtube() {
+    Fixture f; Post p; p.title = "네이티브 영상"; p.text = "Description";
+    p.link = "https://iisacc.com/"; p.tags = {"art", "native"}; p.media = {f.video()};
+    p.visibility = "unlisted"; p.youtube.categoryId = "28";
+    p.youtube.madeForKids = false; p.youtube.containsSyntheticMedia = true;
+    Fake fake;
+    beginYouTube(fake, [](const auto& r) {
+        auto body = Json::parse(r.body);
+        check(body["snippet"]["title"] == "네이티브 영상" && body["snippet"]["categoryId"] == "28", "YouTube title/category lost");
+        check(body["snippet"]["description"] == "Description\nhttps://iisacc.com/" && body["snippet"]["tags"] == Json::array({"art", "native"}), "YouTube description/native tags lost");
+        check(body["status"]["privacyStatus"] == "unlisted" && body["status"]["selfDeclaredMadeForKids"] == false && body["status"]["containsSyntheticMedia"] == true, "YouTube privacy/audience/disclosure lost");
+        check(header(r, "Authorization") == "Bearer fixture-user-token" && header(r, "X-Upload-Content-Length") == "8" && header(r, "X-Upload-Content-Type") == "video/mp4", "YouTube resumable headers missing");
+        check(!r.file && r.parts.empty(), "YouTube initiation must contain only metadata");
+    });
+    fake.add("PUT", youtubeUpload, {{"id", "video_1"}, {"status", {{"uploadStatus", "uploaded"}}}}, 201, [](const auto& r) {
+        check(r.file && r.file->offset == 0 && r.file->length == 8 && r.body.empty() && r.parts.empty(), "YouTube did not stream the file");
+        check(header(r, "Content-Range") == "bytes 0-7/8" && header(r, "Content-Length") == "8" && !header(r, "Authorization").empty(), "YouTube upload byte range/auth incorrect");
+    });
+    auto result = publish(Platform::YouTube, fake, p); done(fake, result);
+    check(result.postId == "video_1" && result.url == "https://www.youtube.com/watch?v=video_1", "YouTube result link/ID lost");
+
+    // Chunk acknowledgement, then a lost final response: reconcile in the same session.
+    std::filesystem::resize_file(f.path, 4 * 1024 * 1024 + 8);
+    beginYouTube(fake);
+    fake.add("PUT", youtubeUpload, nullptr, 308, [](const auto& r) {
+        check(r.file->length == 4 * 1024 * 1024 && header(r, "Content-Range") == "bytes 0-4194303/4194312", "YouTube chunk is not a 256 KiB multiple");
+    }, {{"Range", "bytes=0-4194303"}});
+    fake.steps.push_back({"PUT", youtubeUpload, {0, {}, {}, true, false, true}, [](const auto& r) {
+        check(r.file->offset == 4194304 && r.file->length == 8, "YouTube final chunk incorrect");
+    }});
+    fake.add("PUT", youtubeUpload, {{"id", "video_reconciled"}}, 200, [](const auto& r) {
+        check(!r.file && r.body.empty() && header(r, "Content-Length") == "0" && header(r, "Content-Range") == "bytes */4194312", "YouTube recovery must query rather than resend blindly");
+    });
+    done(fake, publish(Platform::YouTube, fake, p));
+
+    // A partially received request resumes at the server-confirmed byte, not at zero.
+    std::filesystem::resize_file(f.path, 8);
+    p.visibility = "private"; p.youtube = {}; p.media[0].mimeType = "application/octet-stream";
+    beginYouTube(fake, [](const auto& r) {
+        const auto status = Json::parse(r.body)["status"];
+        check(status["privacyStatus"] == "private" && !status.contains("selfDeclaredMadeForKids") && !status.contains("containsSyntheticMedia"), "YouTube unspecified declarations must remain unset");
+    });
+    fake.add("PUT", youtubeUpload, nullptr, 503);
+    fake.add("PUT", youtubeUpload, nullptr, 308, {}, {{"rAnGe", "bytes=0-3"}});
+    fake.add("PUT", youtubeUpload, {{"id", "video_resumed"}}, 201, [](const auto& r) {
+        check(r.file->offset == 4 && r.file->length == 4 && header(r, "Content-Range") == "bytes 4-7/8", "YouTube ignored confirmed resume position");
+    });
+    auto broader = account(Platform::YouTube); broader.scopes = {"https://www.googleapis.com/auth/youtube.force-ssl"};
+    done(fake, publish(Platform::YouTube, fake, p, broader));
+
+    p.title.clear();
+    for (unsigned i = 0; i < 100; ++i) p.title += "한";
+    p.youtube.notifySubscribers = false;
+    fake.add("POST", "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet%2Cstatus&notifySubscribers=false", nullptr, 200, {}, {{"Location", youtubeUpload}});
+    fake.add("PUT", youtubeUpload, {{"id", "unicode_title"}}, 201);
+    done(fake, publish(Platform::YouTube, fake, p));
+}
+void youtubeValidation() {
+    Fixture f; Fake fake; Post valid; valid.title = "Upload"; valid.media = {f.video()};
+    const auto reject = [&](auto modify, Error expected = Error::InvalidRequest) {
+        auto p = valid; auto a = account(Platform::YouTube); modify(p, a);
+        check(publish(Platform::YouTube, fake, p, a).error == expected, "YouTube preflight accepted invalid input");
+    };
+    reject([](auto&, auto& a) { a.accessToken.clear(); }, Error::AuthenticationRequired);
+    reject([](auto&, auto& a) { a.scopes = {"https://www.googleapis.com/auth/youtube.readonly"}; }, Error::PermissionDenied);
+    reject([](auto&, auto& a) { a.targetId = "an-unrelated-channel"; });
+    reject([](auto& p, auto&) { p.media.clear(); });
+    reject([&](auto& p, auto&) { p.media = {f.image()}; });
+    reject([&](auto& p, auto&) { p.media.push_back(f.video()); });
+    reject([](auto& p, auto&) { p.media[0].localFile.clear(); p.media[0].publicUrl = "https://media.example/video.mp4"; });
+    reject([](auto& p, auto&) { p.title.clear(); });
+    reject([](auto& p, auto&) { p.title = "<invalid>"; });
+    reject([](auto& p, auto&) { p.title.assign(101, 'a'); });
+    reject([](auto& p, auto&) { p.title = std::string(1, char(0xff)); });
+    reject([](auto& p, auto&) { p.text.assign(5001, 'a'); });
+    reject([](auto& p, auto&) { p.youtube.categoryId = "not-numeric"; });
+    reject([](auto& p, auto&) { p.visibility = "direct"; });
+    check(fake.requests == 0, "YouTube invalid input caused an upload session");
+}
+void youtubeErrors() {
+    Fixture f; Post p; p.title = "Upload"; p.media = {f.video()};
+    for (const std::string url : {"https://evil.example/upload", "https://www.googleapis.com.evil.example/upload/youtube/v3/videos?upload_id=x", "http://www.googleapis.com/upload/youtube/v3/videos?upload_id=x", "https://www.googleapis.com:444/upload/youtube/v3/videos?upload_id=x", "https://www.googleapis.com/upload/youtube/v3/videos?upload_id=x#fragment", "https://www.googleapis.com/upload/youtube/v3/videos?", ""}) {
+        Fake fake; beginYouTube(fake, {}, url);
+        check(publish(Platform::YouTube, fake, p).error == Error::InvalidResponse && fake.requests == 1, "YouTube forwarded credentials to an untrusted session URL");
+    }
+    for (const std::string range : {"bytes=1-3", "bytes=0-8", "bytes=0-18446744073709551615", "bytes=0-3garbage"}) {
+        Fake fake; beginYouTube(fake);
+        fake.add("PUT", youtubeUpload, nullptr, 308, {}, {{"Range", range}});
+        check(publish(Platform::YouTube, fake, p).requiresReconciliation() && fake.steps.empty(), "YouTube trusted an invalid acknowledgement range");
+    }
+    {
+        Fake fake; beginYouTube(fake);
+        fake.add("PUT", youtubeUpload, nullptr, 308);
+        fake.add("PUT", youtubeUpload, nullptr, 308);
+        fake.add("PUT", youtubeUpload, nullptr, 308);
+        Context context{fake, {}, 3, std::chrono::milliseconds(0), [](auto, auto) { return true; }};
+        context.maxUploadRecoveries = 1;
+        auto result = makePublisher(Platform::YouTube)->publish(p, account(Platform::YouTube), context);
+        check(fake.failure.empty() && fake.steps.empty() && result.requiresReconciliation() && fake.requests == 4, "YouTube stalled upload exceeded its recovery budget");
+    }
+    {
+        Fake fake; beginYouTube(fake);
+        fake.add("PUT", youtubeUpload, Json::object(), 201);
+        auto result = publish(Platform::YouTube, fake, p);
+        check(result.requiresReconciliation() && fake.steps.empty(), "YouTube acknowledged upload without ID was falsely successful or restarted");
+    }
+    {
+        Fake fake; beginYouTube(fake);
+        fake.add("PUT", youtubeUpload, {{"error", {{"message", "secret fixture-user-token"}}}}, 429, {}, {{"Retry-After", "120"}});
+        auto result = publish(Platform::YouTube, fake, p);
+        check(result.error == Error::RateLimited && result.retryAfterSeconds == 120 && fake.requests == 2 && result.message.find("token") == result.message.npos, "YouTube rate limit retried or leaked provider content");
+    }
+    {
+        Fake fake; beginYouTube(fake);
+        fake.add("PUT", youtubeUpload, nullptr, 503);
+        fake.add("PUT", youtubeUpload, {{"error", {{"message", "expired secret session"}}}}, 404);
+        auto result = publish(Platform::YouTube, fake, p);
+        check(result.requiresReconciliation() && result.httpStatus == 404 && fake.steps.empty() && result.message.find("secret") == result.message.npos, "YouTube failed status query erased an uncertain publication");
+    }
+    {
+        Fake fake; beginYouTube(fake);
+        fake.add("PUT", youtubeUpload, {{"id", "rejected_video"}, {"status", {{"uploadStatus", "rejected"}}}}, 201);
+        auto result = publish(Platform::YouTube, fake, p);
+        check(result.error == Error::ProcessingFailed && result.postId == "rejected_video" && result.requiresReconciliation(), "YouTube rejected video lost reconciliation identity");
+    }
+    {
+        Fake fake; beginYouTube(fake);
+        fake.steps.push_back({"PUT", youtubeUpload, {0, {}, {}, true, true, true}, {}});
+        std::stop_source stop;
+        Context context{fake, stop.get_token(), 3, std::chrono::milliseconds(0), [&](auto, auto) { stop.request_stop(); return false; }};
+        auto result = makePublisher(Platform::YouTube)->publish(p, account(Platform::YouTube), context);
+        check(fake.failure.empty() && result.requiresReconciliation() && fake.requests == 2, "YouTube cancellation after dispatch erased the uncertain outcome");
+    }
+}
 void errors() {
     Fake fake; Post p; p.text = "Fixture";
     fake.add("POST", "https://api.x.com/2/tweets", {{"detail", "secret fixture-user-token"}}, 429, {}, {{"Retry-After", "120"}});
@@ -258,6 +402,20 @@ void transport(int argc, char** argv) {
     request = {}; request.url = base + "/redirect";
     response = trusted.send(request, {});
     check(response.status == 302 && !response.transportFailed, "Transport followed a redirect");
+    request = {}; request.method = "PUT"; request.url = base + "/youtube-chunk";
+    request.file = FileSlice{f.path, 0, 4};
+    request.headers = {{"Content-Type", "video/mp4"}, {"Content-Range", "bytes 0-3/8"}, {"Authorization", "Bearer loopback-fixture"}};
+    response = trusted.send(request, {});
+    check(response.status == 308 && !response.transportFailed && response.body.empty(), "Transport followed YouTube's 308 or failed to stream its range");
+    request.url = base + "/youtube-status"; request.file.reset();
+    request.headers = {{"Content-Length", "0"}, {"Content-Range", "bytes */8"}};
+    response = trusted.send(request, {});
+    check(response.status == 308 && !response.transportFailed, "Transport could not send an empty YouTube status PUT");
+    request.url = base + "/youtube-final"; request.file = FileSlice{f.path, 4, 4};
+    request.headers = {{"Content-Type", "video/mp4"}, {"Content-Range", "bytes 4-7/8"}};
+    response = trusted.send(request, {});
+    check(response.status == 201 && !response.transportFailed && Json::parse(response.body)["id"] == "loopback-video", "Transport could not complete a resumed YouTube upload");
+    request = {};
     request.url = base + "/large";
     check(trusted.send(request, {}).transportFailed, "Oversize response was not bounded");
     request.url = base + "/range"; request.headers = {{"Authorization", "bad\r\ninjected"}};
@@ -272,6 +430,8 @@ int main(int argc, char** argv) {
         else if (name == "instagram") containers(true); else if (name == "threads") containers(false);
         else if (name == "pinterest") pinterest(); else if (name == "tumblr") tumblr();
         else if (name == "mastodon") mastodon(); else if (name == "linkedin") linkedin();
+        else if (name == "youtube") youtube(); else if (name == "youtube_validation") youtubeValidation();
+        else if (name == "youtube_errors") youtubeErrors();
         else if (name == "errors") errors(); else if (name == "transport") transport(argc, argv);
         else throw std::runtime_error("Unknown test");
         std::cout << name << ": passed\n";

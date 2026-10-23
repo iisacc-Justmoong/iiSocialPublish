@@ -2,13 +2,13 @@
 
 [Windows 빌드 및 실행](docs/WindowsBuildAndRun.md)
 
-Package release: **0.1.1** (2026-10-19). This patch packages the current
-source snapshot; build, test and installation evidence is recorded in the SDK
-patch-release report. Earlier versioned feature notes remain historical.
+Package release: **0.2.0** (2026-10-22). Native destination review, lossless
+media grouping, UTF-8 text splitting and sequential reply-chain execution are
+available through `Review.h`. See [destination review](docs/Review.md).
 
 
 Qt-free C++23 publishing objects for X, Facebook Pages, Instagram Professional,
-Threads, Pinterest, Tumblr, Mastodon and LinkedIn. Pixiv and ArtStation have
+Threads, Pinterest, Tumblr, Mastodon, LinkedIn and YouTube. Pixiv and ArtStation have
 explicit unsupported objects because no official public publishing contract was
 verified. The module does not use private/mobile APIs or browser automation.
 
@@ -17,6 +17,13 @@ verified. The module does not use private/mobile APIs or browser automation.
 provider performs its real HTTP publishing protocol through an injectable
 `Transport`; the included `CurlTransport` uses libcurl with mandatory TLS
 verification. Objects do not contact providers when constructed.
+
+YouTube uses the official Data API v3 `videos.insert` resumable protocol:
+metadata POST, streamed video PUT, 308 acknowledgements and bounded recovery
+queries within the same upload session. It supports one local video, title,
+description, tags, category and public/unlisted/private visibility. See the
+[YouTube upload API](docs/YouTube.md) for OAuth setup, C++ usage and acceptance
+versus subsequent video processing.
 
 ```cpp
 #include <iiSocialPublish/Publishing.h>

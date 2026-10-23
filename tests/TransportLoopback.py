@@ -22,6 +22,36 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def do_PUT(self):
         data = self.rfile.read(int(self.headers["Content-Length"]))
+        if self.path == "/youtube-chunk":
+            if (data != b"abcd" or self.headers.get("Content-Range") != "bytes 0-3/8"
+                    or self.headers.get("Authorization") != "Bearer loopback-fixture"):
+                self.send_error(400)
+                return
+            self.send_response(308)
+            self.send_header("Range", "bytes=0-3")
+            self.send_header("Location", "https://127.0.0.1:1/must-not-follow")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+        if self.path == "/youtube-status":
+            if data or self.headers.get("Content-Range") != "bytes */8":
+                self.send_error(400)
+                return
+            self.send_response(308)
+            self.send_header("Range", "bytes=0-3")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+        if self.path == "/youtube-final":
+            if data != b"EFGH" or self.headers.get("Content-Range") != "bytes 4-7/8":
+                self.send_error(400)
+                return
+            body = b'{"id":"loopback-video"}'
+            self.send_response(201)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
         self.reply({"bytes": data.decode()})
 
     def do_POST(self):

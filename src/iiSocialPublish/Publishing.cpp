@@ -104,7 +104,7 @@ struct Runner {
         if (linkedIn) { out.emplace_back("LinkedIn-Version", account.apiVersion); out.emplace_back("X-Restli-Protocol-Version", "2.0.0"); }
         return out;
     }
-    Json send(Request request, bool publishing = false, bool emptyOkay = false, bool raw = false) {
+    Json send(Request request, bool publishing = false, bool emptyOkay = false, bool raw = false, bool resumeIncomplete = false) {
         if (context.stop.stop_requested()) fail(Error::Cancelled, "Publishing was cancelled");
         try { last = context.transport.send(request, context.stop); }
         catch (...) { fail(publishing ? Error::OutcomeUnknown : Error::TransportFailure, "Transport failed; reconcile any publication before retrying"); }
@@ -112,6 +112,8 @@ struct Runner {
             if (publishing && last.mayHaveBeenSent) fail(Error::OutcomeUnknown, "Publication outcome is unknown; reconcile before retrying");
             fail(last.cancelled ? Error::Cancelled : Error::TransportFailure, "Request did not complete");
         }
+        // YouTube's 308 is a progress acknowledgement, never an HTTP redirect.
+        if (resumeIncomplete && last.status == 308) return Json::object();
         if (last.status < 200 || last.status >= 300) {
             Error error = last.status == 401 ? Error::AuthenticationRequired : last.status == 403 ? Error::PermissionDenied : last.status == 429 ? Error::RateLimited : Error::ProviderRejected;
             if (publishing && last.status >= 500) error = Error::OutcomeUnknown;
@@ -184,6 +186,17 @@ const Capability& capabilityFor(Platform value) {
 void validate(Platform value, const Post& post, const Account& account) {
     const auto& cap = capabilityFor(value);
     if (!cap.officialPublishingApi) fail(Error::Unsupported, "No verified official public publishing API is configured for this platform");
+    if (!post.replyToId.empty()) {
+        if (value != Platform::X && value != Platform::Threads && value != Platform::Mastodon) fail(Error::InvalidRequest, "This adapter does not support replies");
+        if (post.replyToId.size() > 128 || !std::ranges::all_of(post.replyToId, [](unsigned char c) { return c >= '0' && c <= '9'; })) fail(Error::InvalidRequest, "Invalid reply resource identifier");
+        if (value == Platform::X && !account.allowSelfThreadReplies) fail(Error::AccessNotConfigured, "X reply entitlement has not been verified for this account");
+    }
+    if (!post.language.empty() && (post.language.size() > 35 || !std::ranges::all_of(post.language, [](unsigned char c) { return std::isalnum(c) || c == '-'; }))) fail(Error::InvalidRequest, "Invalid publication language");
+    if (!post.replyControl.empty()) {
+        const bool allowed = value == Platform::X ? (post.replyControl == "following" || post.replyControl == "mentionedUsers" || post.replyControl == "subscribers" || post.replyControl == "verified") :
+            value == Platform::Threads && (post.replyControl == "everyone" || post.replyControl == "accounts_you_follow" || post.replyControl == "mentioned_only");
+        if (!allowed) fail(Error::InvalidRequest, "Unsupported destination reply control");
+    }
     if (account.accessToken.empty() || account.accessToken.size() > 16384 || !clean(account.accessToken)) fail(Error::AuthenticationRequired, "A valid OAuth user access token is required");
     if (account.expiresAt && *account.expiresAt <= std::chrono::system_clock::now()) fail(Error::AuthenticationRequired, "The OAuth grant has expired");
     for (auto& scope : cap.requiredScopes) {
@@ -191,13 +204,16 @@ void validate(Platform value, const Post& post, const Account& account) {
         bool granted = std::ranges::find(account.scopes, scope) != account.scopes.end();
         if (value == Platform::LinkedIn && account.targetId.starts_with("urn:li:organization:")) granted = std::ranges::find(account.scopes, "w_organization_social") != account.scopes.end();
         if (value == Platform::Mastodon) granted = granted || std::ranges::find(account.scopes, "write") != account.scopes.end();
+        if (value == Platform::YouTube) granted = granted || std::ranges::any_of(account.scopes, [](const std::string& grant) {
+            return grant == "https://www.googleapis.com/auth/youtube" || grant == "https://www.googleapis.com/auth/youtube.force-ssl" || grant == "https://www.googleapis.com/auth/youtubepartner";
+        });
         if (!granted) fail(Error::PermissionDenied, "The OAuth grant is missing a required publishing scope");
     }
     if (value == Platform::X && !account.allowBillableRequests) fail(Error::AccessNotConfigured, "X paid API access has not been provisioned for this account");
     if (value == Platform::X && !post.media.empty() && std::ranges::find(account.scopes, "media.write") == account.scopes.end()) fail(Error::PermissionDenied, "X media uploads require media.write");
     if ((value == Platform::Facebook || value == Platform::Instagram) && !std::regex_match(account.apiVersion, std::regex(R"(v[0-9]{2}\.[0-9]+)"))) fail(Error::InvalidRequest, "An explicit supported Meta Graph API version is required");
     if (value == Platform::LinkedIn && !std::regex_match(account.apiVersion, std::regex(R"(20[0-9]{2}(0[1-9]|1[0-2]))"))) fail(Error::InvalidRequest, "An explicit supported LinkedIn YYYYMM API version is required");
-    if (value != Platform::X && value != Platform::Mastodon) {
+    if (value != Platform::X && value != Platform::Mastodon && value != Platform::YouTube) {
         if (account.targetId.empty() || account.targetId.size() > 256 || !clean(account.targetId)) fail(Error::InvalidRequest, "A publishing destination is required");
         if (value == Platform::Facebook || value == Platform::Instagram || value == Platform::Threads || value == Platform::Pinterest) {
             if (!std::ranges::all_of(account.targetId, [](unsigned char c) { return c >= '0' && c <= '9'; })) fail(Error::InvalidRequest, "The destination must be a numeric provider ID");
@@ -205,7 +221,7 @@ void validate(Platform value, const Post& post, const Account& account) {
     }
     if (value == Platform::LinkedIn && !std::regex_match(account.targetId, std::regex(R"(urn:li:(person|organization):[A-Za-z0-9_-]+)"))) fail(Error::InvalidRequest, "LinkedIn requires an explicit member or organization author URN");
     if (value == Platform::Mastodon && !origin(account.instanceUrl)) fail(Error::InvalidRequest, "Mastodon requires an HTTPS instance origin without path or user information");
-    if (value != Platform::Mastodon && post.visibility != "public") fail(Error::InvalidRequest, "This adapter supports public posts only");
+    if (value != Platform::Mastodon && value != Platform::YouTube && post.visibility != "public") fail(Error::InvalidRequest, "This adapter supports public posts only");
     if (value == Platform::Mastodon && post.visibility != "public" && post.visibility != "unlisted" && post.visibility != "private" && post.visibility != "direct") fail(Error::InvalidRequest, "Unsupported Mastodon visibility");
     if (text(post).empty() && post.media.empty()) fail(Error::InvalidRequest, "A post needs text or media");
     if ((!cap.text && post.media.empty()) || post.media.size() > 20 || post.text.size() > 256 * 1024 || post.tags.size() > 100) fail(Error::InvalidRequest, "Post content exceeds the adapter's supported shape");
@@ -215,10 +231,11 @@ void validate(Platform value, const Post& post, const Account& account) {
     for (const auto& media : post.media) {
         videos += media.kind == MediaKind::Video;
         gifs += media.mimeType == "image/gif";
-        if (!clean(media.mimeType) || !media.mimeType.starts_with(media.kind == MediaKind::Video ? "video/" : "image/")) fail(Error::InvalidRequest, "Media MIME type does not match its kind");
+        const bool youtubeBinary = value == Platform::YouTube && media.kind == MediaKind::Video && media.mimeType == "application/octet-stream";
+        if (!clean(media.mimeType) || (!youtubeBinary && !media.mimeType.starts_with(media.kind == MediaKind::Video ? "video/" : "image/"))) fail(Error::InvalidRequest, "Media MIME type does not match its kind");
         if (!media.publicUrl.empty() && !https(media.publicUrl)) fail(Error::InvalidRequest, "Media URLs must use HTTPS without user information");
         if (cap.requiresPublicMediaUrl && media.publicUrl.empty()) fail(Error::InvalidRequest, "This API fetches media from a publicly reachable HTTPS URL");
-        bool localRequired = value == Platform::X || value == Platform::LinkedIn || value == Platform::Mastodon || (value == Platform::Pinterest && media.kind == MediaKind::Video);
+        bool localRequired = value == Platform::X || value == Platform::LinkedIn || value == Platform::Mastodon || value == Platform::YouTube || (value == Platform::Pinterest && media.kind == MediaKind::Video);
         if (localRequired && media.localFile.empty()) fail(Error::InvalidRequest, "This upload requires an exported local media file");
         if (media.localFile.empty() && media.publicUrl.empty()) fail(Error::InvalidRequest, "Media has no file or URL");
         if (!media.localFile.empty()) {
@@ -234,6 +251,21 @@ void validate(Platform value, const Post& post, const Account& account) {
     if (value == Platform::X && gifs && post.media.size() != 1) fail(Error::InvalidRequest, "An X animated GIF must be the only attachment");
     if ((value == Platform::Pinterest && post.media.size() != 1) || (value == Platform::X && post.media.size() > 4) || ((value == Platform::Facebook || value == Platform::Instagram || value == Platform::Tumblr) && post.media.size() > 10)) fail(Error::InvalidRequest, "Too many attachments for this platform adapter");
     if (value == Platform::Pinterest && videos && !https(post.coverImageUrl)) fail(Error::InvalidRequest, "A Pinterest video Pin requires a public HTTPS cover image");
+    if (value == Platform::YouTube) {
+        if (!account.targetId.empty()) fail(Error::InvalidRequest, "YouTube uploads to the OAuth channel; targetId must be empty");
+        if (post.media.size() != 1 || videos != 1) fail(Error::InvalidRequest, "YouTube requires exactly one local video");
+        if (post.visibility != "public" && post.visibility != "unlisted" && post.visibility != "private") fail(Error::InvalidRequest, "Unsupported YouTube visibility");
+        const auto description = text(post, true, false);
+        try { (void)Json{{"title", post.title}, {"description", description}, {"tags", post.tags}}.dump(); }
+        catch (const Json::exception&) { fail(Error::InvalidRequest, "YouTube metadata must contain valid UTF-8"); }
+        const auto characters = std::ranges::count_if(post.title, [](unsigned char c) { return (c & 0xc0) != 0x80; });
+        if (post.title.find_first_not_of(" \t\r\n") == post.title.npos || characters > 100 || post.title.find_first_of("<>") != post.title.npos)
+            fail(Error::InvalidRequest, "YouTube requires a title of at most 100 characters without angle brackets");
+        if (description.size() > 5000 || description.find_first_of("<>") != description.npos) fail(Error::InvalidRequest, "YouTube description exceeds its supported shape");
+        const auto& category = post.youtube.categoryId;
+        if (category.empty() || category.size() > 10 || !std::ranges::all_of(category, [](unsigned char c) { return c >= '0' && c <= '9'; }))
+            fail(Error::InvalidRequest, "YouTube requires a numeric video category ID");
+    }
 }
 
 class BasePublisher : public Publisher {
@@ -290,6 +322,8 @@ public:
         Json body{{"text", text(post)}};
         if (!ids.empty()) body["media"] = {{"media_ids", ids}};
         if (post.madeWithAi) body["made_with_ai"] = true;
+        if (!post.replyToId.empty()) body["reply"] = {{"in_reply_to_tweet_id", post.replyToId}};
+        if (!post.replyControl.empty()) body["reply_settings"] = post.replyControl;
         auto resource = id(r.json("POST", "https://api.x.com/2/tweets", body, true).at("data"));
         return r.published(resource, "https://x.com/i/status/" + encode(resource));
     }
@@ -362,6 +396,8 @@ public:
             else if (!instagram) body["media_type"] = "IMAGE";
             if (carousel) body["is_carousel_item"] = true;
             else body[instagram ? "caption" : "text"] = text(post);
+            if (!instagram && !carousel && !post.replyToId.empty()) body["reply_to_id"] = post.replyToId;
+            if (!instagram && !carousel && !post.replyControl.empty()) body["reply_control"] = post.replyControl;
             if (!media.altText.empty() && (!instagram || media.kind == MediaKind::Image)) body["alt_text"] = media.altText;
             auto resource = id(r.form(base + target + edge, body));
             wait(resource); children.push_back(resource);
@@ -369,13 +405,20 @@ public:
         std::string resource;
         if (carousel) {
             Json body{{"media_type", "CAROUSEL"}, {instagram ? "caption" : "text", text(post)}};
+            if (!instagram && !post.replyToId.empty()) body["reply_to_id"] = post.replyToId;
+            if (!instagram && !post.replyControl.empty()) body["reply_control"] = post.replyControl;
             // Graph expects a comma-separated child ID list in form encoding.
             std::string joined;
             for (auto& child : children) { if (!joined.empty()) joined += ','; joined += child.get<std::string>(); }
             body["children"] = joined;
             resource = id(r.form(base + target + edge, body)); wait(resource);
         } else if (!children.empty()) resource = children[0].get<std::string>();
-        else resource = id(r.form(base + target + edge, {{"media_type", "TEXT"}, {"text", text(post)}}));
+        else {
+            Json body{{"media_type", "TEXT"}, {"text", text(post)}};
+            if (!post.replyToId.empty()) body["reply_to_id"] = post.replyToId;
+            if (!post.replyControl.empty()) body["reply_control"] = post.replyControl;
+            resource = id(r.form(base + target + edge, body));
+        }
         if (post.media.empty()) wait(resource);
         auto result = id(r.form(base + target + (instagram ? "/media_publish" : "/threads_publish"), {{"creation_id", resource}}, true));
         return r.published(result);
@@ -475,6 +518,8 @@ public:
             ids.push_back(resource);
         }
         Json body{{"status", text(post)}, {"media_ids", ids}, {"visibility", post.visibility}, {"sensitive", post.sensitive}, {"spoiler_text", post.contentWarning}};
+        if (!post.replyToId.empty()) body["in_reply_to_id"] = post.replyToId;
+        if (!post.language.empty()) body["language"] = post.language;
         Request request; request.method = "POST"; request.url = base + "/api/v1/statuses"; request.headers = r.headers();
         request.headers.emplace_back("Content-Type", "application/json"); request.body = body.dump();
         if (!post.idempotencyKey.empty()) request.headers.emplace_back("Idempotency-Key", post.idempotencyKey);
@@ -550,6 +595,119 @@ public:
         return r.published(resource, "https://www.linkedin.com/feed/update/" + encode(resource) + "/");
     }
 };
+class YouTubePublisher final : public BasePublisher {
+    static std::uint64_t acknowledged(const Headers& headers, std::uint64_t confirmed, std::uint64_t sent, std::uint64_t total) {
+        const auto range = header(headers, "Range");
+        std::uint64_t next = 0;
+        if (!range.empty()) {
+            constexpr std::string_view prefix = "bytes=0-";
+            if (!range.starts_with(prefix)) fail(Error::OutcomeUnknown, "YouTube returned an invalid upload acknowledgement; reconcile before retrying");
+            const auto digits = std::string_view(range).substr(prefix.size());
+            std::uint64_t last = 0;
+            auto parsed = std::from_chars(digits.data(), digits.data() + digits.size(), last);
+            if (parsed.ec != std::errc{} || parsed.ptr != digits.data() + digits.size() || last >= total)
+                fail(Error::OutcomeUnknown, "YouTube returned an invalid upload acknowledgement; reconcile before retrying");
+            next = last + 1;
+        }
+        if (next < confirmed || next > sent || next == total) fail(Error::OutcomeUnknown, "YouTube upload progress is inconsistent; reconcile before retrying");
+        return next;
+    }
+public:
+    YouTubePublisher() : BasePublisher(Platform::YouTube) {}
+    Outcome run(const Post& post, Runner& r) const override {
+        const auto& media = post.media.front();
+        const auto total = size(media);
+        Json metadata{{"snippet", {{"title", post.title}, {"description", text(post, true, false)}, {"tags", post.tags}, {"categoryId", post.youtube.categoryId}}},
+                      {"status", {{"privacyStatus", post.visibility}}}};
+        if (post.youtube.madeForKids) metadata["status"]["selfDeclaredMadeForKids"] = *post.youtube.madeForKids;
+        if (post.youtube.containsSyntheticMedia) metadata["status"]["containsSyntheticMedia"] = *post.youtube.containsSyntheticMedia;
+        Request start; start.method = "POST";
+        start.url = std::string("https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet%2Cstatus&notifySubscribers=") + (post.youtube.notifySubscribers ? "true" : "false");
+        start.headers = r.headers();
+        start.headers.emplace_back("Content-Type", "application/json; charset=UTF-8");
+        start.headers.emplace_back("X-Upload-Content-Type", media.mimeType);
+        start.headers.emplace_back("X-Upload-Content-Length", std::to_string(total));
+        start.body = metadata.dump();
+        r.send(std::move(start), false, true);
+        const auto session = header(r.last.headers, "Location");
+        constexpr std::string_view sessionPrefix = "https://www.googleapis.com/upload/youtube/v3/videos?";
+        if (!https(session) || !clean(session) || !session.starts_with(sessionPrefix) || session.size() == sessionPrefix.size() || session.find('#') != session.npos)
+            fail(Error::InvalidResponse, "YouTube returned an invalid resumable session URL");
+
+        std::uint64_t offset = 0, sent = 0;
+        unsigned recoveries = 0;
+        unsigned retryDelay = 0;
+        bool query = false, uncertain = false;
+        while (true) {
+            if (query) {
+                if (r.context.stop.stop_requested() || recoveries == r.context.maxUploadRecoveries)
+                    fail(Error::OutcomeUnknown, "YouTube upload recovery stopped; reconcile before retrying");
+                const auto delay = std::chrono::seconds(std::max(retryDelay, 1u << std::min(recoveries, 6u)));
+                ++recoveries;
+                try { r.pause(delay); }
+                catch (const Failure&) {
+                    if (uncertain) fail(Error::OutcomeUnknown, "YouTube upload was interrupted; reconcile before retrying");
+                    throw;
+                }
+            }
+            Request request; request.method = "PUT"; request.url = session; request.headers = r.headers();
+            request.headers.emplace_back("Content-Type", media.mimeType);
+            if (query) {
+                request.headers.emplace_back("Content-Length", "0");
+                request.headers.emplace_back("Content-Range", "bytes */" + std::to_string(total));
+            } else {
+                const auto length = std::min(chunkSize, total - offset);
+                sent = offset + length;
+                request.file = FileSlice{media.localFile, offset, length};
+                request.headers.emplace_back("Content-Length", std::to_string(length));
+                request.headers.emplace_back("Content-Range", "bytes " + std::to_string(offset) + "-" + std::to_string(sent - 1) + "/" + std::to_string(total));
+            }
+            Json data;
+            try { data = r.send(std::move(request), true, false, false, true); }
+            catch (const Failure& failure) {
+                const auto error = failure.outcome.error;
+                if ((error != Error::TransportFailure && error != Error::OutcomeUnknown) || r.context.stop.stop_requested() || recoveries == r.context.maxUploadRecoveries || failure.outcome.retryAfterSeconds > 300) {
+                    if (query && uncertain) {
+                        auto outcome = failure.outcome;
+                        outcome.error = Error::OutcomeUnknown;
+                        outcome.message = "YouTube upload status could not be reconciled; reconcile before retrying";
+                        throw Failure{std::move(outcome)};
+                    }
+                    throw;
+                }
+                // A status query is safe; creating a second upload is not.
+                uncertain = true; query = true; retryDelay = failure.outcome.retryAfterSeconds; continue;
+            }
+            if (r.last.status == 308) {
+                const auto next = acknowledged(r.last.headers, offset, sent, total);
+                // No progress requires a bounded status query before resending.
+                query = !query && next == offset;
+                offset = next; uncertain = false; retryDelay = 0;
+                const auto retry = header(r.last.headers, "Retry-After");
+                unsigned seconds = 0;
+                auto parsed = std::from_chars(retry.data(), retry.data() + retry.size(), seconds);
+                if (parsed.ec == std::errc{} && parsed.ptr == retry.data() + retry.size() && seconds) {
+                    if (seconds > 300) {
+                        Outcome result; result.error = Error::RateLimited; result.httpStatus = 308;
+                        result.retryAfterSeconds = seconds; result.message = "YouTube requested an upload delay beyond the wait budget";
+                        return result;
+                    }
+                    r.pause(std::chrono::seconds(seconds));
+                }
+                continue;
+            }
+            if (sent != total) fail(Error::OutcomeUnknown, "YouTube completed before all video bytes were sent; reconcile before retrying");
+            auto result = r.published(id(data));
+            result.url = "https://www.youtube.com/watch?v=" + encode(result.postId);
+            const auto status = data.value("status", Json::object());
+            const auto state = str(status, "uploadStatus");
+            if (state == "failed" || state == "rejected" || state == "deleted") {
+                result.error = Error::ProcessingFailed; result.message = "YouTube rejected the uploaded video";
+            }
+            return result;
+        }
+    }
+};
 class UnsupportedPublisher final : public BasePublisher {
 public:
     explicit UnsupportedPublisher(Platform value) : BasePublisher(value) {}
@@ -570,7 +728,8 @@ const std::vector<Capability>& capabilities() {
         {Platform::ArtStation, "artstation", "ArtStation", false, false, false, false, false, {}, "https://help.artstation.com/", "No official public publishing contract verified; no scraping or private API"},
         {Platform::Tumblr, "tumblr", "Tumblr", true, true, true, true, false, {"write"}, "https://github.com/tumblr/docs/blob/master/api.md#posts---createreblog-a-post-neue-post-format", "OAuth2 write token, blog identifier, NPF posts and multipart media"},
         {Platform::Mastodon, "mastodon", "Mastodon", true, true, true, true, false, {"write:statuses", "write:media"}, "https://docs.joinmastodon.org/methods/statuses/", "Per-instance OAuth registration and user token; instance-specific attachment limits"},
-        {Platform::LinkedIn, "linkedin", "LinkedIn", true, true, true, true, false, {"w_member_social"}, "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api", "Member author or authorized organization with w_organization_social; supported YYYYMM API version"}
+        {Platform::LinkedIn, "linkedin", "LinkedIn", true, true, true, true, false, {"w_member_social"}, "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api", "Member author or authorized organization with w_organization_social; supported YYYYMM API version"},
+        {Platform::YouTube, "youtube", "YouTube", true, false, false, true, false, {"https://www.googleapis.com/auth/youtube.upload"}, "https://developers.google.com/youtube/data/reference/rest/v3/videos/insert", "OAuth channel user token; one local video and title; resumable upload; public, unlisted or private visibility"}
     };
     return rows;
 }
@@ -609,8 +768,14 @@ std::unique_ptr<Publisher> makePublisher(Platform value) {
     case Platform::Tumblr: return std::make_unique<TumblrPublisher>();
     case Platform::Mastodon: return std::make_unique<MastodonPublisher>();
     case Platform::LinkedIn: return std::make_unique<LinkedInPublisher>();
+    case Platform::YouTube: return std::make_unique<YouTubePublisher>();
     case Platform::Pixiv: case Platform::ArtStation: return std::make_unique<UnsupportedPublisher>(value);
     }
     throw std::invalid_argument("Unknown publishing platform");
+}
+Outcome validatePost(Platform value, const Post& post, const Account& account) {
+    try { validate(value, post, account); return {}; }
+    catch (const Failure& failure) { return failure.outcome; }
+    catch (...) { Outcome out; out.error = Error::InvalidRequest; out.message = "Invalid publication input"; return out; }
 }
 } // namespace iiSocialPublish

@@ -1,5 +1,39 @@
 # Verification
 
+## YouTube extension, 2026-10-22
+
+The macOS arm64 Release build passed all **16 CTest groups**, including the
+three new YouTube groups and the real TLS loopback transport. The complete
+existing provider suite remains enabled. The extended catalog contains eleven
+targets, nine with implemented official publishing routes.
+
+YouTube fixtures verify metadata/privacy/audience/synthetic-media declarations,
+UTF-8 titles (including the 100-character boundary), local-video preflight,
+least-privilege and broader upload grants, streamed byte ranges, partial
+acknowledgements, lost-final-response reconciliation, cancellation, bounded
+recovery, rate limits and credential-free errors. Invalid session locations and
+malformed or inconsistent ranges are rejected. A failed status query after an
+ambiguous dispatch remains `outcome_unknown`.
+
+The real HTTPS loopback verifies a 308 response without redirect following,
+an empty status PUT and a resumed final file range. Test configuration uses the
+available `/usr/bin/openssl`; an obsolete local Homebrew cache path was replaced.
+No provider credentials are used.
+
+Installation was staged at `build/install`. A separate C++23 consumer under
+`build/youtube-consumer`, configured only against that installed package,
+compiled, linked and passed its CTest (**1/1**). It exercised the YouTube catalog,
+public options and complete metadata/upload request chain with an offline
+transport. `otool -L` confirms system libcurl, libc++ and libSystem, without Qt.
+The normal installed SDK under `~/.local` was not replaced.
+
+Evidence is retained in `build/youtube-ctest.txt`,
+`build/youtube-installed-consumer-ctest.txt` and `build/youtube-verification.json`.
+Actual Google login, live video upload, transcoding and public visibility were
+not exercised. Windows and Linux runtime verification was not performed.
+
+## Earlier baseline, 2026-10-18
+
 On 2026-10-18, the macOS arm64 Release build passed all 13 CTest groups, including
 the real TLS loopback transport. The installed package was consumed by
 Dreamscapes. `otool -L build/iiSocialPublishTests` lists only system libcurl,
@@ -7,8 +41,8 @@ libc++ and libSystem, with no Qt library. Logs are retained under `build/ctest.t
 and `build/link-dependencies.txt`.
 
 The native test suite uses scripted official-contract responses. It verifies
-the ten-object catalog, unsupported platforms without network traffic, scope/
-token/version/file preflight, all eight supported request chains, carousel
+the original ten-object catalog, unsupported platforms without network traffic, scope/
+token/version/file preflight, the original eight supported request chains, carousel
 assembly, NPF multipart identifiers, media-processing waits, ordered LinkedIn
 video ranges/ETags, privacy/idempotency forwarding, sanitized errors, rate limits,
 cancellation and ambiguous publication outcomes without retry.
