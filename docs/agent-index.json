@@ -1,0 +1,111 @@
+{
+  "format": "iisacc.agent-document-index",
+  "schema_version": 1,
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialIntegration",
+    "name": "iiSocialIntegration",
+    "root": "SDK/iiSocialIntegration",
+    "kind": "sdk"
+  },
+  "documentation_root": "docs",
+  "agent_schema": "docs/agent-document.schema.json",
+  "documents": [
+    {
+      "document_id": "urn:iisacc:document:1a26f627c03c9fb0fde2a619c8e3f8f511c780297f33c901eaed62909abf9f06",
+      "source": "AGENT.md",
+      "agent_json": "docs/entrypoints/AGENT.generated.agent.json",
+      "source_sha256": "7829388c99a74a4458cbd8c5b133a31992f3e13ff7f3f8adec16fc60288f44ec",
+      "role": "instructions"
+    },
+    {
+      "document_id": "urn:iisacc:document:b086af490e4c19974ddc4708621e9eebe2553059cc5bb660330633dc0f88b564",
+      "source": "README.md",
+      "agent_json": "docs/entrypoints/README.generated.agent.json",
+      "source_sha256": "c930ff9bcc05ac54d7bca9e46b6f0a942d2a8beb9ad36b1cf3a3e808bd7b28b3",
+      "role": "overview"
+    },
+    {
+      "document_id": "urn:iisacc:document:43beef0c03655943a5e043490e543ab309191654ba5d902df968493fe6d5c061",
+      "source": "docs/Execution.md",
+      "agent_json": "docs/Execution.generated.agent.json",
+      "source_sha256": "c15d9475e97e5ef4aca1874f543ffb3c17c940f4680b015032d45ae71be1d262",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:5346ad9826186ab2f256cc0cb500bfb6387d366d5af3d297d41475a33d57a1b9",
+      "source": "docs/Migration.md",
+      "agent_json": "docs/Migration.agent.json",
+      "source_sha256": "38cc296a145f200c88c9c0575cd80131031b80a91bb7eb1ceb57a9f9ff8c294d",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:2ed5b72369acf2f18df7dd11b52f820d7f32cee6ed0c54ec10f3ad6f100f4799",
+      "source": "docs/Providers.md",
+      "agent_json": "docs/Providers.generated.agent.json",
+      "source_sha256": "ea48c47f086035ca5daa9c4408bfc74c14b94af5245176e4960a59123e829ae4",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:5bfd6edc91fe6eb6538d03edaf6748a74aff75b3d36f058de749c579b3b82fde",
+      "source": "docs/README.md",
+      "agent_json": "docs/README.generated.agent.json",
+      "source_sha256": "1b7986024a95eeb11df4039ca4f5c5064dc59e6c0a21b199d5b16f38849440b8",
+      "role": "overview"
+    },
+    {
+      "document_id": "urn:iisacc:document:bef08657c83016a9a701d2ea5a5a31e77ac634e3a862722f154b31665d4589ff",
+      "source": "docs/Review.md",
+      "agent_json": "docs/Review.generated.agent.json",
+      "source_sha256": "6552195defcba522f1fbdd0af6286e7e5cb4e499f59fe0f4c456efc5d354d221",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:03b66184dfd3218d5b08ba0e5a57af66943f703760fc0e02eb33325627327e74",
+      "source": "docs/UrlImport.md",
+      "agent_json": "docs/UrlImport.agent.json",
+      "source_sha256": "15396666aa330ae66ecc013778b8e28147b5ead77cafbd691bcc9e8718923767",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:3ed7eff5f927dae1da7e6ae7856395d2f482fde7148325d5ae7023f9ff295ed8",
+      "source": "docs/Verification.md",
+      "agent_json": "docs/Verification.generated.agent.json",
+      "source_sha256": "c120b2cec72b720a74bf47b3eb2c10a8f81283d0d609304225725354b02683a8",
+      "role": "evidence"
+    },
+    {
+      "document_id": "urn:iisacc:document:222cfe3b4900430c8e3309245b91ec78185d46b9c65dedd43fef3a8856c76484",
+      "source": "docs/WindowsBuildAndRun.md",
+      "agent_json": "docs/WindowsBuildAndRun.generated.agent.json",
+      "source_sha256": "de04f5a9e5b48602aa854c1f98d6568a22279823256b81a7eef04d917407e80a",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:084caadb0cd803a4b7e4bea712092ba1014ed467047160eebc53a59db33bbb06",
+      "source": "docs/YouTube.md",
+      "agent_json": "docs/YouTube.generated.agent.json",
+      "source_sha256": "c60697fce1c1db92d32350f2ca5f9b4e21cfd760747a63355f87475d0de4a622",
+      "role": "guide"
+    },
+    {
+      "document_id": "urn:iisacc:document:0df8dbc02824a0fa1cf9bc7a3e8c4a4b58dc3994833e1953beba00ba601baea4",
+      "source": "docs/documentation-structure.md",
+      "agent_json": "docs/documentation-structure.generated.agent.json",
+      "source_sha256": "ecfade5eca1e60d4e90e05ce85de311a170fa7e59b638c1b1f0ba3fb1a3ae1af",
+      "role": "guide"
+    }
+  ],
+  "layout": {
+    "human_entry": "README.md",
+    "agent_entry": "AGENT.md",
+    "human_format": "markdown",
+    "agent_format": "structured_json",
+    "source_authority": "markdown"
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

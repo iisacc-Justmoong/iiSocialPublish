@@ -1,10 +1,10 @@
-#include <iiSocialPublish/Review.h>
+#include <iiSocialIntegration/Review.h>
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 
-using namespace iiSocialPublish;
+using namespace iiSocialIntegration;
 using Json = nlohmann::json;
 void check(bool value, const char* message) { if (!value) throw std::runtime_error(message); }
 struct Fake : Transport {

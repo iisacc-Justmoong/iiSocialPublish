@@ -1,5 +1,31 @@
 # Verification
 
+## URL 미디어 발견, 2026-10-28
+
+macOS arm64에서 C++23 빌드와 CTest 20개를 통과했다. URL 전용 검사는 HTML
+DOM·메타데이터·상대 경로·문자셋·인라인 CSS·중복 후보·선택 순서, 데이터
+URL, 병렬 파싱, 리다이렉트, 오류·취소·크기 제한과 호출자 sink를 확인한다. 실제 TLS
+루프백에서는 2 MiB를 넘는 HTML과 9 MiB 미디어의 청크 전송, 리다이렉트
+본문 분리와 작은 미디어 한도를 확인한다. URL에서 생성하고 자산 ID를 연결한
+초안 1개는 Society 서비스의 현재 게시 요청 스키마로 별도 검증했다.
+
+이는 공개 소셜 사이트의 실제 접근, 로그인, JavaScript 실행, 원본 미디어의
+권리·바이트 검증 또는 Society 자산 등록·게시를 검증한 결과가 아니다.
+탐색 범위와 호출자 책임은 [URL 이관 문서](UrlImport.md)를 따른다.
+
+## Society 이관과 이름 변경, 2026-10-28
+
+macOS arm64에서 `iiSocialIntegration`을 C++23으로 빌드하고 기존 퍼블리싱,
+TLS 루프백, 새 이관 및 이전 이름 호환을 포함한 CTest 19개를 통과했다.
+`iiSocialIntegration.Migration`은 아홉 제공자의 대표 원본 입력, 단건·일괄
+결과, 첨부 순서, 누락 자산, 민감 정보 검토, HTML 변환과 Society 필드 한도를
+검사한다. Pixiv와 ArtStation의 미지원 네이티브 형식은 오류 결과로 확인한다.
+
+Society 서비스의 `json_schemer`와 현재 `publishing-request.schema.json`으로
+텍스트 초안과 등록 자산이 있는 초안, 총 2개의 생성 결과를 각각 검증했다.
+이는 서버의 미디어 수집·인증·영속화나 실제 계정의 원본 조회·게시를 실행했다는
+뜻이 아니다. 명령과 자산 등록의 책임은 [이관 문서](Migration.md)를 따른다.
+
 ## YouTube extension, 2026-10-22
 
 The macOS arm64 Release build passed all **16 CTest groups**, including the

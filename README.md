@@ -1,11 +1,21 @@
-# iiSocialPublish
+# iiSocialIntegration
 
-[Windows 빌드 및 실행](docs/WindowsBuildAndRun.md)
+[Windows build and execution](docs/WindowsBuildAndRun.md)
 
-Package release: **0.2.0** (2026-10-22). Native destination review, lossless
+The former `iiSocialPublish` package is now `iiSocialIntegration`. Native destination review, lossless
 media grouping, UTF-8 text splitting and sequential reply-chain execution are
 available through `Review.h`. See [destination review](docs/Review.md).
 
+`Migration.h` also converts supplied external posts into editable Society draft
+objects. Native JSON conversion covers X, Facebook, Instagram, Threads,
+Pinterest, Tumblr NPF, Mastodon, LinkedIn and YouTube; an `ExternalPost` adapter
+accepts normalized data from any platform. The caller retains source provenance,
+converts HTML where needed, registers media, and provides Society asset IDs before
+serializing a private draft. See [migration contracts and examples](docs/Migration.md).
+The optional `UrlImport.h` API fetches a page, discovers media in its static
+DOM, and streams selected assets to an application-owned sink. A host may also
+provide a rendered DOM. See [URL discovery and asset retrieval](docs/UrlImport.md).
+The SDK does not assign Society authors, register assets, or publish imports.
 
 Qt-free C++23 publishing objects for X, Facebook Pages, Instagram Professional,
 Threads, Pinterest, Tumblr, Mastodon, LinkedIn and YouTube. Pixiv and ArtStation have
@@ -26,8 +36,8 @@ description, tags, category and public/unlisted/private visibility. See the
 versus subsequent video processing.
 
 ```cpp
-#include <iiSocialPublish/Publishing.h>
-using namespace iiSocialPublish;
+#include <iiSocialIntegration/Publishing.h>
+using namespace iiSocialIntegration;
 
 Account account;
 account.accessToken = obtainUserGrantFromTrustedAccountService();
@@ -56,18 +66,24 @@ account service that owns the OAuth grant.
 Build and install:
 
 ```sh
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel 4
 ctest --test-dir build --output-on-failure
-cmake --install build
+cmake --install build --prefix "$PWD/build/staged-integration"
 ```
 
-Consumers use `find_package(iiSocialPublish 0.1.1 CONFIG REQUIRED)` and
-`iiSocialPublish::iiSocialPublish`. The static native target depends on libcurl
-7.68+ and privately vendored nlohmann/json 3.12.0; no Qt, Python interpreter or
+Consumers use `find_package(iiSocialIntegration 0.2 CONFIG REQUIRED)` and
+`iiSocialIntegration::iiSocialIntegration`. Existing source consumers can use
+the `iiSocialPublish` headers, namespace and CMake package compatibility aliases
+when rebuilt against the new installation; binary ABI compatibility is not
+promised. Consumers with a hard-coded old installation prefix must point CMake
+at the new prefix; an existing old installation does not acquire the new API.
+The static native target depends on libcurl 7.68+, libxml2 2.9+ and privately
+vendored nlohmann/json 3.12.0; no Qt, Python interpreter or
 browser is needed at runtime. Tests additionally use Python/OpenSSL for a
 disposable loopback HTTPS server. The package includes third-party licensing.
+`./install.sh [prefix]` builds, tests, and installs to the supplied prefix; its
+default is `~/.local/SDK/iiSocialIntegration`.
 
 See [provider API contracts](docs/Providers.md),
 [execution and failure contracts](docs/Execution.md) and
@@ -85,12 +101,20 @@ weights retain their respective licenses.
 
 ## Source header layout
 
-Public headers and implementations live together in `src/iiSocialPublish/`.
-There is no separate authored `include/` tree. Existing public `#include` names
-and exported CMake targets are unchanged; installation still places only public
-headers in the package include directory. Generated export headers belong to
+Public headers and implementations live together in `src/iiSocialIntegration/`.
+There is no separate authored `include/` tree. Legacy forwarding headers are
+provided under `src/iiSocialPublish/`. Generated export headers belong to
 `build/`, not to the authored source tree.
 
 Validate this layout from the SDK workspace with
 `python3 -B tests/test_source_header_layout.py`. Reconfigure, build, run CTest,
 and verify a staged installed consumer after changing source/header paths.
+
+<!-- workspace-docs:readme:start -->
+## Documentation entry points
+
+- Human overview: this English `README.md`.
+- Agent instructions: [AGENT.md](AGENT.md).
+- Human documentation: [documentation index](docs/README.md).
+- Structured agent documentation: [agent index](docs/agent-index.json).
+<!-- workspace-docs:readme:end -->

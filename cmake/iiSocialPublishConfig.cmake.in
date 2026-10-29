@@ -1,7 +1,9 @@
 @PACKAGE_INIT@
-set(iiSocialPublish_LICENSE_DIR "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_DATADIR@/licenses/iiSocialPublish")
 include(CMakeFindDependencyMacro)
-find_dependency(CURL 7.68)
-find_dependency(Threads)
-include("${CMAKE_CURRENT_LIST_DIR}/iiSocialPublishTargets.cmake")
+find_dependency(iiSocialIntegration @PROJECT_VERSION@ CONFIG)
+set(iiSocialPublish_LICENSE_DIR "${iiSocialIntegration_LICENSE_DIR}")
+if(NOT TARGET iiSocialPublish::iiSocialPublish)
+    add_library(iiSocialPublish::iiSocialPublish INTERFACE IMPORTED)
+    set_property(TARGET iiSocialPublish::iiSocialPublish PROPERTY INTERFACE_LINK_LIBRARIES iiSocialIntegration::iiSocialIntegration)
+endif()
 check_required_components(iiSocialPublish)

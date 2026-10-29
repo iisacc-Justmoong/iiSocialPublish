@@ -21,6 +21,34 @@ configuration or claims of app approval.
 | UnsupportedPublisher (Pixiv) | Returns `unsupported` before any networking. | No official public publishing contract was verified. This is a statement about verified integration support, not a claim that private partner APIs can never exist. |
 | UnsupportedPublisher (ArtStation) | Returns `unsupported` before any networking. | Same restriction; no undocumented project-upload or login-session endpoint is used. |
 
+## Pixiv and ArtStation: non-API publishing assessment
+
+Reviewed on 2026-10-28. Both services provide a user-operated publishing flow,
+but this investigation did not establish an executable, verified SDK publishing
+integration for either service. The unsupported publisher and review blocker
+remain in place; a manual website flow is not reported as an SDK publication.
+
+- **Pixiv:** its [illustration posting guide](https://www.pixiv.help/hc/en-us/articles/235584588-How-can-I-post-illustrations-on-pixiv)
+  describes selecting local files and entering tags, age restriction and AI
+  disclosure after signing in. JPG, PNG and non-animated GIF are accepted up to
+  32 MB per file according to that guide. The guide describes user-operated
+  posting, not a documented third-party automated upload contract.
+- **ArtStation:** its [video-clip guide](https://help.artstation.com/en/articles/16155107-how-to-add-video-clips)
+  describes adding an MP4 in Manage Portfolio, and the [ArtStation team](https://magazine.artstation.com/2026/05/new-on-artstation-showcasing-pro-artists-new-reactions-message-request-system/)
+  says a mature-content selection is required for new projects. The
+  [terms](https://www.artstation.com/tos) restrict reverse engineering,
+  third-party account access and circumvention of access controls. These sources
+  do not establish whether a particular user-operated browser automation is
+  permitted or works end to end.
+
+For this review, the computer-use site-safety policy blocked access to the
+Pixiv site and the available ArtStation browser session was signed out. No
+authenticated editor, upload, submission, or returned post identifier was
+verified. A future browser-based implementation would need a verified permitted
+interaction, access to a controlled signed-in test account, and evidence of the
+actual submission and result; it must handle changes and challenges without
+claiming success or bypassing site security.
+
 The adapter deliberately supports a bounded common export shape: images/videos,
 not arbitrary IISC documents, live streams, ads, stories, polls or document
 posts. It does not resize, transcode, crop, expose local files on a public

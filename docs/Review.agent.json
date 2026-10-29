@@ -1,0 +1,359 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:562c9a59674d1acd893ae54a183eafafc8c6d89c81bd51895c90324d1dae94ca",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialPublish",
+    "name": "iiSocialPublish",
+    "root": "SDK/iiSocialPublish",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/Review.md",
+    "sha256": "b0fd1f87f48e2c1bfb7aadafa1ecf197756dd5a490bb430fb89e094ac65388bc",
+    "bytes": 4855,
+    "line_count": 28,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "게시 대상별 검토와 분할 게시",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# 게시 대상별 검토와 분할 게시\n",
+      "level": 1,
+      "title": "게시 대상별 검토와 분할 게시"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "`Review.h`는 Society 등의 공통 게시 내용에서 플랫폼별 게시 계획을 만드는 C++23 API이다. Qt, 파일 읽기, 렌더링, 네트워크, 계정 조회 없이 동작한다. 제목, 본문, 링크, 태그, 순서가 있는 미디어와 캡션을 입력한다. 소비자 앱은 원본과 대상별 덮어쓰기를 구분하여 합성한 뒤 호출한다. 인증 토큰은 원고에 저장하지 않는다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "`planPublication()`은 미디어 원본 인덱스와 대체 텍스트를 유지한다. X의 20장 이미지 입력은 기본적으로 4장씩 5개 게시물이 되고, 각 후속 게시물은 직전 게시물에 대한 응답이다. `Separate`는 독립 게시, `Single`은 분할 없이 게시 가능한지 확인한다. 사용자가 고른 묶음 크기는 어댑터 한도를 초과할 수 없다. GIF/영상 단독 게시가 필요한 대상은 원본 순서를 보존하여 별도로 묶는다. 초과 이미지를 버리거나 자동 크롭/영상 변환하지 않는다.\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "table",
+      "start_line": 7,
+      "end_line": 18,
+      "raw": "| 대상 | 기본 미디어 묶음 | 초과 처리 |\n| --- | --- | --- |\n| X | 사진 4장, GIF/영상 1개 | 응답 스레드 또는 독립 게시 |\n| Facebook Page | 사진 10장, 영상 1개 | 독립 게시, 사진은 attached_media |\n| Instagram | 캐러셀 10개 | 독립 캐러셀, 긴 캡션은 검토 오류 |\n| Threads | 캐러셀 20개 | 응답 스레드 또는 독립 게시 |\n| Pinterest | 미디어 1개 | 순서가 있는 개별 Pin, 명시적 보드 필요 |\n| Tumblr | NPF 미디어 10개 | 독립 NPF 게시 |\n| Mastodon | 기본 4개 | 응답 스레드, 실제 인스턴스 한도 사전 확인 |\n| LinkedIn | 이미지 20장, 영상 1개 | 독립 게시 |\n| YouTube | 영상 1개 | 영상별 게시, 정적 이미지는 오류 |\n| Pixiv / ArtStation | 사이트 마무리용 전체 미디어 | 검토만 가능, 자동 업로드 불가 |\n",
+      "columns": [
+        "대상",
+        "기본 미디어 묶음",
+        "초과 처리"
+      ],
+      "rows": [
+        [
+          "X",
+          "사진 4장, GIF/영상 1개",
+          "응답 스레드 또는 독립 게시"
+        ],
+        [
+          "Facebook Page",
+          "사진 10장, 영상 1개",
+          "독립 게시, 사진은 attached_media"
+        ],
+        [
+          "Instagram",
+          "캐러셀 10개",
+          "독립 캐러셀, 긴 캡션은 검토 오류"
+        ],
+        [
+          "Threads",
+          "캐러셀 20개",
+          "응답 스레드 또는 독립 게시"
+        ],
+        [
+          "Pinterest",
+          "미디어 1개",
+          "순서가 있는 개별 Pin, 명시적 보드 필요"
+        ],
+        [
+          "Tumblr",
+          "NPF 미디어 10개",
+          "독립 NPF 게시"
+        ],
+        [
+          "Mastodon",
+          "기본 4개",
+          "응답 스레드, 실제 인스턴스 한도 사전 확인"
+        ],
+        [
+          "LinkedIn",
+          "이미지 20장, 영상 1개",
+          "독립 게시"
+        ],
+        [
+          "YouTube",
+          "영상 1개",
+          "영상별 게시, 정적 이미지는 오류"
+        ],
+        [
+          "Pixiv / ArtStation",
+          "사이트 마무리용 전체 미디어",
+          "검토만 가능, 자동 업로드 불가"
+        ]
+      ]
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "paragraph",
+      "start_line": 20,
+      "end_line": 20,
+      "raw": "위 숫자는 어댑터의 보수적인 지원 정책이다. 모든 서비스의 계정별 최대치라는 뜻이 아니다. Facebook/Tumblr의 10개와 Instagram의 10개는 현재 어댑터가 검증한 범위를 유지한다. Instagram 앱 자체의 최대 개수와 API 지원을 동일시하지 않는다. Threads 정책은 기존 어댑터의 20개를 유지한다. Meta 문서 직접 읽기가 제한된 경우 공식 Postman 컬렉션을 프로토콜 참고로 사용한다. [공식 Threads 컬렉션](https://www.postman.com/meta/threads/documentation/dht3nzz/threads-api?entity=request-34203612-ee0a2365-9d95-4cbe-8087-1cfb04d38c05), [LinkedIn MultiImage](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/multiimage-post-api), [X 게시/응답/미디어](https://docs.x.com/x-api/posts/manage-tweets/introduction), [Mastodon 상태](https://docs.joinmastodon.org/methods/statuses/).\n"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "paragraph",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "긴 텍스트는 텍스트 단독 게시를 지원하는 대상에서 UTF-8 경계를 보존하여 나눈다. 기본 도입문은 첫 게시물에만, 선택한 각 캡션은 해당 미디어 묶음에 둔다. 번호 표시와 도입문 반복을 선택할 수 있다. X 길이 계산은 비 ASCII를 2로 세는 보수적인 계산이며 공백으로 구분한 HTTP(S) URL을 23으로 센다. twitter-text의 정규화·이모지 조합을 완전히 재현하지 않으므로 실제 한도보다 먼저 나뉠 수 있다. 원문을 자동 요약하거나 잘라내지 않는다. 예약 시각은 유지하지만 스케줄러가 없는 즉시 실행은 차단한다.\n"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 23,
+      "end_line": 23,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 24,
+      "end_line": 24,
+      "raw": "`publishPlan()`은 작업자에서 실행하며 모든 게시물의 계정·파일·파라미터 검사를 먼저 수행한다. Mastodon은 첫 업로드 전 서버의 실제 미디어·글자 한도를 확인한다. 생성 결과 ID를 다음 응답의 `reply.in_reply_to_tweet_id` / `reply_to_id` / `in_reply_to_id`로 전달한다. X는 유료 API 구성 외에 `Account.allowSelfThreadReplies`를 네이티브 계정 구성에서 검증해야 한다. 현재 X 공식 문서에는 self-serve 응답 제한이 있으므로 자기 스레드가 모든 계정에서 허용된다고 가정하지 않는다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 25,
+      "end_line": 25,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 26,
+      "end_line": 26,
+      "raw": "중간 실패나 취소 시 즉시 멈추며 `completed`, `next`, 실패 결과를 반환한다. 이미 확인된 게시물 ID 또는 결과 불명 상태가 있으면 재조정이 필요하다. 원격 롤백이나 새 게시물 자동 재시도를 하지 않는다. 프로세스 재시작 후 정확히 한 번 배달은 호스트의 영속 원장 책임이다.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 27,
+      "end_line": 27,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 28,
+      "end_line": 28,
+      "raw": "검증은 `iiSocialPublish.Review`에서 20장 분할, 모든 대상의 미디어 보존, UTF-8 무손실 분할, 단일 게시 오류, 혼합 영상 격리, API 미지원, 예약 차단, 사전 파일 검사, 실제 응답 ID 연결, 부분 실패와 취소를 가짜 전송기로 확인한다. 실제 소셜 계정 게시·동의·과금·API 심사 완료를 의미하지 않는다.\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "게시 대상별 검토와 분할 게시",
+      "anchor": "게시-대상별-검토와-분할-게시",
+      "start_line": 1
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000003",
+        "line": 3,
+        "text": "`Review.h`는 Society 등의 공통 게시 내용에서 플랫폼별 게시 계획을 만드는 C++23 API이다. Qt, 파일 읽기, 렌더링, 네트워크, 계정 조회 없이 동작한다. 제목, 본문, 링크, 태그, 순서가 있는 미디어와 캡션을 입력한다. 소비자 앱은 원본과 대상별 덮어쓰기를 구분하여 합성한 뒤 호출한다. 인증 토큰은 원고에 저장하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000005",
+        "line": 5,
+        "text": "`planPublication()`은 미디어 원본 인덱스와 대체 텍스트를 유지한다. X의 20장 이미지 입력은 기본적으로 4장씩 5개 게시물이 되고, 각 후속 게시물은 직전 게시물에 대한 응답이다. `Separate`는 독립 게시, `Single`은 분할 없이 게시 가능한지 확인한다. 사용자가 고른 묶음 크기는 어댑터 한도를 초과할 수 없다. GIF/영상 단독 게시가 필요한 대상은 원본 순서를 보존하여 별도로 묶는다. 초과 이미지를 버리거나 자동 크롭/영상 변환하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000009",
+        "line": 20,
+        "text": "위 숫자는 어댑터의 보수적인 지원 정책이다. 모든 서비스의 계정별 최대치라는 뜻이 아니다. Facebook/Tumblr의 10개와 Instagram의 10개는 현재 어댑터가 검증한 범위를 유지한다. Instagram 앱 자체의 최대 개수와 API 지원을 동일시하지 않는다. Threads 정책은 기존 어댑터의 20개를 유지한다. Meta 문서 직접 읽기가 제한된 경우 공식 Postman 컬렉션을 프로토콜 참고로 사용한다. [공식 Threads 컬렉션](https://www.postman.com/meta/threads/documentation/dht3nzz/threads-api?entity=request-34203612-ee0a2365-9d95-4cbe-8087-1cfb04d38c05), [LinkedIn MultiImage](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/multiimage-post-api), [X 게시/응답/미디어](https://docs.x.com/x-api/posts/manage-tweets/introduction), [Mastodon 상태](https://docs.joinmastodon.org/methods/statuses/).",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000013",
+        "line": 24,
+        "text": "`publishPlan()`은 작업자에서 실행하며 모든 게시물의 계정·파일·파라미터 검사를 먼저 수행한다. Mastodon은 첫 업로드 전 서버의 실제 미디어·글자 한도를 확인한다. 생성 결과 ID를 다음 응답의 `reply.in_reply_to_tweet_id` / `reply_to_id` / `in_reply_to_id`로 전달한다. X는 유료 API 구성 외에 `Account.allowSelfThreadReplies`를 네이티브 계정 구성에서 검증해야 한다. 현재 X 공식 문서에는 self-serve 응답 제한이 있으므로 자기 스레드가 모든 계정에서 허용된다고 가정하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000015",
+        "line": 26,
+        "text": "중간 실패나 취소 시 즉시 멈추며 `completed`, `next`, 실패 결과를 반환한다. 이미 확인된 게시물 ID 또는 결과 불명 상태가 있으면 재조정이 필요하다. 원격 롤백이나 새 게시물 자동 재시도를 하지 않는다. 프로세스 재시작 후 정확히 한 번 배달은 호스트의 영속 원장 책임이다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000017",
+        "line": 28,
+        "text": "검증은 `iiSocialPublish.Review`에서 20장 분할, 모든 대상의 미디어 보존, UTF-8 무손실 분할, 단일 게시 오류, 혼합 영상 격리, API 미지원, 예약 차단, 사전 파일 검사, 실제 응답 ID 연결, 부분 실패와 취소를 가짜 전송기로 확인한다. 실제 소셜 계정 게시·동의·과금·API 심사 완료를 의미하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [],
+    "links": [
+      {
+        "block_id": "b000009",
+        "label": "공식 Threads 컬렉션",
+        "target": "https://www.postman.com/meta/threads/documentation/dht3nzz/threads-api?entity=request-34203612-ee0a2365-9d95-4cbe-8087-1cfb04d38c05",
+        "kind": "external",
+        "line": 20
+      },
+      {
+        "block_id": "b000009",
+        "label": "LinkedIn MultiImage",
+        "target": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/multiimage-post-api",
+        "kind": "external",
+        "line": 20
+      },
+      {
+        "block_id": "b000009",
+        "label": "X 게시/응답/미디어",
+        "target": "https://docs.x.com/x-api/posts/manage-tweets/introduction",
+        "kind": "external",
+        "line": 20
+      },
+      {
+        "block_id": "b000009",
+        "label": "Mastodon 상태",
+        "target": "https://docs.joinmastodon.org/methods/statuses/",
+        "kind": "external",
+        "line": 20
+      }
+    ],
+    "tables": [
+      {
+        "block_id": "b000007",
+        "columns": [
+          "대상",
+          "기본 미디어 묶음",
+          "초과 처리"
+        ],
+        "rows": [
+          [
+            "X",
+            "사진 4장, GIF/영상 1개",
+            "응답 스레드 또는 독립 게시"
+          ],
+          [
+            "Facebook Page",
+            "사진 10장, 영상 1개",
+            "독립 게시, 사진은 attached_media"
+          ],
+          [
+            "Instagram",
+            "캐러셀 10개",
+            "독립 캐러셀, 긴 캡션은 검토 오류"
+          ],
+          [
+            "Threads",
+            "캐러셀 20개",
+            "응답 스레드 또는 독립 게시"
+          ],
+          [
+            "Pinterest",
+            "미디어 1개",
+            "순서가 있는 개별 Pin, 명시적 보드 필요"
+          ],
+          [
+            "Tumblr",
+            "NPF 미디어 10개",
+            "독립 NPF 게시"
+          ],
+          [
+            "Mastodon",
+            "기본 4개",
+            "응답 스레드, 실제 인스턴스 한도 사전 확인"
+          ],
+          [
+            "LinkedIn",
+            "이미지 20장, 영상 1개",
+            "독립 게시"
+          ],
+          [
+            "YouTube",
+            "영상 1개",
+            "영상별 게시, 정적 이미지는 오류"
+          ],
+          [
+            "Pixiv / ArtStation",
+            "사이트 마무리용 전체 미디어",
+            "검토만 가능, 자동 업로드 불가"
+          ]
+        ]
+      }
+    ]
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

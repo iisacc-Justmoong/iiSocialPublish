@@ -61,7 +61,56 @@ class Handler(http.server.BaseHTTPRequestHandler):
                     and b'EFGH' not in data})
 
     def do_GET(self):
-        if self.path == "/redirect":
+        if self.path == "/page-redirect":
+            self.send_response(302)
+            self.send_header("Location", "/post/page")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+        elif self.path == "/post/page":
+            if self.headers.get("Authorization") or self.headers.get("Cookie"):
+                self.send_error(400)
+                return
+            body = '<!doctype html><meta charset="utf-8"><title>실제 HTTPS</title><img src="../images/art.png">'.encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        elif self.path == "/post/large":
+            body = b'<html><body>' + b'x' * (2 * 1024 * 1024 + 1) + b'<img src="/image.png"></body></html>'
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        elif self.path in ("/asset/redirect", "/asset/redirect-small"):
+            body = b'redirect body is not media'
+            self.send_response(302)
+            self.send_header("Location", "/asset/tiny" if self.path.endswith("-small") else "/asset/video")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        elif self.path == "/asset/tiny":
+            body = b'abc'
+            self.send_response(200)
+            self.send_header("Content-Type", "image/png")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        elif self.path == "/asset/video":
+            if self.headers.get("Authorization") or self.headers.get("Cookie"):
+                self.send_error(400)
+                return
+            body = b'v' * (9 * 1024 * 1024)
+            self.send_response(200)
+            self.send_header("Content-Type", "video/mp4")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            try:
+                self.wfile.write(body)
+            except (BrokenPipeError, ConnectionResetError, ssl.SSLError):
+                pass
+        elif self.path == "/redirect":
             self.send_response(302)
             self.send_header("Location", "https://127.0.0.1:1/must-not-follow")
             self.send_header("Content-Length", "0")
@@ -78,7 +127,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
 
 def main():
-    executable, folder, openssl = sys.argv[1:]
+    executable, folder, openssl, url_executable = sys.argv[1:]
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
     certificate, key = folder / "certificate.pem", folder / "key.pem"
@@ -94,6 +143,8 @@ def main():
     thread.start()
     try:
         subprocess.run([executable, "transport", f"https://127.0.0.1:{server.server_port}", str(certificate)],
+                       check=True, timeout=45, cwd=folder.parent)
+        subprocess.run([url_executable, "--loopback", f"https://127.0.0.1:{server.server_port}", str(certificate)],
                        check=True, timeout=45, cwd=folder.parent)
     finally:
         server.shutdown()

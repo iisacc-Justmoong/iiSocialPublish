@@ -1,0 +1,409 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:3ed7eff5f927dae1da7e6ae7856395d2f482fde7148325d5ae7023f9ff295ed8",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialIntegration",
+    "name": "iiSocialIntegration",
+    "root": "SDK/iiSocialIntegration",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/Verification.md",
+    "sha256": "c120b2cec72b720a74bf47b3eb2c10a8f81283d0d609304225725354b02683a8",
+    "bytes": 5694,
+    "line_count": 99,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "Verification",
+    "role": "evidence",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# Verification\n",
+      "level": 1,
+      "title": "Verification"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "heading",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "## URL 미디어 발견, 2026-10-28\n",
+      "level": 2,
+      "title": "URL 미디어 발견, 2026-10-28"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 5,
+      "end_line": 10,
+      "raw": "macOS arm64에서 C++23 빌드와 CTest 20개를 통과했다. URL 전용 검사는 HTML\nDOM·메타데이터·상대 경로·문자셋·인라인 CSS·중복 후보·선택 순서, 데이터\nURL, 병렬 파싱, 리다이렉트, 오류·취소·크기 제한과 호출자 sink를 확인한다. 실제 TLS\n루프백에서는 2 MiB를 넘는 HTML과 9 MiB 미디어의 청크 전송, 리다이렉트\n본문 분리와 작은 미디어 한도를 확인한다. URL에서 생성하고 자산 ID를 연결한\n초안 1개는 Society 서비스의 현재 게시 요청 스키마로 별도 검증했다.\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 11,
+      "end_line": 11,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 12,
+      "end_line": 14,
+      "raw": "이는 공개 소셜 사이트의 실제 접근, 로그인, JavaScript 실행, 원본 미디어의\n권리·바이트 검증 또는 Society 자산 등록·게시를 검증한 결과가 아니다.\n탐색 범위와 호출자 책임은 [URL 이관 문서](UrlImport.md)를 따른다.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 15,
+      "end_line": 15,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "heading",
+      "start_line": 16,
+      "end_line": 16,
+      "raw": "## Society 이관과 이름 변경, 2026-10-28\n",
+      "level": 2,
+      "title": "Society 이관과 이름 변경, 2026-10-28"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 17,
+      "end_line": 17,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "paragraph",
+      "start_line": 18,
+      "end_line": 22,
+      "raw": "macOS arm64에서 `iiSocialIntegration`을 C++23으로 빌드하고 기존 퍼블리싱,\nTLS 루프백, 새 이관 및 이전 이름 호환을 포함한 CTest 19개를 통과했다.\n`iiSocialIntegration.Migration`은 아홉 제공자의 대표 원본 입력, 단건·일괄\n결과, 첨부 순서, 누락 자산, 민감 정보 검토, HTML 변환과 Society 필드 한도를\n검사한다. Pixiv와 ArtStation의 미지원 네이티브 형식은 오류 결과로 확인한다.\n"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 23,
+      "end_line": 23,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 24,
+      "end_line": 27,
+      "raw": "Society 서비스의 `json_schemer`와 현재 `publishing-request.schema.json`으로\n텍스트 초안과 등록 자산이 있는 초안, 총 2개의 생성 결과를 각각 검증했다.\n이는 서버의 미디어 수집·인증·영속화나 실제 계정의 원본 조회·게시를 실행했다는\n뜻이 아니다. 명령과 자산 등록의 책임은 [이관 문서](Migration.md)를 따른다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 28,
+      "end_line": 28,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "heading",
+      "start_line": 29,
+      "end_line": 29,
+      "raw": "## YouTube extension, 2026-10-22\n",
+      "level": 2,
+      "title": "YouTube extension, 2026-10-22"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 30,
+      "end_line": 30,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 31,
+      "end_line": 34,
+      "raw": "The macOS arm64 Release build passed all **16 CTest groups**, including the\nthree new YouTube groups and the real TLS loopback transport. The complete\nexisting provider suite remains enabled. The extended catalog contains eleven\ntargets, nine with implemented official publishing routes.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 35,
+      "end_line": 35,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 36,
+      "end_line": 42,
+      "raw": "YouTube fixtures verify metadata/privacy/audience/synthetic-media declarations,\nUTF-8 titles (including the 100-character boundary), local-video preflight,\nleast-privilege and broader upload grants, streamed byte ranges, partial\nacknowledgements, lost-final-response reconciliation, cancellation, bounded\nrecovery, rate limits and credential-free errors. Invalid session locations and\nmalformed or inconsistent ranges are rejected. A failed status query after an\nambiguous dispatch remains `outcome_unknown`.\n"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 43,
+      "end_line": 43,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "paragraph",
+      "start_line": 44,
+      "end_line": 47,
+      "raw": "The real HTTPS loopback verifies a 308 response without redirect following,\nan empty status PUT and a resumed final file range. Test configuration uses the\navailable `/usr/bin/openssl`; an obsolete local Homebrew cache path was replaced.\nNo provider credentials are used.\n"
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 48,
+      "end_line": 48,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "paragraph",
+      "start_line": 49,
+      "end_line": 54,
+      "raw": "Installation was staged at `build/install`. A separate C++23 consumer under\n`build/youtube-consumer`, configured only against that installed package,\ncompiled, linked and passed its CTest (**1/1**). It exercised the YouTube catalog,\npublic options and complete metadata/upload request chain with an offline\ntransport. `otool -L` confirms system libcurl, libc++ and libSystem, without Qt.\nThe normal installed SDK under `~/.local` was not replaced.\n"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 55,
+      "end_line": 55,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "paragraph",
+      "start_line": 56,
+      "end_line": 59,
+      "raw": "Evidence is retained in `build/youtube-ctest.txt`,\n`build/youtube-installed-consumer-ctest.txt` and `build/youtube-verification.json`.\nActual Google login, live video upload, transcoding and public visibility were\nnot exercised. Windows and Linux runtime verification was not performed.\n"
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 60,
+      "end_line": 60,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "heading",
+      "start_line": 61,
+      "end_line": 61,
+      "raw": "## Earlier baseline, 2026-10-18\n",
+      "level": 2,
+      "title": "Earlier baseline, 2026-10-18"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 62,
+      "end_line": 62,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "paragraph",
+      "start_line": 63,
+      "end_line": 67,
+      "raw": "On 2026-10-18, the macOS arm64 Release build passed all 13 CTest groups, including\nthe real TLS loopback transport. The installed package was consumed by\nDreamscapes. `otool -L build/iiSocialPublishTests` lists only system libcurl,\nlibc++ and libSystem, with no Qt library. Logs are retained under `build/ctest.txt`\nand `build/link-dependencies.txt`.\n"
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 68,
+      "end_line": 68,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "paragraph",
+      "start_line": 69,
+      "end_line": 74,
+      "raw": "The native test suite uses scripted official-contract responses. It verifies\nthe original ten-object catalog, unsupported platforms without network traffic, scope/\ntoken/version/file preflight, the original eight supported request chains, carousel\nassembly, NPF multipart identifiers, media-processing waits, ordered LinkedIn\nvideo ranges/ETags, privacy/idempotency forwarding, sanitized errors, rate limits,\ncancellation and ambiguous publication outcomes without retry.\n"
+    },
+    {
+      "id": "b000032",
+      "kind": "blank",
+      "start_line": 75,
+      "end_line": 75,
+      "raw": "\n"
+    },
+    {
+      "id": "b000033",
+      "kind": "paragraph",
+      "start_line": 76,
+      "end_line": 79,
+      "raw": "`iiSocialPublish.TlsLoopback` starts a disposable 127.0.0.1 HTTPS server and\nexecutes the real libcurl transport with a generated test CA. It verifies exact\nbyte ranges, multipart parts, redirect refusal, response-size bounds and header\ninjection rejection. It never sends a post to a social account.\n"
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 80,
+      "end_line": 80,
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "paragraph",
+      "start_line": 81,
+      "end_line": 83,
+      "raw": "The redirect fixture explicitly declares an empty response body. This keeps the\nredirect assertion independent of TLS connection-close behavior on Windows\nSchannel; redirect following remains disabled and is checked by the same test.\n"
+    },
+    {
+      "id": "b000036",
+      "kind": "blank",
+      "start_line": 84,
+      "end_line": 84,
+      "raw": "\n"
+    },
+    {
+      "id": "b000037",
+      "kind": "paragraph",
+      "start_line": 85,
+      "end_line": 85,
+      "raw": "Canonical commands:\n"
+    },
+    {
+      "id": "b000038",
+      "kind": "blank",
+      "start_line": 86,
+      "end_line": 86,
+      "raw": "\n"
+    },
+    {
+      "id": "b000039",
+      "kind": "fenced_code",
+      "start_line": 87,
+      "end_line": 93,
+      "raw": "```sh\ncmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \\\n  -DCMAKE_INSTALL_PREFIX=\"$PWD/build/install\"\ncmake --build build --parallel 4\nctest --test-dir build --output-on-failure\ncmake --install build\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \\\n  -DCMAKE_INSTALL_PREFIX=\"$PWD/build/install\"\ncmake --build build --parallel 4\nctest --test-dir build --output-on-failure\ncmake --install build\n",
+      "closed": true
+    },
+    {
+      "id": "b000040",
+      "kind": "blank",
+      "start_line": 94,
+      "end_line": 94,
+      "raw": "\n"
+    },
+    {
+      "id": "b000041",
+      "kind": "paragraph",
+      "start_line": 95,
+      "end_line": 99,
+      "raw": "Host verification is macOS arm64. Other native toolchains can consume the C++23\nCMake target with their own libcurl, but those platforms are not established as\nruntime-tested by this host run. There is no Qt dependency in this module.\nLive access tokens, provider app approval, remote media availability, actual\npublication, quotas and billing have not been exercised.\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "Verification",
+      "anchor": "verification",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000003",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "URL 미디어 발견, 2026-10-28",
+      "anchor": "url-미디어-발견-2026-10-28",
+      "start_line": 3
+    },
+    {
+      "block_id": "b000009",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Society 이관과 이름 변경, 2026-10-28",
+      "anchor": "society-이관과-이름-변경-2026-10-28",
+      "start_line": 16
+    },
+    {
+      "block_id": "b000015",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "YouTube extension, 2026-10-22",
+      "anchor": "youtube-extension-2026-10-22",
+      "start_line": 29
+    },
+    {
+      "block_id": "b000027",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Earlier baseline, 2026-10-18",
+      "anchor": "earlier-baseline-2026-10-18",
+      "start_line": 61
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000033",
+        "line": 79,
+        "text": "injection rejection. It never sends a post to a social account.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000039",
+        "language": "sh",
+        "code": "cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \\\n  -DCMAKE_INSTALL_PREFIX=\"$PWD/build/install\"\ncmake --build build --parallel 4\nctest --test-dir build --output-on-failure\ncmake --install build\n"
+      }
+    ],
+    "links": [
+      {
+        "block_id": "b000007",
+        "label": "URL 이관 문서",
+        "target": "UrlImport.md",
+        "kind": "relative",
+        "line": 14
+      },
+      {
+        "block_id": "b000013",
+        "label": "이관 문서",
+        "target": "Migration.md",
+        "kind": "relative",
+        "line": 27
+      }
+    ],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

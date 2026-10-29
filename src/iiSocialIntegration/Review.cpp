@@ -1,9 +1,9 @@
-#include <iiSocialPublish/Review.h>
+#include <iiSocialIntegration/Review.h>
 #include <algorithm>
 #include <cctype>
 #include <nlohmann/json.hpp>
 
-namespace iiSocialPublish {
+namespace iiSocialIntegration {
 namespace {
 void append(std::string& into, const std::string& value) {
     if (value.empty()) return;
@@ -208,4 +208,4 @@ SequenceOutcome publishPlan(const PublicationPlan& plan, const Account& account,
     }
     return out;
 }
-} // namespace iiSocialPublish
+} // namespace iiSocialIntegration

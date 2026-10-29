@@ -1,0 +1,543 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:3483401a9f18d80758566a8179aaeaabe19b812175d33fcf7989322947d871ab",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialPublish",
+    "name": "iiSocialPublish",
+    "root": "SDK/iiSocialPublish",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/YouTube.md",
+    "sha256": "8e11a82d07a1ead2d1da22c49753a9ee5bad6aa6702a65a427c83abd257e6515",
+    "bytes": 6446,
+    "line_count": 116,
+    "encoding": "utf-8",
+    "language": "en"
+  },
+  "document": {
+    "title": "YouTube video upload",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# YouTube video upload\n",
+      "level": 1,
+      "title": "YouTube video upload"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 6,
+      "raw": "Implemented against the official YouTube Data API v3 and resumable upload\ncontract reviewed on 2026-10-22. The C++23 provider uses the existing native\nlibcurl transport; Google client libraries, Qt and a Python runtime are not\napplication dependencies.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "heading",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "## Account setup\n",
+      "level": 2,
+      "title": "Account setup"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 9,
+      "end_line": 9,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 10,
+      "end_line": 14,
+      "raw": "Enable YouTube Data API v3 for the application's Google Cloud project and\nconfigure a Google OAuth client appropriate to the application's login flow.\nThe account service obtains a user-context grant for the destination channel.\nAn API key alone is not an upload credential. Token acquisition, refresh,\nrevocation, storage and OAuth consent remain the account service's responsibility.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 15,
+      "end_line": 15,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "paragraph",
+      "start_line": 16,
+      "end_line": 23,
+      "raw": "The catalog advertises the minimum upload scope:\n`https://www.googleapis.com/auth/youtube.upload`. The upload API also accepts\n`https://www.googleapis.com/auth/youtube`,\n`https://www.googleapis.com/auth/youtube.force-ssl` and\n`https://www.googleapis.com/auth/youtubepartner`; the adapter accepts those\ngrants without requiring the narrower scope in addition. Granting a scope does\nnot establish project eligibility, quota availability or channel permissions.\nCheck current Google project/access requirements before deployment.\n"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 24,
+      "end_line": 24,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "paragraph",
+      "start_line": 25,
+      "end_line": 27,
+      "raw": "Leave `Account.targetId` empty. Ordinary `videos.insert` uploads to the channel\nselected by the OAuth grant, rather than selecting an arbitrary channel ID.\nCMS content-owner delegation is outside this adapter's implemented scope.\n"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 28,
+      "end_line": 28,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "heading",
+      "start_line": 29,
+      "end_line": 29,
+      "raw": "## C++ usage\n",
+      "level": 2,
+      "title": "C++ usage"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 30,
+      "end_line": 30,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "fenced_code",
+      "start_line": 31,
+      "end_line": 59,
+      "raw": "```cpp\n#include <iiSocialPublish/Publishing.h>\nusing namespace iiSocialPublish;\n\nAccount account;\naccount.accessToken = obtainChannelUserAccessToken(); // Consumer account service.\naccount.scopes = {\"https://www.googleapis.com/auth/youtube.upload\"};\n\nPost post;\npost.title = \"Created with iisacc\";\npost.text = \"A native video export.\";\npost.link = \"https://iisacc.com/\";\npost.tags = {\"iisacc\", \"native\"};\npost.visibility = \"private\"; // Also public or unlisted.\npost.youtube.categoryId = \"22\";\npost.youtube.madeForKids = false; // Set according to the video's actual audience.\npost.youtube.notifySubscribers = false;\npost.media.push_back({MediaKind::Video, \"/absolute/export.mp4\", {}, \"video/mp4\", {}});\n\nCurlTransport transport;\nContext context{transport}; // Execute on an application backend worker.\ncontext.maxUploadRecoveries = 3;\nauto result = makePublisher(Platform::YouTube)->publish(post, account, context);\nif (result.published()) {\n    // result.postId / result.url identify the accepted video upload.\n} else if (result.requiresReconciliation()) {\n    // Inspect the channel before creating another upload attempt.\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiSocialPublish/Publishing.h>\nusing namespace iiSocialPublish;\n\nAccount account;\naccount.accessToken = obtainChannelUserAccessToken(); // Consumer account service.\naccount.scopes = {\"https://www.googleapis.com/auth/youtube.upload\"};\n\nPost post;\npost.title = \"Created with iisacc\";\npost.text = \"A native video export.\";\npost.link = \"https://iisacc.com/\";\npost.tags = {\"iisacc\", \"native\"};\npost.visibility = \"private\"; // Also public or unlisted.\npost.youtube.categoryId = \"22\";\npost.youtube.madeForKids = false; // Set according to the video's actual audience.\npost.youtube.notifySubscribers = false;\npost.media.push_back({MediaKind::Video, \"/absolute/export.mp4\", {}, \"video/mp4\", {}});\n\nCurlTransport transport;\nContext context{transport}; // Execute on an application backend worker.\ncontext.maxUploadRecoveries = 3;\nauto result = makePublisher(Platform::YouTube)->publish(post, account, context);\nif (result.published()) {\n    // result.postId / result.url identify the accepted video upload.\n} else if (result.requiresReconciliation()) {\n    // Inspect the channel before creating another upload attempt.\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 60,
+      "end_line": 60,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 61,
+      "end_line": 63,
+      "raw": "`platform(\"youtube\")` resolves to `Platform::YouTube`. Construction performs no\nnetwork I/O. `Capability` advertises video support, with no standalone text,\nimage or public-media-URL publishing route.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 64,
+      "end_line": 64,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "heading",
+      "start_line": 65,
+      "end_line": 65,
+      "raw": "## Metadata and media contract\n",
+      "level": 2,
+      "title": "Metadata and media contract"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 66,
+      "end_line": 66,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "table",
+      "start_line": 67,
+      "end_line": 77,
+      "raw": "| Input | API field or behavior |\n| --- | --- |\n| `title` | Required UTF-8 `snippet.title`; at most 100 Unicode code points, with no `<` or `>`. |\n| `text`, `link` | `snippet.description`, joined with a newline; at most 5,000 UTF-8 bytes, with no `<` or `>`. |\n| `tags` | Native `snippet.tags` array; not appended as description hashtags. |\n| `youtube.categoryId` | Numeric `snippet.categoryId`; defaults to `22` (People & Blogs). The provider determines which IDs are valid. |\n| `visibility` | `status.privacyStatus`: `public`, `unlisted` or `private`. Set explicitly for the intended audience; the common Post default is public. |\n| `youtube.madeForKids` | Optional `status.selfDeclaredMadeForKids`. Omitted by default so the SDK does not invent an audience declaration. |\n| `youtube.containsSyntheticMedia` | Optional `status.containsSyntheticMedia`, set explicitly according to YouTube's disclosure semantics. `madeWithAi` is not automatically substituted. |\n| `youtube.notifySubscribers` | `notifySubscribers` request parameter; defaults to true. |\n| `media` | Exactly one readable absolute local video, `video/*` or `application/octet-stream`; the adapter's existing 5 GiB safety cap applies. |\n",
+      "columns": [
+        "Input",
+        "API field or behavior"
+      ],
+      "rows": [
+        [
+          "`title`",
+          "Required UTF-8 `snippet.title`; at most 100 Unicode code points, with no `<` or `>`."
+        ],
+        [
+          "`text`, `link`",
+          "`snippet.description`, joined with a newline; at most 5,000 UTF-8 bytes, with no `<` or `>`."
+        ],
+        [
+          "`tags`",
+          "Native `snippet.tags` array; not appended as description hashtags."
+        ],
+        [
+          "`youtube.categoryId`",
+          "Numeric `snippet.categoryId`; defaults to `22` (People & Blogs). The provider determines which IDs are valid."
+        ],
+        [
+          "`visibility`",
+          "`status.privacyStatus`: `public`, `unlisted` or `private`. Set explicitly for the intended audience; the common Post default is public."
+        ],
+        [
+          "`youtube.madeForKids`",
+          "Optional `status.selfDeclaredMadeForKids`. Omitted by default so the SDK does not invent an audience declaration."
+        ],
+        [
+          "`youtube.containsSyntheticMedia`",
+          "Optional `status.containsSyntheticMedia`, set explicitly according to YouTube's disclosure semantics. `madeWithAi` is not automatically substituted."
+        ],
+        [
+          "`youtube.notifySubscribers`",
+          "`notifySubscribers` request parameter; defaults to true."
+        ],
+        [
+          "`media`",
+          "Exactly one readable absolute local video, `video/*` or `application/octet-stream`; the adapter's existing 5 GiB safety cap applies."
+        ]
+      ]
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 78,
+      "end_line": 78,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "paragraph",
+      "start_line": 79,
+      "end_line": 84,
+      "raw": "Metadata UTF-8, title/description shape, visibility, category shape, credentials,\nscopes and local file requirements are checked before creating the session.\nYouTube remains authoritative for category IDs, tag limits, codecs, duration,\naccount/project restrictions and quotas. This module does not transcode, fetch\na supplied public video URL, create a thumbnail, schedule publication, create\na live broadcast or support community posts.\n"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 85,
+      "end_line": 85,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "heading",
+      "start_line": 86,
+      "end_line": 86,
+      "raw": "## Upload sequence and recovery\n",
+      "level": 2,
+      "title": "Upload sequence and recovery"
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 87,
+      "end_line": 87,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "list",
+      "start_line": 88,
+      "end_line": 98,
+      "raw": "1. POST metadata JSON to\n   `https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet%2Cstatus&notifySubscribers=...`,\n   with bearer authorization, `X-Upload-Content-Type` and `X-Upload-Content-Length`.\n2. Validate the returned `Location` against the exact official upload endpoint.\n3. Stream the file to that URL using PUT, `Content-Length` and `Content-Range`.\n   Non-final chunks are 4 MiB, a multiple of the required 256 KiB unit.\n4. On HTTP 308, parse `Range: bytes=0-N` and continue from `N + 1`. Reject\n   malformed, regressing or out-of-bounds acknowledgements.\n5. After a transport/server interruption, query the same session with an empty\n   PUT and `Content-Range: bytes */TOTAL`. Resume only at the confirmed offset,\n   or use the completed video resource returned by the status query.\n",
+      "items": [
+        {
+          "marker": "1.",
+          "text": "POST metadata JSON to",
+          "checked": null
+        },
+        {
+          "marker": "2.",
+          "text": "Validate the returned `Location` against the exact official upload endpoint.",
+          "checked": null
+        },
+        {
+          "marker": "3.",
+          "text": "Stream the file to that URL using PUT, `Content-Length` and `Content-Range`.",
+          "checked": null
+        },
+        {
+          "marker": "4.",
+          "text": "On HTTP 308, parse `Range: bytes=0-N` and continue from `N + 1`. Reject",
+          "checked": null
+        },
+        {
+          "marker": "5.",
+          "text": "After a transport/server interruption, query the same session with an empty",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 99,
+      "end_line": 99,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "paragraph",
+      "start_line": 100,
+      "end_line": 104,
+      "raw": "Recovery queries share a bounded budget with exponential backoff. Cancellation,\nrate limits and unreconciled completion are surfaced without creating another\nsession. A successful upload returns the video ID and watch URL; YouTube's later\ntranscoding, moderation and actual visibility remain separate. A private upload\nalso has a watch URL, which does not imply public access.\n"
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 105,
+      "end_line": 105,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "paragraph",
+      "start_line": 106,
+      "end_line": 109,
+      "raw": "There is no persistent upload session/checkpoint API. If the process exits or\nthe recovery budget is exhausted, preserve the application intent and reconcile\nthe channel before retrying. Do not store tokens or session URLs in public job\nsnapshots. See [execution contracts](Execution.md) for error and TLS behavior.\n"
+    },
+    {
+      "id": "b000032",
+      "kind": "blank",
+      "start_line": 110,
+      "end_line": 110,
+      "raw": "\n"
+    },
+    {
+      "id": "b000033",
+      "kind": "heading",
+      "start_line": 111,
+      "end_line": 111,
+      "raw": "## Official API references\n",
+      "level": 2,
+      "title": "Official API references"
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 112,
+      "end_line": 112,
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "list",
+      "start_line": 113,
+      "end_line": 116,
+      "raw": "- [videos.insert](https://developers.google.com/youtube/data/reference/rest/v3/videos/insert)\n- [Resumable upload protocol](https://developers.google.com/youtube/data/guides/using_resumable_upload_protocol)\n- [Video resource and metadata](https://developers.google.com/youtube/data/reference/rest/v3/videos)\n- [OAuth authentication](https://developers.google.com/youtube/v3/guides/authentication)\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "[videos.insert](https://developers.google.com/youtube/data/reference/rest/v3/videos/insert)",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "[Resumable upload protocol](https://developers.google.com/youtube/data/guides/using_resumable_upload_protocol)",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "[Video resource and metadata](https://developers.google.com/youtube/data/reference/rest/v3/videos)",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "[OAuth authentication](https://developers.google.com/youtube/v3/guides/authentication)",
+          "checked": null
+        }
+      ]
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "YouTube video upload",
+      "anchor": "youtube-video-upload",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000005",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Account setup",
+      "anchor": "account-setup",
+      "start_line": 8
+    },
+    {
+      "block_id": "b000013",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "C++ usage",
+      "anchor": "c-usage",
+      "start_line": 29
+    },
+    {
+      "block_id": "b000019",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Metadata and media contract",
+      "anchor": "metadata-and-media-contract",
+      "start_line": 65
+    },
+    {
+      "block_id": "b000025",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Upload sequence and recovery",
+      "anchor": "upload-sequence-and-recovery",
+      "start_line": 86
+    },
+    {
+      "block_id": "b000033",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Official API references",
+      "anchor": "official-api-references",
+      "start_line": 111
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000021",
+        "line": 69,
+        "text": "| `title` | Required UTF-8 `snippet.title`; at most 100 Unicode code points, with no `<` or `>`. |",
+        "basis": "lexical_match",
+        "context": "table"
+      },
+      {
+        "block_id": "b000027",
+        "line": 93,
+        "text": "Non-final chunks are 4 MiB, a multiple of the required 256 KiB unit.",
+        "basis": "lexical_match",
+        "context": "list"
+      },
+      {
+        "block_id": "b000031",
+        "line": 108,
+        "text": "the channel before retrying. Do not store tokens or session URLs in public job",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [],
+    "links": [
+      {
+        "block_id": "b000031",
+        "label": "execution contracts",
+        "target": "Execution.md",
+        "kind": "relative",
+        "line": 109
+      },
+      {
+        "block_id": "b000035",
+        "label": "videos.insert",
+        "target": "https://developers.google.com/youtube/data/reference/rest/v3/videos/insert",
+        "kind": "external",
+        "line": 113
+      },
+      {
+        "block_id": "b000035",
+        "label": "Resumable upload protocol",
+        "target": "https://developers.google.com/youtube/data/guides/using_resumable_upload_protocol",
+        "kind": "external",
+        "line": 114
+      },
+      {
+        "block_id": "b000035",
+        "label": "Video resource and metadata",
+        "target": "https://developers.google.com/youtube/data/reference/rest/v3/videos",
+        "kind": "external",
+        "line": 115
+      },
+      {
+        "block_id": "b000035",
+        "label": "OAuth authentication",
+        "target": "https://developers.google.com/youtube/v3/guides/authentication",
+        "kind": "external",
+        "line": 116
+      }
+    ],
+    "tables": [
+      {
+        "block_id": "b000021",
+        "columns": [
+          "Input",
+          "API field or behavior"
+        ],
+        "rows": [
+          [
+            "`title`",
+            "Required UTF-8 `snippet.title`; at most 100 Unicode code points, with no `<` or `>`."
+          ],
+          [
+            "`text`, `link`",
+            "`snippet.description`, joined with a newline; at most 5,000 UTF-8 bytes, with no `<` or `>`."
+          ],
+          [
+            "`tags`",
+            "Native `snippet.tags` array; not appended as description hashtags."
+          ],
+          [
+            "`youtube.categoryId`",
+            "Numeric `snippet.categoryId`; defaults to `22` (People & Blogs). The provider determines which IDs are valid."
+          ],
+          [
+            "`visibility`",
+            "`status.privacyStatus`: `public`, `unlisted` or `private`. Set explicitly for the intended audience; the common Post default is public."
+          ],
+          [
+            "`youtube.madeForKids`",
+            "Optional `status.selfDeclaredMadeForKids`. Omitted by default so the SDK does not invent an audience declaration."
+          ],
+          [
+            "`youtube.containsSyntheticMedia`",
+            "Optional `status.containsSyntheticMedia`, set explicitly according to YouTube's disclosure semantics. `madeWithAi` is not automatically substituted."
+          ],
+          [
+            "`youtube.notifySubscribers`",
+            "`notifySubscribers` request parameter; defaults to true."
+          ],
+          [
+            "`media`",
+            "Exactly one readable absolute local video, `video/*` or `application/octet-stream`; the adapter's existing 5 GiB safety cap applies."
+          ]
+        ]
+      }
+    ]
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

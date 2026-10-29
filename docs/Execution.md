@@ -51,7 +51,9 @@ acknowledgement, not a redirect. Numeric upload `Retry-After` delays are honored
 within a five-minute wait budget; larger delays are returned to the caller.
 Pinterest image base64 uses a bounded 32 MiB input; other media files are capped
 at 5 GiB as an adapter safety limit, not a promise that a provider accepts that
-size. HTTP response bodies are capped at 2 MiB, headers at 64 KiB; connect timeout
+size. Buffered HTTP response bodies default to 2 MiB, with a configurable hard
+limit of 8 MiB. An explicit caller-owned response sink supports streaming up to
+5 GiB; headers remain capped at 64 KiB. Connect timeout
 is 10 seconds and a single transfer timeout is five minutes. Consumers exporting
 larger/longer videos must transcode to the provider's supported limits first.
 

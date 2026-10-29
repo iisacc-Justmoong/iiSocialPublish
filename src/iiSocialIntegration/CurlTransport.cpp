@@ -1,14 +1,17 @@
-#include <iiSocialPublish/Publishing.h>
+#include <iiSocialIntegration/Publishing.h>
+#include "CurlRuntime.h"
 #include <curl/curl.h>
 #include <algorithm>
 #include <array>
+#include <cctype>
 #include <fstream>
 #include <limits>
 #include <memory>
 
-namespace iiSocialPublish {
+namespace iiSocialIntegration {
 namespace {
-constexpr std::size_t responseLimit = 2 * 1024 * 1024;
+constexpr std::uint64_t maxBufferedResponse = 8 * 1024 * 1024;
+constexpr std::uint64_t maxStreamedResponse = 5ULL * 1024 * 1024 * 1024;
 struct Reader {
     std::ifstream stream;
     std::uint64_t start = 0, length = 0, position = 0;
@@ -44,14 +47,29 @@ struct Io {
     Response response;
     std::stop_token stop;
     std::size_t headerBytes = 0;
+    std::uint64_t responseLimit = 0;
+    const std::function<bool(std::string_view)>* responseSink = nullptr;
 };
 size_t write(char* data, size_t unit, size_t count, void* opaque) noexcept {
     try {
         auto& io = *static_cast<Io*>(opaque);
         if (unit && count > std::numeric_limits<size_t>::max() / unit) return 0;
         auto bytes = unit * count;
-        if (bytes > responseLimit - io.response.body.size()) return 0;
-        io.response.body.append(data, bytes); return bytes;
+        if (io.responseSink && *io.responseSink && (io.response.status < 200 || io.response.status >= 300)) {
+            // Keep redirect/error bodies separate from the final media budget.
+            constexpr std::uint64_t discardedBodyLimit = 64 * 1024;
+            if (bytes > discardedBodyLimit - io.response.responseBytes) { io.response.responseLimitExceeded = true; return 0; }
+            io.response.responseBytes += bytes;
+            return bytes;
+        }
+        if (bytes > io.responseLimit - io.response.responseBytes) { io.response.responseLimitExceeded = true; return 0; }
+        if (io.responseSink && *io.responseSink) {
+            try {
+                if (!(*io.responseSink)(std::string_view(data, bytes))) { io.response.responseSinkFailed = true; return 0; }
+            } catch (...) { io.response.responseSinkFailed = true; return 0; }
+        } else io.response.body.append(data, bytes);
+        io.response.responseBytes += bytes;
+        return bytes;
     } catch (...) { return 0; }
 }
 size_t headers(char* data, size_t unit, size_t count, void* opaque) noexcept {
@@ -62,7 +80,15 @@ size_t headers(char* data, size_t unit, size_t count, void* opaque) noexcept {
         if (bytes > 65536 - io.headerBytes) return 0;
         io.headerBytes += bytes;
         std::string_view line(data, bytes);
-        if (line.starts_with("HTTP/")) io.response.headers.clear();
+        if (line.starts_with("HTTP/")) {
+            io.response.headers.clear();
+            const auto space = line.find(' ');
+            if (space != line.npos && space + 3 < line.size() &&
+                std::isdigit(static_cast<unsigned char>(line[space + 1])) &&
+                std::isdigit(static_cast<unsigned char>(line[space + 2])) &&
+                std::isdigit(static_cast<unsigned char>(line[space + 3])))
+                io.response.status = (line[space + 1] - '0') * 100 + (line[space + 2] - '0') * 10 + (line[space + 3] - '0');
+        }
         auto colon = line.find(':');
         if (colon != line.npos) {
             auto value = line.substr(colon + 1);
@@ -84,8 +110,7 @@ bool safeText(std::string_view value) {
 Response CurlTransport::send(const Request& request, std::stop_token stop) {
     Response failed; failed.transportFailed = true; failed.cancelled = stop.stop_requested();
     if (failed.cancelled) return failed;
-    static const auto initialized = curl_global_init(CURL_GLOBAL_DEFAULT);
-    if (initialized != CURLE_OK) return failed;
+    if (!detail::initializeCurl()) return failed;
     try {
         using Url = std::unique_ptr<CURLU, decltype(&curl_url_cleanup)>;
         Url url(curl_url(), curl_url_cleanup);
@@ -94,6 +119,8 @@ Response CurlTransport::send(const Request& request, std::stop_token stop) {
         if (curl_url_get(url.get(), CURLUPART_SCHEME, &scheme, 0) != CURLUE_OK) return failed;
         const bool secure = std::string_view(scheme) == "https"; curl_free(scheme);
         if (!secure || !safeText(request.url)) return failed;
+        const auto limit = request.responseSink ? maxStreamedResponse : maxBufferedResponse;
+        if (request.maxResponseBytes == 0 || request.maxResponseBytes > limit) return failed;
         if (request.method != "GET" && request.method != "POST" && request.method != "PUT") return failed;
         if ((!request.body.empty() && (request.file || !request.parts.empty())) || (request.file && !request.parts.empty())) return failed;
         using Easy = std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>;
@@ -107,7 +134,7 @@ Response CurlTransport::send(const Request& request, std::stop_token stop) {
             if (!next) return failed;
             list.release(); list.reset(next);
         }
-        Io io{{}, stop, 0};
+        Io io{{}, stop, 0, request.maxResponseBytes, &request.responseSink};
         CURLcode setup = CURLE_OK;
         auto set = [&](CURLoption option, auto value) {
             auto result = curl_easy_setopt(easy.get(), option, value);
@@ -128,7 +155,7 @@ Response CurlTransport::send(const Request& request, std::stop_token stop) {
         set(CURLOPT_NOSIGNAL, 1L);
         set(CURLOPT_CONNECTTIMEOUT_MS, 10000L); set(CURLOPT_TIMEOUT_MS, 300000L);
         set(CURLOPT_LOW_SPEED_LIMIT, 64L); set(CURLOPT_LOW_SPEED_TIME, 60L);
-        set(CURLOPT_USERAGENT, "iiSocialPublish/0.1");
+        set(CURLOPT_USERAGENT, "iiSocialIntegration/0.1");
         set(CURLOPT_HTTPHEADER, list.get());
         set(CURLOPT_WRITEFUNCTION, &write); set(CURLOPT_WRITEDATA, &io);
         set(CURLOPT_HEADERFUNCTION, &headers); set(CURLOPT_HEADERDATA, &io);
@@ -176,4 +203,4 @@ Response CurlTransport::send(const Request& request, std::stop_token stop) {
         return std::move(io.response);
     } catch (...) { return failed; }
 }
-} // namespace iiSocialPublish
+} // namespace iiSocialIntegration

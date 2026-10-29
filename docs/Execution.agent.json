@@ -1,0 +1,306 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:3481e7e72b68706e980a3b3ca2207e9628b54a608d72ec0f79f9ab2dca7009bd",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialPublish",
+    "name": "iiSocialPublish",
+    "root": "SDK/iiSocialPublish",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/Execution.md",
+    "sha256": "91f5377f91f0b3f3d899416efa1b4882f7b74d9d237c70e31ecc86cb172e037f",
+    "bytes": 5460,
+    "line_count": 84,
+    "encoding": "utf-8",
+    "language": "en"
+  },
+  "document": {
+    "title": "Execution and failure behavior",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# Execution and failure behavior\n",
+      "level": 1,
+      "title": "Execution and failure behavior"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 9,
+      "raw": "Provider objects are stateless. The caller owns credentials, transport, worker\nand publication intent. `publish` is synchronous and must run outside a GUI\nthread. `Context.stop` cancels HTTP transfers and processing waits. Polling is\nbounded (60 checks, one-second minimum interval by default); X's server-provided\nprocessing delay is respected up to a five-minute bound per check. The caller\nmay configure a larger polling budget or inject a wait scheduler. No polling\nloop is started at construction or application startup.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 10,
+      "end_line": 10,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 11,
+      "end_line": 21,
+      "raw": "There is **no automatic retry that creates a new publication**. YouTube can\nquery and resume the same resumable upload session, with at most\n`Context.maxUploadRecoveries` status queries (default 3), exponential backoff\nand cancellation. Confirmed offsets come from the server's `Range` header;\nunconfirmed bytes are never blindly replayed. A stalled acknowledgement also\nuses this recovery budget. The SDK never starts a second YouTube session to\nrecover the first. A rate limit returns\n`rate_limited`, HTTP status and numeric `Retry-After` seconds. Expired grants and\nmissing scopes fail without uploading. Invalid destinations, versions and media\npaths are preflighted before side effects. SDK errors contain stable diagnostic\ntext rather than raw provider bodies, tokens, signed upload URLs or local paths.\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 23,
+      "end_line": 30,
+      "raw": "A publication can succeed before a response is lost. Transport failure after\ndispatch, a final 5xx, invalid successful publish JSON, or a successful response\nwithout a post identifier returns `outcome_unknown`. Reconcile the provider\nbefore retrying. Facebook creates a video before its transcoding reads; a\nsubsequent error retains `postId` and also requires reconciliation. A processing\ntimeout before the final publish can leave an unpublished media container; it\ndoes not establish a published post. The SDK never deletes remote resources\nautomatically or claims a rollback of provider side effects.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 31,
+      "end_line": 31,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "paragraph",
+      "start_line": 32,
+      "end_line": 36,
+      "raw": "Mastodon's official Idempotency-Key is forwarded. Other providers do not receive\nan invented idempotency header. Cross-provider exactly-once delivery and durable\njobs across process restarts are not promised. The consumer must preserve its\npublication intent/result ledger if it needs crash recovery. Credentials must\nnot be persisted in that ledger.\n"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 37,
+      "end_line": 37,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "heading",
+      "start_line": 38,
+      "end_line": 38,
+      "raw": "## HTTP transport\n",
+      "level": 2,
+      "title": "HTTP transport"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 39,
+      "end_line": 39,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 40,
+      "end_line": 44,
+      "raw": "Only HTTPS URLs without embedded user information are accepted. Peer/hostname\nverification and TLS 1.2+ are mandatory. Redirects are disabled so bearer headers\ncannot follow a redirect to another host. The normal libcurl/system trust store\nis used; an explicit `CurlTransport(certificateAuthorityFile)` can provide a\nprivate CA (the loopback test uses this). There is no insecure TLS switch.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 45,
+      "end_line": 45,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 46,
+      "end_line": 56,
+      "raw": "Binary and multipart file uploads stream from `std::ifstream` using bounded\noffset/length readers, including LinkedIn multipart video and X 4 MiB chunks.\nYouTube also streams 4 MiB chunks, with the final chunk allowed to be smaller.\nIts empty status PUT uses `Content-Range: bytes */TOTAL`; HTTP 308 is an upload\nacknowledgement, not a redirect. Numeric upload `Retry-After` delays are honored\nwithin a five-minute wait budget; larger delays are returned to the caller.\nPinterest image base64 uses a bounded 32 MiB input; other media files are capped\nat 5 GiB as an adapter safety limit, not a promise that a provider accepts that\nsize. HTTP response bodies are capped at 2 MiB, headers at 64 KiB; connect timeout\nis 10 seconds and a single transfer timeout is five minutes. Consumers exporting\nlarger/longer videos must transcode to the provider's supported limits first.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 57,
+      "end_line": 57,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 58,
+      "end_line": 64,
+      "raw": "OAuth tokens are attached only to fixed official API hosts (or the configured\nMastodon instance). Signed Pinterest object-storage uploads receive only upload\nparameters, never the OAuth token. LinkedIn media upload hosts are checked\nagainst its linkedin.com/licdn.com domain boundary. No token is placed in a URL\nquery, log message or exported status. The publisher is a trusted backend API,\nnot an unauthenticated HTTP proxy; account configuration must remain inside the\ntrusted account service.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 65,
+      "end_line": 65,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 66,
+      "end_line": 76,
+      "raw": "YouTube session locations must use the exact HTTPS\n`www.googleapis.com/upload/youtube/v3/videos` endpoint, with a nonempty query\nand no fragment or alternate port. Bearer credentials are never forwarded to\nan arbitrary Location host. Session URLs are temporary sensitive capabilities\nand must not be logged. Recovery is confined to the current `publish` call;\ndurable session persistence and cross-process resume are not implemented.\nIf a dispatched upload cannot be reconciled, `outcome_unknown` remains the\nresult even when its subsequent status query fails. Successful upload returns\nthe video ID/watch URL; it does not wait for YouTube transcoding, moderation,\nor public availability. A rejection already present in the upload response\nreturns `processing_failed` while retaining the video ID.\n"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 77,
+      "end_line": 77,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "paragraph",
+      "start_line": 78,
+      "end_line": 84,
+      "raw": "LinkedIn is an explicit exception to the signed-upload token omission: image\nPUT requires the user's OAuth header on a verified LinkedIn media host, while\nvideo PUT must omit it. A token with only `w_member_social` cannot GET Images API\nstatus; member image publication therefore proceeds after the successful upload\nwithout that forbidden GET. Image status polling is used only for grants that\ninclude `rw_ads`, `w_organization_social` or `w_power_creators`. A processing\nrejection from the final Posts API is surfaced without an automatic retry.\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "Execution and failure behavior",
+      "anchor": "execution-and-failure-behavior",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000011",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "HTTP transport",
+      "anchor": "http-transport",
+      "start_line": 38
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000003",
+        "line": 4,
+        "text": "and publication intent. `publish` is synchronous and must run outside a GUI",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000005",
+        "line": 15,
+        "text": "unconfirmed bytes are never blindly replayed. A stalled acknowledgement also",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000005",
+        "line": 16,
+        "text": "uses this recovery budget. The SDK never starts a second YouTube session to",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000007",
+        "line": 29,
+        "text": "does not establish a published post. The SDK never deletes remote resources",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000009",
+        "line": 32,
+        "text": "Mastodon's official Idempotency-Key is forwarded. Other providers do not receive",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000009",
+        "line": 34,
+        "text": "jobs across process restarts are not promised. The consumer must preserve its",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000009",
+        "line": 35,
+        "text": "publication intent/result ledger if it needs crash recovery. Credentials must",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000015",
+        "line": 56,
+        "text": "larger/longer videos must transcode to the provider's supported limits first.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000017",
+        "line": 60,
+        "text": "parameters, never the OAuth token. LinkedIn media upload hosts are checked",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000017",
+        "line": 63,
+        "text": "not an unauthenticated HTTP proxy; account configuration must remain inside the",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000019",
+        "line": 66,
+        "text": "YouTube session locations must use the exact HTTPS",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000019",
+        "line": 68,
+        "text": "and no fragment or alternate port. Bearer credentials are never forwarded to",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000019",
+        "line": 70,
+        "text": "and must not be logged. Recovery is confined to the current `publish` call;",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000021",
+        "line": 80,
+        "text": "video PUT must omit it. A token with only `w_member_social` cannot GET Images API",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

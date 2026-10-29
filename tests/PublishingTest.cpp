@@ -1,4 +1,4 @@
-#include <iiSocialPublish/Publishing.h>
+#include <iiSocialIntegration/Publishing.h>
 #include <nlohmann/json.hpp>
 #include <deque>
 #include <fstream>
@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <thread>
 
-using namespace iiSocialPublish;
+using namespace iiSocialIntegration;
 using Json = nlohmann::json;
 namespace {
 void check(bool value, const char* message) { if (!value) throw std::runtime_error(message); }

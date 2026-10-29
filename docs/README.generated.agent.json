@@ -1,0 +1,382 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:5bfd6edc91fe6eb6538d03edaf6748a74aff75b3d36f058de749c579b3b82fde",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialIntegration",
+    "name": "iiSocialIntegration",
+    "root": "SDK/iiSocialIntegration",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/README.md",
+    "sha256": "1b7986024a95eeb11df4039ca4f5c5064dc59e6c0a21b199d5b16f38849440b8",
+    "bytes": 1226,
+    "line_count": 21,
+    "encoding": "utf-8",
+    "language": "en"
+  },
+  "document": {
+    "title": "iiSocialIntegration Documentation",
+    "role": "overview",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# iiSocialIntegration Documentation\n",
+      "level": 1,
+      "title": "iiSocialIntegration Documentation"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "html",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "<!-- workspace-docs:document-map:start -->\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "heading",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "## Human and agent document map\n",
+      "level": 2,
+      "title": "Human and agent document map"
+    },
+    {
+      "id": "b000005",
+      "kind": "blank",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "paragraph",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "Markdown is the maintained human source. Agent JSON is a structured, source-traceable projection.\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "table",
+      "start_line": 8,
+      "end_line": 20,
+      "raw": "| Document | Agent JSON |\n| --- | --- |\n| [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.generated.agent.json) |\n| [`README.md`](../README.md) | [JSON](entrypoints/README.generated.agent.json) |\n| [`docs/Execution.md`](Execution.md) | [JSON](Execution.generated.agent.json) |\n| [`docs/Migration.md`](Migration.md) | [JSON](Migration.agent.json) |\n| [`docs/Providers.md`](Providers.md) | [JSON](Providers.generated.agent.json) |\n| [`docs/Review.md`](Review.md) | [JSON](Review.generated.agent.json) |\n| [`docs/UrlImport.md`](UrlImport.md) | [JSON](UrlImport.agent.json) |\n| [`docs/Verification.md`](Verification.md) | [JSON](Verification.generated.agent.json) |\n| [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |\n| [`docs/YouTube.md`](YouTube.md) | [JSON](YouTube.generated.agent.json) |\n| [`docs/documentation-structure.md`](documentation-structure.md) | [JSON](documentation-structure.generated.agent.json) |\n",
+      "columns": [
+        "Document",
+        "Agent JSON"
+      ],
+      "rows": [
+        [
+          "[`AGENT.md`](../AGENT.md)",
+          "[JSON](entrypoints/AGENT.generated.agent.json)"
+        ],
+        [
+          "[`README.md`](../README.md)",
+          "[JSON](entrypoints/README.generated.agent.json)"
+        ],
+        [
+          "[`docs/Execution.md`](Execution.md)",
+          "[JSON](Execution.generated.agent.json)"
+        ],
+        [
+          "[`docs/Migration.md`](Migration.md)",
+          "[JSON](Migration.agent.json)"
+        ],
+        [
+          "[`docs/Providers.md`](Providers.md)",
+          "[JSON](Providers.generated.agent.json)"
+        ],
+        [
+          "[`docs/Review.md`](Review.md)",
+          "[JSON](Review.generated.agent.json)"
+        ],
+        [
+          "[`docs/UrlImport.md`](UrlImport.md)",
+          "[JSON](UrlImport.agent.json)"
+        ],
+        [
+          "[`docs/Verification.md`](Verification.md)",
+          "[JSON](Verification.generated.agent.json)"
+        ],
+        [
+          "[`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md)",
+          "[JSON](WindowsBuildAndRun.generated.agent.json)"
+        ],
+        [
+          "[`docs/YouTube.md`](YouTube.md)",
+          "[JSON](YouTube.generated.agent.json)"
+        ],
+        [
+          "[`docs/documentation-structure.md`](documentation-structure.md)",
+          "[JSON](documentation-structure.generated.agent.json)"
+        ]
+      ]
+    },
+    {
+      "id": "b000009",
+      "kind": "html",
+      "start_line": 21,
+      "end_line": 21,
+      "raw": "<!-- workspace-docs:document-map:end -->\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "iiSocialIntegration Documentation",
+      "anchor": "iisocialintegration-documentation",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000004",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Human and agent document map",
+      "anchor": "human-and-agent-document-map",
+      "start_line": 4
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [],
+    "links": [
+      {
+        "block_id": "b000008",
+        "label": "`AGENT.md`",
+        "target": "../AGENT.md",
+        "kind": "relative",
+        "line": 10
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "entrypoints/AGENT.generated.agent.json",
+        "kind": "relative",
+        "line": 10
+      },
+      {
+        "block_id": "b000008",
+        "label": "`README.md`",
+        "target": "../README.md",
+        "kind": "relative",
+        "line": 11
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "entrypoints/README.generated.agent.json",
+        "kind": "relative",
+        "line": 11
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/Execution.md`",
+        "target": "Execution.md",
+        "kind": "relative",
+        "line": 12
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "Execution.generated.agent.json",
+        "kind": "relative",
+        "line": 12
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/Migration.md`",
+        "target": "Migration.md",
+        "kind": "relative",
+        "line": 13
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "Migration.agent.json",
+        "kind": "relative",
+        "line": 13
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/Providers.md`",
+        "target": "Providers.md",
+        "kind": "relative",
+        "line": 14
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "Providers.generated.agent.json",
+        "kind": "relative",
+        "line": 14
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/Review.md`",
+        "target": "Review.md",
+        "kind": "relative",
+        "line": 15
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "Review.generated.agent.json",
+        "kind": "relative",
+        "line": 15
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/UrlImport.md`",
+        "target": "UrlImport.md",
+        "kind": "relative",
+        "line": 16
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "UrlImport.agent.json",
+        "kind": "relative",
+        "line": 16
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/Verification.md`",
+        "target": "Verification.md",
+        "kind": "relative",
+        "line": 17
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "Verification.generated.agent.json",
+        "kind": "relative",
+        "line": 17
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/WindowsBuildAndRun.md`",
+        "target": "WindowsBuildAndRun.md",
+        "kind": "relative",
+        "line": 18
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "WindowsBuildAndRun.generated.agent.json",
+        "kind": "relative",
+        "line": 18
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/YouTube.md`",
+        "target": "YouTube.md",
+        "kind": "relative",
+        "line": 19
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "YouTube.generated.agent.json",
+        "kind": "relative",
+        "line": 19
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/documentation-structure.md`",
+        "target": "documentation-structure.md",
+        "kind": "relative",
+        "line": 20
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "documentation-structure.generated.agent.json",
+        "kind": "relative",
+        "line": 20
+      }
+    ],
+    "tables": [
+      {
+        "block_id": "b000008",
+        "columns": [
+          "Document",
+          "Agent JSON"
+        ],
+        "rows": [
+          [
+            "[`AGENT.md`](../AGENT.md)",
+            "[JSON](entrypoints/AGENT.generated.agent.json)"
+          ],
+          [
+            "[`README.md`](../README.md)",
+            "[JSON](entrypoints/README.generated.agent.json)"
+          ],
+          [
+            "[`docs/Execution.md`](Execution.md)",
+            "[JSON](Execution.generated.agent.json)"
+          ],
+          [
+            "[`docs/Migration.md`](Migration.md)",
+            "[JSON](Migration.agent.json)"
+          ],
+          [
+            "[`docs/Providers.md`](Providers.md)",
+            "[JSON](Providers.generated.agent.json)"
+          ],
+          [
+            "[`docs/Review.md`](Review.md)",
+            "[JSON](Review.generated.agent.json)"
+          ],
+          [
+            "[`docs/UrlImport.md`](UrlImport.md)",
+            "[JSON](UrlImport.agent.json)"
+          ],
+          [
+            "[`docs/Verification.md`](Verification.md)",
+            "[JSON](Verification.generated.agent.json)"
+          ],
+          [
+            "[`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md)",
+            "[JSON](WindowsBuildAndRun.generated.agent.json)"
+          ],
+          [
+            "[`docs/YouTube.md`](YouTube.md)",
+            "[JSON](YouTube.generated.agent.json)"
+          ],
+          [
+            "[`docs/documentation-structure.md`](documentation-structure.md)",
+            "[JSON](documentation-structure.generated.agent.json)"
+          ]
+        ]
+      }
+    ]
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

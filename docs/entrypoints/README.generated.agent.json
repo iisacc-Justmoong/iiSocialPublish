@@ -1,0 +1,529 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:b086af490e4c19974ddc4708621e9eebe2553059cc5bb660330633dc0f88b564",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialIntegration",
+    "name": "iiSocialIntegration",
+    "root": "SDK/iiSocialIntegration",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "README.md",
+    "sha256": "c930ff9bcc05ac54d7bca9e46b6f0a942d2a8beb9ad36b1cf3a3e808bd7b28b3",
+    "bytes": 5940,
+    "line_count": 120,
+    "encoding": "utf-8",
+    "language": "en"
+  },
+  "document": {
+    "title": "iiSocialIntegration",
+    "role": "overview",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# iiSocialIntegration\n",
+      "level": 1,
+      "title": "iiSocialIntegration"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "[Windows build and execution](docs/WindowsBuildAndRun.md)\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 5,
+      "end_line": 7,
+      "raw": "The former `iiSocialPublish` package is now `iiSocialIntegration`. Native destination review, lossless\nmedia grouping, UTF-8 text splitting and sequential reply-chain execution are\navailable through `Review.h`. See [destination review](docs/Review.md).\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 9,
+      "end_line": 18,
+      "raw": "`Migration.h` also converts supplied external posts into editable Society draft\nobjects. Native JSON conversion covers X, Facebook, Instagram, Threads,\nPinterest, Tumblr NPF, Mastodon, LinkedIn and YouTube; an `ExternalPost` adapter\naccepts normalized data from any platform. The caller retains source provenance,\nconverts HTML where needed, registers media, and provides Society asset IDs before\nserializing a private draft. See [migration contracts and examples](docs/Migration.md).\nThe optional `UrlImport.h` API fetches a page, discovers media in its static\nDOM, and streams selected assets to an application-owned sink. A host may also\nprovide a rendered DOM. See [URL discovery and asset retrieval](docs/UrlImport.md).\nThe SDK does not assign Society authors, register assets, or publish imports.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "paragraph",
+      "start_line": 20,
+      "end_line": 23,
+      "raw": "Qt-free C++23 publishing objects for X, Facebook Pages, Instagram Professional,\nThreads, Pinterest, Tumblr, Mastodon, LinkedIn and YouTube. Pixiv and ArtStation have\nexplicit unsupported objects because no official public publishing contract was\nverified. The module does not use private/mobile APIs or browser automation.\n"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 24,
+      "end_line": 24,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "paragraph",
+      "start_line": 25,
+      "end_line": 29,
+      "raw": "`makePublisher(Platform)` returns a provider object implementing the same\n`Publisher::publish(Post, Account, Context)` backend interface. Every supported\nprovider performs its real HTTP publishing protocol through an injectable\n`Transport`; the included `CurlTransport` uses libcurl with mandatory TLS\nverification. Objects do not contact providers when constructed.\n"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 30,
+      "end_line": 30,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 31,
+      "end_line": 36,
+      "raw": "YouTube uses the official Data API v3 `videos.insert` resumable protocol:\nmetadata POST, streamed video PUT, 308 acknowledgements and bounded recovery\nqueries within the same upload session. It supports one local video, title,\ndescription, tags, category and public/unlisted/private visibility. See the\n[YouTube upload API](docs/YouTube.md) for OAuth setup, C++ usage and acceptance\nversus subsequent video processing.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 37,
+      "end_line": 37,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "fenced_code",
+      "start_line": 38,
+      "end_line": 57,
+      "raw": "```cpp\n#include <iiSocialIntegration/Publishing.h>\nusing namespace iiSocialIntegration;\n\nAccount account;\naccount.accessToken = obtainUserGrantFromTrustedAccountService();\naccount.instanceUrl = \"https://your-instance.example\";\naccount.scopes = {\"write:statuses\", \"write:media\"};\nPost post;\npost.text = \"Created with Dreamscapes\";\npost.idempotencyKey = \"a-stable-application-intent-id\";\npost.media.push_back({MediaKind::Image, \"/absolute/export.png\", {},\n                      \"image/png\", \"An accessible image description\"});\nCurlTransport transport;\nContext context{transport}; // Run on a backend worker.\nauto result = makePublisher(Platform::Mastodon)->publish(post, account, context);\nif (result.requiresReconciliation()) {\n    // Inspect the provider before attempting another publication.\n}\n```\n",
+      "language": "cpp",
+      "code": "#include <iiSocialIntegration/Publishing.h>\nusing namespace iiSocialIntegration;\n\nAccount account;\naccount.accessToken = obtainUserGrantFromTrustedAccountService();\naccount.instanceUrl = \"https://your-instance.example\";\naccount.scopes = {\"write:statuses\", \"write:media\"};\nPost post;\npost.text = \"Created with Dreamscapes\";\npost.idempotencyKey = \"a-stable-application-intent-id\";\npost.media.push_back({MediaKind::Image, \"/absolute/export.png\", {},\n                      \"image/png\", \"An accessible image description\"});\nCurlTransport transport;\nContext context{transport}; // Run on a backend worker.\nauto result = makePublisher(Platform::Mastodon)->publish(post, account, context);\nif (result.requiresReconciliation()) {\n    // Inspect the provider before attempting another publication.\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 58,
+      "end_line": 58,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 59,
+      "end_line": 64,
+      "raw": "The sample's credential function belongs to the consumer; this SDK does not\nacquire, persist, refresh or expose account credentials. The caller must provide\na valid **user-context** OAuth access token, verified scopes and explicit\ndestination. An app-only token is insufficient for publishing. No client secret\nor account password belongs in this module. Revocation/refresh remain in the\naccount service that owns the OAuth grant.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 65,
+      "end_line": 65,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 66,
+      "end_line": 66,
+      "raw": "Build and install:\n"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 67,
+      "end_line": 67,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "fenced_code",
+      "start_line": 68,
+      "end_line": 73,
+      "raw": "```sh\ncmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release\ncmake --build build --parallel 4\nctest --test-dir build --output-on-failure\ncmake --install build --prefix \"$PWD/build/staged-integration\"\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release\ncmake --build build --parallel 4\nctest --test-dir build --output-on-failure\ncmake --install build --prefix \"$PWD/build/staged-integration\"\n",
+      "closed": true
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 74,
+      "end_line": 74,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "paragraph",
+      "start_line": 75,
+      "end_line": 86,
+      "raw": "Consumers use `find_package(iiSocialIntegration 0.2 CONFIG REQUIRED)` and\n`iiSocialIntegration::iiSocialIntegration`. Existing source consumers can use\nthe `iiSocialPublish` headers, namespace and CMake package compatibility aliases\nwhen rebuilt against the new installation; binary ABI compatibility is not\npromised. Consumers with a hard-coded old installation prefix must point CMake\nat the new prefix; an existing old installation does not acquire the new API.\nThe static native target depends on libcurl 7.68+, libxml2 2.9+ and privately\nvendored nlohmann/json 3.12.0; no Qt, Python interpreter or\nbrowser is needed at runtime. Tests additionally use Python/OpenSSL for a\ndisposable loopback HTTPS server. The package includes third-party licensing.\n`./install.sh [prefix]` builds, tests, and installs to the supplied prefix; its\ndefault is `~/.local/SDK/iiSocialIntegration`.\n"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 87,
+      "end_line": 87,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "paragraph",
+      "start_line": 88,
+      "end_line": 92,
+      "raw": "See [provider API contracts](docs/Providers.md),\n[execution and failure contracts](docs/Execution.md) and\n[verification](docs/Verification.md). Local fixture tests establish request\nconstruction and transport behavior, not successful live publication to any\nsocial account.\n"
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 93,
+      "end_line": 93,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "heading",
+      "start_line": 94,
+      "end_line": 94,
+      "raw": "## License\n",
+      "level": 2,
+      "title": "License"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 95,
+      "end_line": 95,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "paragraph",
+      "start_line": 96,
+      "end_line": 96,
+      "raw": "SPDX-License-Identifier: MIT\n"
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 97,
+      "end_line": 97,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "paragraph",
+      "start_line": 98,
+      "end_line": 100,
+      "raw": "The original code and documentation in this repository are licensed under the\n[MIT License](LICENSE). Third-party code, libraries, fonts, tools, and model\nweights retain their respective licenses.\n"
+    },
+    {
+      "id": "b000032",
+      "kind": "blank",
+      "start_line": 101,
+      "end_line": 101,
+      "raw": "\n"
+    },
+    {
+      "id": "b000033",
+      "kind": "heading",
+      "start_line": 102,
+      "end_line": 102,
+      "raw": "## Source header layout\n",
+      "level": 2,
+      "title": "Source header layout"
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 103,
+      "end_line": 103,
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "paragraph",
+      "start_line": 104,
+      "end_line": 107,
+      "raw": "Public headers and implementations live together in `src/iiSocialIntegration/`.\nThere is no separate authored `include/` tree. Legacy forwarding headers are\nprovided under `src/iiSocialPublish/`. Generated export headers belong to\n`build/`, not to the authored source tree.\n"
+    },
+    {
+      "id": "b000036",
+      "kind": "blank",
+      "start_line": 108,
+      "end_line": 108,
+      "raw": "\n"
+    },
+    {
+      "id": "b000037",
+      "kind": "paragraph",
+      "start_line": 109,
+      "end_line": 111,
+      "raw": "Validate this layout from the SDK workspace with\n`python3 -B tests/test_source_header_layout.py`. Reconfigure, build, run CTest,\nand verify a staged installed consumer after changing source/header paths.\n"
+    },
+    {
+      "id": "b000038",
+      "kind": "blank",
+      "start_line": 112,
+      "end_line": 112,
+      "raw": "\n"
+    },
+    {
+      "id": "b000039",
+      "kind": "html",
+      "start_line": 113,
+      "end_line": 113,
+      "raw": "<!-- workspace-docs:readme:start -->\n"
+    },
+    {
+      "id": "b000040",
+      "kind": "heading",
+      "start_line": 114,
+      "end_line": 114,
+      "raw": "## Documentation entry points\n",
+      "level": 2,
+      "title": "Documentation entry points"
+    },
+    {
+      "id": "b000041",
+      "kind": "blank",
+      "start_line": 115,
+      "end_line": 115,
+      "raw": "\n"
+    },
+    {
+      "id": "b000042",
+      "kind": "list",
+      "start_line": 116,
+      "end_line": 119,
+      "raw": "- Human overview: this English `README.md`.\n- Agent instructions: [AGENT.md](AGENT.md).\n- Human documentation: [documentation index](docs/README.md).\n- Structured agent documentation: [agent index](docs/agent-index.json).\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "Human overview: this English `README.md`.",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "Agent instructions: [AGENT.md](AGENT.md).",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "Human documentation: [documentation index](docs/README.md).",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "Structured agent documentation: [agent index](docs/agent-index.json).",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000043",
+      "kind": "html",
+      "start_line": 120,
+      "end_line": 120,
+      "raw": "<!-- workspace-docs:readme:end -->\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "iiSocialIntegration",
+      "anchor": "iisocialintegration",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000027",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "License",
+      "anchor": "license",
+      "start_line": 94
+    },
+    {
+      "block_id": "b000033",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Source header layout",
+      "anchor": "source-header-layout",
+      "start_line": 102
+    },
+    {
+      "block_id": "b000040",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Documentation entry points",
+      "anchor": "documentation-entry-points",
+      "start_line": 114
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000011",
+        "line": 29,
+        "text": "verification. Objects do not contact providers when constructed.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000017",
+        "line": 60,
+        "text": "acquire, persist, refresh or expose account credentials. The caller must provide",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000023",
+        "line": 75,
+        "text": "Consumers use `find_package(iiSocialIntegration 0.2 CONFIG REQUIRED)` and",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000023",
+        "line": 79,
+        "text": "promised. Consumers with a hard-coded old installation prefix must point CMake",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000021",
+        "language": "sh",
+        "code": "cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release\ncmake --build build --parallel 4\nctest --test-dir build --output-on-failure\ncmake --install build --prefix \"$PWD/build/staged-integration\"\n"
+      }
+    ],
+    "links": [
+      {
+        "block_id": "b000003",
+        "label": "Windows build and execution",
+        "target": "docs/WindowsBuildAndRun.md",
+        "kind": "relative",
+        "line": 3
+      },
+      {
+        "block_id": "b000005",
+        "label": "destination review",
+        "target": "docs/Review.md",
+        "kind": "relative",
+        "line": 7
+      },
+      {
+        "block_id": "b000007",
+        "label": "migration contracts and examples",
+        "target": "docs/Migration.md",
+        "kind": "relative",
+        "line": 14
+      },
+      {
+        "block_id": "b000007",
+        "label": "URL discovery and asset retrieval",
+        "target": "docs/UrlImport.md",
+        "kind": "relative",
+        "line": 17
+      },
+      {
+        "block_id": "b000013",
+        "label": "YouTube upload API",
+        "target": "docs/YouTube.md",
+        "kind": "relative",
+        "line": 35
+      },
+      {
+        "block_id": "b000025",
+        "label": "provider API contracts",
+        "target": "docs/Providers.md",
+        "kind": "relative",
+        "line": 88
+      },
+      {
+        "block_id": "b000025",
+        "label": "execution and failure contracts",
+        "target": "docs/Execution.md",
+        "kind": "relative",
+        "line": 89
+      },
+      {
+        "block_id": "b000025",
+        "label": "verification",
+        "target": "docs/Verification.md",
+        "kind": "relative",
+        "line": 90
+      },
+      {
+        "block_id": "b000031",
+        "label": "MIT License",
+        "target": "LICENSE",
+        "kind": "relative",
+        "line": 99
+      },
+      {
+        "block_id": "b000042",
+        "label": "AGENT.md",
+        "target": "AGENT.md",
+        "kind": "relative",
+        "line": 117
+      },
+      {
+        "block_id": "b000042",
+        "label": "documentation index",
+        "target": "docs/README.md",
+        "kind": "relative",
+        "line": 118
+      },
+      {
+        "block_id": "b000042",
+        "label": "agent index",
+        "target": "docs/agent-index.json",
+        "kind": "relative",
+        "line": 119
+      }
+    ],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

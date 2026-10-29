@@ -1,0 +1,338 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:7e495c29c2027e22d68d90d5690f2fc9fcf2019cd4d22eba303b072c4c0b81ba",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialPublish",
+    "name": "iiSocialPublish",
+    "root": "SDK/iiSocialPublish",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/README.md",
+    "sha256": "8d0b37bc57bc370439e0f61a0ea9b7093655f6df04687e3b2c07fb56c8d2cb9d",
+    "bytes": 990,
+    "line_count": 19,
+    "encoding": "utf-8",
+    "language": "en"
+  },
+  "document": {
+    "title": "iiSocialPublish Documentation",
+    "role": "overview",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# iiSocialPublish Documentation\n",
+      "level": 1,
+      "title": "iiSocialPublish Documentation"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "html",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "<!-- workspace-docs:document-map:start -->\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "heading",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "## Human and agent document map\n",
+      "level": 2,
+      "title": "Human and agent document map"
+    },
+    {
+      "id": "b000005",
+      "kind": "blank",
+      "start_line": 5,
+      "end_line": 5,
+      "raw": "\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "paragraph",
+      "start_line": 6,
+      "end_line": 6,
+      "raw": "Markdown is the maintained human source. Agent JSON is a structured, source-traceable projection.\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "table",
+      "start_line": 8,
+      "end_line": 18,
+      "raw": "| Document | Agent JSON |\n| --- | --- |\n| [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.agent.json) |\n| [`README.md`](../README.md) | [JSON](entrypoints/README.agent.json) |\n| [`docs/Execution.md`](Execution.md) | [JSON](Execution.agent.json) |\n| [`docs/Providers.md`](Providers.md) | [JSON](Providers.agent.json) |\n| [`docs/Review.md`](Review.md) | [JSON](Review.agent.json) |\n| [`docs/Verification.md`](Verification.md) | [JSON](Verification.agent.json) |\n| [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.agent.json) |\n| [`docs/YouTube.md`](YouTube.md) | [JSON](YouTube.agent.json) |\n| [`docs/documentation-structure.md`](documentation-structure.md) | [JSON](documentation-structure.agent.json) |\n",
+      "columns": [
+        "Document",
+        "Agent JSON"
+      ],
+      "rows": [
+        [
+          "[`AGENT.md`](../AGENT.md)",
+          "[JSON](entrypoints/AGENT.agent.json)"
+        ],
+        [
+          "[`README.md`](../README.md)",
+          "[JSON](entrypoints/README.agent.json)"
+        ],
+        [
+          "[`docs/Execution.md`](Execution.md)",
+          "[JSON](Execution.agent.json)"
+        ],
+        [
+          "[`docs/Providers.md`](Providers.md)",
+          "[JSON](Providers.agent.json)"
+        ],
+        [
+          "[`docs/Review.md`](Review.md)",
+          "[JSON](Review.agent.json)"
+        ],
+        [
+          "[`docs/Verification.md`](Verification.md)",
+          "[JSON](Verification.agent.json)"
+        ],
+        [
+          "[`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md)",
+          "[JSON](WindowsBuildAndRun.agent.json)"
+        ],
+        [
+          "[`docs/YouTube.md`](YouTube.md)",
+          "[JSON](YouTube.agent.json)"
+        ],
+        [
+          "[`docs/documentation-structure.md`](documentation-structure.md)",
+          "[JSON](documentation-structure.agent.json)"
+        ]
+      ]
+    },
+    {
+      "id": "b000009",
+      "kind": "html",
+      "start_line": 19,
+      "end_line": 19,
+      "raw": "<!-- workspace-docs:document-map:end -->\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "iiSocialPublish Documentation",
+      "anchor": "iisocialpublish-documentation",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000004",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Human and agent document map",
+      "anchor": "human-and-agent-document-map",
+      "start_line": 4
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [],
+    "links": [
+      {
+        "block_id": "b000008",
+        "label": "`AGENT.md`",
+        "target": "../AGENT.md",
+        "kind": "relative",
+        "line": 10
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "entrypoints/AGENT.agent.json",
+        "kind": "relative",
+        "line": 10
+      },
+      {
+        "block_id": "b000008",
+        "label": "`README.md`",
+        "target": "../README.md",
+        "kind": "relative",
+        "line": 11
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "entrypoints/README.agent.json",
+        "kind": "relative",
+        "line": 11
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/Execution.md`",
+        "target": "Execution.md",
+        "kind": "relative",
+        "line": 12
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "Execution.agent.json",
+        "kind": "relative",
+        "line": 12
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/Providers.md`",
+        "target": "Providers.md",
+        "kind": "relative",
+        "line": 13
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "Providers.agent.json",
+        "kind": "relative",
+        "line": 13
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/Review.md`",
+        "target": "Review.md",
+        "kind": "relative",
+        "line": 14
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "Review.agent.json",
+        "kind": "relative",
+        "line": 14
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/Verification.md`",
+        "target": "Verification.md",
+        "kind": "relative",
+        "line": 15
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "Verification.agent.json",
+        "kind": "relative",
+        "line": 15
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/WindowsBuildAndRun.md`",
+        "target": "WindowsBuildAndRun.md",
+        "kind": "relative",
+        "line": 16
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "WindowsBuildAndRun.agent.json",
+        "kind": "relative",
+        "line": 16
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/YouTube.md`",
+        "target": "YouTube.md",
+        "kind": "relative",
+        "line": 17
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "YouTube.agent.json",
+        "kind": "relative",
+        "line": 17
+      },
+      {
+        "block_id": "b000008",
+        "label": "`docs/documentation-structure.md`",
+        "target": "documentation-structure.md",
+        "kind": "relative",
+        "line": 18
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "documentation-structure.agent.json",
+        "kind": "relative",
+        "line": 18
+      }
+    ],
+    "tables": [
+      {
+        "block_id": "b000008",
+        "columns": [
+          "Document",
+          "Agent JSON"
+        ],
+        "rows": [
+          [
+            "[`AGENT.md`](../AGENT.md)",
+            "[JSON](entrypoints/AGENT.agent.json)"
+          ],
+          [
+            "[`README.md`](../README.md)",
+            "[JSON](entrypoints/README.agent.json)"
+          ],
+          [
+            "[`docs/Execution.md`](Execution.md)",
+            "[JSON](Execution.agent.json)"
+          ],
+          [
+            "[`docs/Providers.md`](Providers.md)",
+            "[JSON](Providers.agent.json)"
+          ],
+          [
+            "[`docs/Review.md`](Review.md)",
+            "[JSON](Review.agent.json)"
+          ],
+          [
+            "[`docs/Verification.md`](Verification.md)",
+            "[JSON](Verification.agent.json)"
+          ],
+          [
+            "[`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md)",
+            "[JSON](WindowsBuildAndRun.agent.json)"
+          ],
+          [
+            "[`docs/YouTube.md`](YouTube.md)",
+            "[JSON](YouTube.agent.json)"
+          ],
+          [
+            "[`docs/documentation-structure.md`](documentation-structure.md)",
+            "[JSON](documentation-structure.agent.json)"
+          ]
+        ]
+      }
+    ]
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

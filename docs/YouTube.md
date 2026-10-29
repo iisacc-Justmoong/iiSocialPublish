@@ -29,8 +29,8 @@ CMS content-owner delegation is outside this adapter's implemented scope.
 ## C++ usage
 
 ```cpp
-#include <iiSocialPublish/Publishing.h>
-using namespace iiSocialPublish;
+#include <iiSocialIntegration/Publishing.h>
+using namespace iiSocialIntegration;
 
 Account account;
 account.accessToken = obtainChannelUserAccessToken(); // Consumer account service.

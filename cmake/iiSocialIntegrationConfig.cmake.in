@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+set(iiSocialIntegration_LICENSE_DIR "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_DATADIR@/licenses/iiSocialIntegration")
+include(CMakeFindDependencyMacro)
+find_dependency(CURL 7.68)
+find_dependency(LibXml2 2.9)
+find_dependency(Threads)
+include("${CMAKE_CURRENT_LIST_DIR}/iiSocialIntegrationTargets.cmake")
+check_required_components(iiSocialIntegration)

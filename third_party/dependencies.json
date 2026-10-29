@@ -7,6 +7,12 @@
     "license": "licenses/nlohmann-json/LICENSE.MIT",
     "provenance": "Reused byte-for-byte from the verified iiFileProviderNative dependency in this workspace."
   },
+  "libxml2": {
+    "minimumVersion": "2.9",
+    "source": "https://gnome.pages.gitlab.gnome.org/libxml2/",
+    "license": "MIT",
+    "provenance": "Consumer/toolchain dependency discovered by CMake; not downloaded or vendored."
+  },
   "libcurl": {
     "minimumVersion": "7.68",
     "source": "https://curl.se/libcurl/",

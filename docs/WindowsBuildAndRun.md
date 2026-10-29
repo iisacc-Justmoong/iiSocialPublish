@@ -1,4 +1,4 @@
-# iiSocialPublish: Windows 빌드 및 실행
+# iiSocialIntegration: Windows 빌드 및 실행
 
 SNS 게시 요청 생성·검증 및 libcurl 전송을 제공하는 Qt 비의존 C++23 SDK이다.
 
@@ -35,7 +35,7 @@ $python = (Join-Path $workspace 'Tools/Python314/tools/python.exe').Replace('\',
 $compiler = (Get-Command cl.exe -ErrorAction Stop).Source.Replace('\', '/')
 $toolchain = (Join-Path $workspace 'Tools/vcpkg/scripts/buildsystems/vcpkg.cmake').Replace('\', '/')
 $msvcInclude = (Join-Path $workspace 'SDK/Windows/WindowsMsvcPrefix.cmake').Replace('\', '/')
-$prefix = (Join-Path $env:USERPROFILE '.local/SDK/iiSocialPublish').Replace('\', '/')
+$prefix = (Join-Path $env:USERPROFILE '.local/SDK/iiSocialIntegration').Replace('\', '/')
 ```
 
 `Enter-DevEnvironment.ps1`은 Qt MSVC kit, vcpkg, 설치된 SDK의 검색 경로와 UTF-8 설정을 준비한다. `CMAKE_PREFIX_PATH`의 디렉터리 존재만으로 의존성 검증을 대신하지 않는다. 선행 SDK의 실행 검사와 설치를 먼저 완료해야 한다.
@@ -87,7 +87,7 @@ ctest --test-dir build -C Release --output-on-failure --parallel 1 --no-tests=er
 if ($LASTEXITCODE -ne 0) { throw '전체 실행 검사 실패' }
 ```
 
-현재 빌드에 실제 등록된 실행 경로의 예는 `iiSocialPublish.catalog`, `iiSocialPublish.validation`, `iiSocialPublish.x`이다. 전체 목록은 `ctest --test-dir build -N`으로 확인한다.
+현재 빌드에 실제 등록된 실행 경로의 예는 `iiSocialIntegration.catalog`, `iiSocialIntegration.validation`, `iiSocialIntegration.x`이다. 전체 목록은 `ctest --test-dir build -N`으로 확인한다.
 
 ## 설치와 배포 범위
 

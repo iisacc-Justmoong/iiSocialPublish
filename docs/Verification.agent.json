@@ -1,0 +1,290 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:3fbf641518fafa600ca9b103d12d991e90117b7469c693185feef74439b03f52",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialPublish",
+    "name": "iiSocialPublish",
+    "root": "SDK/iiSocialPublish",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/Verification.md",
+    "sha256": "320e51de4f65891d50045131e015a3deed2ccd4cf2007af293ef5d8a9ef2822a",
+    "bytes": 3857,
+    "line_count": 73,
+    "encoding": "utf-8",
+    "language": "en"
+  },
+  "document": {
+    "title": "Verification",
+    "role": "evidence",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# Verification\n",
+      "level": 1,
+      "title": "Verification"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "heading",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "## YouTube extension, 2026-10-22\n",
+      "level": 2,
+      "title": "YouTube extension, 2026-10-22"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 5,
+      "end_line": 8,
+      "raw": "The macOS arm64 Release build passed all **16 CTest groups**, including the\nthree new YouTube groups and the real TLS loopback transport. The complete\nexisting provider suite remains enabled. The extended catalog contains eleven\ntargets, nine with implemented official publishing routes.\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 9,
+      "end_line": 9,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 10,
+      "end_line": 16,
+      "raw": "YouTube fixtures verify metadata/privacy/audience/synthetic-media declarations,\nUTF-8 titles (including the 100-character boundary), local-video preflight,\nleast-privilege and broader upload grants, streamed byte ranges, partial\nacknowledgements, lost-final-response reconciliation, cancellation, bounded\nrecovery, rate limits and credential-free errors. Invalid session locations and\nmalformed or inconsistent ranges are rejected. A failed status query after an\nambiguous dispatch remains `outcome_unknown`.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 17,
+      "end_line": 17,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "paragraph",
+      "start_line": 18,
+      "end_line": 21,
+      "raw": "The real HTTPS loopback verifies a 308 response without redirect following,\nan empty status PUT and a resumed final file range. Test configuration uses the\navailable `/usr/bin/openssl`; an obsolete local Homebrew cache path was replaced.\nNo provider credentials are used.\n"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 22,
+      "end_line": 22,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "paragraph",
+      "start_line": 23,
+      "end_line": 28,
+      "raw": "Installation was staged at `build/install`. A separate C++23 consumer under\n`build/youtube-consumer`, configured only against that installed package,\ncompiled, linked and passed its CTest (**1/1**). It exercised the YouTube catalog,\npublic options and complete metadata/upload request chain with an offline\ntransport. `otool -L` confirms system libcurl, libc++ and libSystem, without Qt.\nThe normal installed SDK under `~/.local` was not replaced.\n"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 29,
+      "end_line": 29,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 30,
+      "end_line": 33,
+      "raw": "Evidence is retained in `build/youtube-ctest.txt`,\n`build/youtube-installed-consumer-ctest.txt` and `build/youtube-verification.json`.\nActual Google login, live video upload, transcoding and public visibility were\nnot exercised. Windows and Linux runtime verification was not performed.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 34,
+      "end_line": 34,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "heading",
+      "start_line": 35,
+      "end_line": 35,
+      "raw": "## Earlier baseline, 2026-10-18\n",
+      "level": 2,
+      "title": "Earlier baseline, 2026-10-18"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 36,
+      "end_line": 36,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 37,
+      "end_line": 41,
+      "raw": "On 2026-10-18, the macOS arm64 Release build passed all 13 CTest groups, including\nthe real TLS loopback transport. The installed package was consumed by\nDreamscapes. `otool -L build/iiSocialPublishTests` lists only system libcurl,\nlibc++ and libSystem, with no Qt library. Logs are retained under `build/ctest.txt`\nand `build/link-dependencies.txt`.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 42,
+      "end_line": 42,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 43,
+      "end_line": 48,
+      "raw": "The native test suite uses scripted official-contract responses. It verifies\nthe original ten-object catalog, unsupported platforms without network traffic, scope/\ntoken/version/file preflight, the original eight supported request chains, carousel\nassembly, NPF multipart identifiers, media-processing waits, ordered LinkedIn\nvideo ranges/ETags, privacy/idempotency forwarding, sanitized errors, rate limits,\ncancellation and ambiguous publication outcomes without retry.\n"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 49,
+      "end_line": 49,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "paragraph",
+      "start_line": 50,
+      "end_line": 53,
+      "raw": "`iiSocialPublish.TlsLoopback` starts a disposable 127.0.0.1 HTTPS server and\nexecutes the real libcurl transport with a generated test CA. It verifies exact\nbyte ranges, multipart parts, redirect refusal, response-size bounds and header\ninjection rejection. It never sends a post to a social account.\n"
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 54,
+      "end_line": 54,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "paragraph",
+      "start_line": 55,
+      "end_line": 57,
+      "raw": "The redirect fixture explicitly declares an empty response body. This keeps the\nredirect assertion independent of TLS connection-close behavior on Windows\nSchannel; redirect following remains disabled and is checked by the same test.\n"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 58,
+      "end_line": 58,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "paragraph",
+      "start_line": 59,
+      "end_line": 59,
+      "raw": "Canonical commands:\n"
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 60,
+      "end_line": 60,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "fenced_code",
+      "start_line": 61,
+      "end_line": 67,
+      "raw": "```sh\ncmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \\\n  -DCMAKE_INSTALL_PREFIX=\"$PWD/build/install\"\ncmake --build build --parallel 4\nctest --test-dir build --output-on-failure\ncmake --install build\n```\n",
+      "language": "sh",
+      "code": "cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \\\n  -DCMAKE_INSTALL_PREFIX=\"$PWD/build/install\"\ncmake --build build --parallel 4\nctest --test-dir build --output-on-failure\ncmake --install build\n",
+      "closed": true
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 68,
+      "end_line": 68,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "paragraph",
+      "start_line": 69,
+      "end_line": 73,
+      "raw": "Host verification is macOS arm64. Other native toolchains can consume the C++23\nCMake target with their own libcurl, but those platforms are not established as\nruntime-tested by this host run. There is no Qt dependency in this module.\nLive access tokens, provider app approval, remote media availability, actual\npublication, quotas and billing have not been exercised.\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "Verification",
+      "anchor": "verification",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000003",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "YouTube extension, 2026-10-22",
+      "anchor": "youtube-extension-2026-10-22",
+      "start_line": 3
+    },
+    {
+      "block_id": "b000015",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Earlier baseline, 2026-10-18",
+      "anchor": "earlier-baseline-2026-10-18",
+      "start_line": 35
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000021",
+        "line": 53,
+        "text": "injection rejection. It never sends a post to a social account.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [
+      {
+        "block_id": "b000027",
+        "language": "sh",
+        "code": "cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \\\n  -DCMAKE_INSTALL_PREFIX=\"$PWD/build/install\"\ncmake --build build --parallel 4\nctest --test-dir build --output-on-failure\ncmake --install build\n"
+      }
+    ],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

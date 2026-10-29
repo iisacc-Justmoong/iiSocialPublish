@@ -1,4 +1,4 @@
-#include <iiSocialPublish/Publishing.h>
+#include <iiSocialIntegration/Publishing.h>
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <charconv>
@@ -9,7 +9,7 @@
 #include <regex>
 #include <set>
 
-namespace iiSocialPublish {
+namespace iiSocialIntegration {
 namespace {
 using Json = nlohmann::json;
 constexpr std::uint64_t chunkSize = 4 * 1024 * 1024;
@@ -778,4 +778,4 @@ Outcome validatePost(Platform value, const Post& post, const Account& account) {
     catch (const Failure& failure) { return failure.outcome; }
     catch (...) { Outcome out; out.error = Error::InvalidRequest; out.message = "Invalid publication input"; return out; }
 }
-} // namespace iiSocialPublish
+} // namespace iiSocialIntegration
