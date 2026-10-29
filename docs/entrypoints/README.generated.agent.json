@@ -10,8 +10,8 @@
   },
   "source": {
     "path": "README.md",
-    "sha256": "c930ff9bcc05ac54d7bca9e46b6f0a942d2a8beb9ad36b1cf3a3e808bd7b28b3",
-    "bytes": 5940,
+    "sha256": "9f35e763a3e0dad648a7da7ba2d7f305d6fa0b5dd4aab6da6b377126f642d705",
+    "bytes": 6003,
     "line_count": 120,
     "encoding": "utf-8",
     "language": "en"
@@ -277,7 +277,7 @@
       "kind": "paragraph",
       "start_line": 104,
       "end_line": 107,
-      "raw": "Public headers and implementations live together in `src/iiSocialIntegration/`.\nThere is no separate authored `include/` tree. Legacy forwarding headers are\nprovided under `src/iiSocialPublish/`. Generated export headers belong to\n`build/`, not to the authored source tree.\n"
+      "raw": "Public headers and implementations live together in responsibility-specific directories under `src/`; see [source layout](docs/SourceLayout.md).\nThere is no separate authored `include/` tree. Legacy forwarding headers are\nprovided under `src/Compatibility/`. Generated export headers belong to\n`build/`, not to the authored source tree.\n"
     },
     {
       "id": "b000036",
@@ -495,6 +495,13 @@
         "target": "LICENSE",
         "kind": "relative",
         "line": 99
+      },
+      {
+        "block_id": "b000035",
+        "label": "source layout",
+        "target": "docs/SourceLayout.md",
+        "kind": "relative",
+        "line": 104
       },
       {
         "block_id": "b000042",

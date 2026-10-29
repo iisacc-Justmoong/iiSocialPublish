@@ -6,15 +6,30 @@ include(CTest)
 find_package(CURL 7.68 REQUIRED)
 find_package(LibXml2 2.9 REQUIRED)
 find_package(Threads REQUIRED)
-add_library(iiSocialIntegration STATIC src/iiSocialIntegration/Publishing.cpp src/iiSocialIntegration/CurlTransport.cpp src/iiSocialIntegration/CurlRuntime.cpp src/iiSocialIntegration/Review.cpp src/iiSocialIntegration/Migration.cpp src/iiSocialIntegration/UrlImport.cpp)
+set(_social_public_headers
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Publishing/Publishing.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Review/Review.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Migration/Migration.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Import/UrlImport.h"
+)
+foreach(_header IN LISTS _social_public_headers)
+    get_filename_component(_name "${_header}" NAME)
+    file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/include/iiSocialIntegration/${_name}"
+        CONTENT "#pragma once\n#include \"${_header}\"\n")
+endforeach()
+foreach(_name Publishing.h Review.h Compatibility.h)
+    file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/include/iiSocialPublish/${_name}"
+        CONTENT "#pragma once\n#include \"${CMAKE_CURRENT_SOURCE_DIR}/src/Compatibility/${_name}\"\n")
+endforeach()
+add_library(iiSocialIntegration STATIC src/Publishing/Publishing.cpp src/Transport/CurlTransport.cpp src/Transport/CurlRuntime.cpp src/Review/Review.cpp src/Migration/Migration.cpp src/Import/UrlImport.cpp)
 add_library(iiSocialIntegration::iiSocialIntegration ALIAS iiSocialIntegration)
 add_library(iiSocialPublish::iiSocialPublish ALIAS iiSocialIntegration)
 set_target_properties(iiSocialIntegration PROPERTIES CXX_EXTENSIONS OFF POSITION_INDEPENDENT_CODE ON)
 target_compile_features(iiSocialIntegration PUBLIC cxx_std_23)
 target_include_directories(iiSocialIntegration PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE third_party)
+    PRIVATE third_party src/Transport)
 target_link_libraries(iiSocialIntegration PRIVATE CURL::libcurl LibXml2::LibXml2 Threads::Threads)
 if(MSVC)
     target_compile_options(iiSocialIntegration PUBLIC /utf-8 PRIVATE /W4 /permissive-)
@@ -23,13 +38,9 @@ else()
 endif()
 set(_package_dir "${CMAKE_INSTALL_LIBDIR}/cmake/iiSocialIntegration")
 install(TARGETS iiSocialIntegration EXPORT iiSocialIntegrationTargets ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES
-    src/iiSocialIntegration/Publishing.h
-    src/iiSocialIntegration/Review.h
-    src/iiSocialIntegration/Migration.h
-    src/iiSocialIntegration/UrlImport.h
+install(FILES ${_social_public_headers}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiSocialIntegration)
-install(FILES src/iiSocialPublish/Publishing.h src/iiSocialPublish/Review.h src/iiSocialPublish/Compatibility.h
+install(FILES src/Compatibility/Publishing.h src/Compatibility/Review.h src/Compatibility/Compatibility.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiSocialPublish)
 install(EXPORT iiSocialIntegrationTargets NAMESPACE iiSocialIntegration:: DESTINATION "${_package_dir}")
 configure_package_config_file(cmake/iiSocialIntegrationConfig.cmake.in
@@ -50,6 +61,8 @@ install(DIRECTORY docs/ DESTINATION ${CMAKE_INSTALL_DATADIR}/iiSocialIntegration
 install(DIRECTORY third_party/licenses/ DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/iiSocialIntegration)
 install(FILES third_party/dependencies.json DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/iiSocialIntegration)
 if(BUILD_TESTING)
+    add_test(NAME iiSocialIntegration.SourceLayout COMMAND ${CMAKE_COMMAND}
+        "-DSOURCE_ROOT=${CMAKE_CURRENT_SOURCE_DIR}" -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/source_layout.cmake")
     add_executable(iiSocialIntegrationReviewTests tests/ReviewTest.cpp)
     target_link_libraries(iiSocialIntegrationReviewTests PRIVATE iiSocialIntegration::iiSocialIntegration)
     target_include_directories(iiSocialIntegrationReviewTests PRIVATE third_party)

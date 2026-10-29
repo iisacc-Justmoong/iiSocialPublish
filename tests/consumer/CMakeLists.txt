@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.24)
+project(iiSocialIntegrationInstalledConsumer LANGUAGES CXX)
+
+find_package(iiSocialIntegration 0.2 CONFIG REQUIRED)
+find_package(iiSocialPublish 0.2 CONFIG REQUIRED)
+add_executable(iiSocialInstalledCompatibility ../CompatibilityTest.cpp)
+target_link_libraries(iiSocialInstalledCompatibility PRIVATE iiSocialPublish::iiSocialPublish)
+add_executable(iiSocialInstalledUrlImport ../UrlImportTest.cpp)
+target_link_libraries(iiSocialInstalledUrlImport PRIVATE iiSocialIntegration::iiSocialIntegration)
+enable_testing()
+add_test(NAME iiSocialIntegration.InstalledCompatibility COMMAND iiSocialInstalledCompatibility)
+add_test(NAME iiSocialIntegration.InstalledUrlImport COMMAND iiSocialInstalledUrlImport)

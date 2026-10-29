@@ -10,9 +10,9 @@
   },
   "source": {
     "path": "docs/README.md",
-    "sha256": "1b7986024a95eeb11df4039ca4f5c5064dc59e6c0a21b199d5b16f38849440b8",
-    "bytes": 1226,
-    "line_count": 21,
+    "sha256": "b3e1eceb78f4fa6180ba16a12cecbfa88f98fae72d6838642fd2360b61e69902",
+    "bytes": 1306,
+    "line_count": 22,
     "encoding": "utf-8",
     "language": "en"
   },
@@ -79,8 +79,8 @@
       "id": "b000008",
       "kind": "table",
       "start_line": 8,
-      "end_line": 20,
-      "raw": "| Document | Agent JSON |\n| --- | --- |\n| [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.generated.agent.json) |\n| [`README.md`](../README.md) | [JSON](entrypoints/README.generated.agent.json) |\n| [`docs/Execution.md`](Execution.md) | [JSON](Execution.generated.agent.json) |\n| [`docs/Migration.md`](Migration.md) | [JSON](Migration.agent.json) |\n| [`docs/Providers.md`](Providers.md) | [JSON](Providers.generated.agent.json) |\n| [`docs/Review.md`](Review.md) | [JSON](Review.generated.agent.json) |\n| [`docs/UrlImport.md`](UrlImport.md) | [JSON](UrlImport.agent.json) |\n| [`docs/Verification.md`](Verification.md) | [JSON](Verification.generated.agent.json) |\n| [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |\n| [`docs/YouTube.md`](YouTube.md) | [JSON](YouTube.generated.agent.json) |\n| [`docs/documentation-structure.md`](documentation-structure.md) | [JSON](documentation-structure.generated.agent.json) |\n",
+      "end_line": 21,
+      "raw": "| Document | Agent JSON |\n| --- | --- |\n| [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.generated.agent.json) |\n| [`README.md`](../README.md) | [JSON](entrypoints/README.generated.agent.json) |\n| [`docs/Execution.md`](Execution.md) | [JSON](Execution.generated.agent.json) |\n| [`docs/Migration.md`](Migration.md) | [JSON](Migration.agent.json) |\n| [`docs/Providers.md`](Providers.md) | [JSON](Providers.generated.agent.json) |\n| [`docs/Review.md`](Review.md) | [JSON](Review.generated.agent.json) |\n| [`docs/SourceLayout.md`](SourceLayout.md) | [JSON](SourceLayout.agent.json) |\n| [`docs/UrlImport.md`](UrlImport.md) | [JSON](UrlImport.agent.json) |\n| [`docs/Verification.md`](Verification.md) | [JSON](Verification.generated.agent.json) |\n| [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |\n| [`docs/YouTube.md`](YouTube.md) | [JSON](YouTube.generated.agent.json) |\n| [`docs/documentation-structure.md`](documentation-structure.md) | [JSON](documentation-structure.generated.agent.json) |\n",
       "columns": [
         "Document",
         "Agent JSON"
@@ -111,6 +111,10 @@
           "[JSON](Review.generated.agent.json)"
         ],
         [
+          "[`docs/SourceLayout.md`](SourceLayout.md)",
+          "[JSON](SourceLayout.agent.json)"
+        ],
+        [
           "[`docs/UrlImport.md`](UrlImport.md)",
           "[JSON](UrlImport.agent.json)"
         ],
@@ -135,8 +139,8 @@
     {
       "id": "b000009",
       "kind": "html",
-      "start_line": 21,
-      "end_line": 21,
+      "start_line": 22,
+      "end_line": 22,
       "raw": "<!-- workspace-docs:document-map:end -->\n"
     }
   ],
@@ -248,73 +252,87 @@
       },
       {
         "block_id": "b000008",
+        "label": "`docs/SourceLayout.md`",
+        "target": "SourceLayout.md",
+        "kind": "relative",
+        "line": 16
+      },
+      {
+        "block_id": "b000008",
+        "label": "JSON",
+        "target": "SourceLayout.agent.json",
+        "kind": "relative",
+        "line": 16
+      },
+      {
+        "block_id": "b000008",
         "label": "`docs/UrlImport.md`",
         "target": "UrlImport.md",
         "kind": "relative",
-        "line": 16
+        "line": 17
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "UrlImport.agent.json",
         "kind": "relative",
-        "line": 16
+        "line": 17
       },
       {
         "block_id": "b000008",
         "label": "`docs/Verification.md`",
         "target": "Verification.md",
         "kind": "relative",
-        "line": 17
+        "line": 18
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "Verification.generated.agent.json",
         "kind": "relative",
-        "line": 17
+        "line": 18
       },
       {
         "block_id": "b000008",
         "label": "`docs/WindowsBuildAndRun.md`",
         "target": "WindowsBuildAndRun.md",
         "kind": "relative",
-        "line": 18
+        "line": 19
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "WindowsBuildAndRun.generated.agent.json",
         "kind": "relative",
-        "line": 18
+        "line": 19
       },
       {
         "block_id": "b000008",
         "label": "`docs/YouTube.md`",
         "target": "YouTube.md",
         "kind": "relative",
-        "line": 19
+        "line": 20
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "YouTube.generated.agent.json",
         "kind": "relative",
-        "line": 19
+        "line": 20
       },
       {
         "block_id": "b000008",
         "label": "`docs/documentation-structure.md`",
         "target": "documentation-structure.md",
         "kind": "relative",
-        "line": 20
+        "line": 21
       },
       {
         "block_id": "b000008",
         "label": "JSON",
         "target": "documentation-structure.generated.agent.json",
         "kind": "relative",
-        "line": 20
+        "line": 21
       }
     ],
     "tables": [
@@ -348,6 +366,10 @@
           [
             "[`docs/Review.md`](Review.md)",
             "[JSON](Review.generated.agent.json)"
+          ],
+          [
+            "[`docs/SourceLayout.md`](SourceLayout.md)",
+            "[JSON](SourceLayout.agent.json)"
           ],
           [
             "[`docs/UrlImport.md`](UrlImport.md)",

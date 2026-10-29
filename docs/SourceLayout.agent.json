@@ -1,0 +1,85 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:fd23838eccdd173dd93b1e22c29830d6dc8c175505b60af7a1cc58c54645e845",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialIntegration",
+    "name": "iiSocialIntegration",
+    "root": "SDK/iiSocialIntegration",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/SourceLayout.md",
+    "sha256": "284e1999e87960197dc6a6ae04d592ee6eba07c0a89bb9c7569319132c442208",
+    "bytes": 601,
+    "line_count": 6,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "소스 책임 분류",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# 소스 책임 분류\n",
+      "level": 1,
+      "title": "소스 책임 분류"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 3,
+      "raw": "`src/Publishing`, `src/Review`, `src/Migration`, `src/Import`에 공개 헤더와 구현을 함께 둔다. HTTPS 전송은 `src/Transport`, 이전 패키지의 헤더 전용 별칭은 `src/Compatibility`가 담당한다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 4,
+      "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 5,
+      "end_line": 6,
+      "raw": "빌드 forwarding 헤더와 설치 패키지는 기존 `<iiSocialIntegration/...>`과 `<iiSocialPublish/...>` 경로 및 CMake 타깃을 유지한다. `tests/source_layout.cmake`와 SDK 공통 검사가 중복 디렉터리와 책임별 배치를 검사한다.\n`tests/consumer`는 신규 및 호환 패키지를 설치된 상태에서 각각 소비한다.\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "소스 책임 분류",
+      "anchor": "소스-책임-분류",
+      "start_line": 1
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [],
+    "commands": [],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

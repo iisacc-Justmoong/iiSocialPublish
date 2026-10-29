@@ -101,9 +101,9 @@ weights retain their respective licenses.
 
 ## Source header layout
 
-Public headers and implementations live together in `src/iiSocialIntegration/`.
+Public headers and implementations live together in responsibility-specific directories under `src/`; see [source layout](docs/SourceLayout.md).
 There is no separate authored `include/` tree. Legacy forwarding headers are
-provided under `src/iiSocialPublish/`. Generated export headers belong to
+provided under `src/Compatibility/`. Generated export headers belong to
 `build/`, not to the authored source tree.
 
 Validate this layout from the SDK workspace with
