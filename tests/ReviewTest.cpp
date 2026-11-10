@@ -1,6 +1,5 @@
 #include <iiSocialIntegration/Review.h>
 #include <nlohmann/json.hpp>
-#include <fstream>
 #include <iostream>
 #include <stdexcept>
 
@@ -64,10 +63,9 @@ struct MastodonFake : Transport {
     }
 };
 int main() {
-    const auto path = std::filesystem::current_path()/"review-fixture.png";
-    struct Cleanup { std::filesystem::path p; ~Cleanup() { std::error_code ec; std::filesystem::remove(p, ec); } } cleanup{path};
+    const auto path = std::filesystem::path(IISOCIAL_TEST_RESOURCE_DIR)/"review-fixture.png";
     try {
-        { std::ofstream file(path, std::ios::binary); file << "pixels"; }
+        check(std::filesystem::is_regular_file(path), "Missing review fixture");
         ReviewSource source; source.post.title = "Society title"; source.post.text = "Society description";
         source.post.idempotencyKey = "original";
         for (int i = 0; i < 20; ++i) {

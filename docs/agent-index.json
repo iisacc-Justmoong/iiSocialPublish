@@ -25,6 +25,13 @@
       "role": "overview"
     },
     {
+      "document_id": "urn:iisacc:document:f8c09d03ee4bf6360ad4ab2865a441b1efe2a72f04e4610899e7f5082d0fbb6d",
+      "source": "docs/DynamicLinking.md",
+      "agent_json": "docs/DynamicLinking.agent.json",
+      "source_sha256": "caeaf8aa2b53647fa9162b28f40e4df9a01fc62556aeaf2bc4df90c37bc80cda",
+      "role": "guide"
+    },
+    {
       "document_id": "urn:iisacc:document:43beef0c03655943a5e043490e543ab309191654ba5d902df968493fe6d5c061",
       "source": "docs/Execution.md",
       "agent_json": "docs/Execution.generated.agent.json",
@@ -49,7 +56,7 @@
       "document_id": "urn:iisacc:document:5bfd6edc91fe6eb6538d03edaf6748a74aff75b3d36f058de749c579b3b82fde",
       "source": "docs/README.md",
       "agent_json": "docs/README.generated.agent.json",
-      "source_sha256": "b3e1eceb78f4fa6180ba16a12cecbfa88f98fae72d6838642fd2360b61e69902",
+      "source_sha256": "58f78dba05c96a0188fb5921392b40e3722b3097838d7ffb4879a9136c39c1bd",
       "role": "overview"
     },
     {

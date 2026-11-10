@@ -10,11 +10,11 @@
   },
   "source": {
     "path": "docs/README.md",
-    "sha256": "b3e1eceb78f4fa6180ba16a12cecbfa88f98fae72d6838642fd2360b61e69902",
-    "bytes": 1306,
-    "line_count": 22,
+    "sha256": "58f78dba05c96a0188fb5921392b40e3722b3097838d7ffb4879a9136c39c1bd",
+    "bytes": 1974,
+    "line_count": 33,
     "encoding": "utf-8",
-    "language": "en"
+    "language": "ko"
   },
   "document": {
     "title": "iiSocialIntegration Documentation",
@@ -40,47 +40,91 @@
     },
     {
       "id": "b000003",
-      "kind": "html",
+      "kind": "heading",
       "start_line": 3,
       "end_line": 3,
-      "raw": "<!-- workspace-docs:document-map:start -->\n"
+      "raw": "## 테스트 리소스\n",
+      "level": 2,
+      "title": "테스트 리소스"
     },
     {
       "id": "b000004",
-      "kind": "heading",
+      "kind": "blank",
       "start_line": 4,
       "end_line": 4,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 5,
+      "end_line": 8,
+      "raw": "게시와 검토 테스트는 `resources/test-fixtures/`의 재사용 가능한 미디어를 읽는다.\n로컬 TLS 검증 인증서와 키는 테스트 전용이며 실제 계정이나 서비스에 사용하지 않는다.\n인증서는 10년 유효 기간으로 생성되었으며 만료 전에 갱신해야 한다. 테스트는\n빌드 디렉터리에 미디어·인증서 파일을 남기지 않는다.\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 9,
+      "end_line": 9,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "paragraph",
+      "start_line": 10,
+      "end_line": 11,
+      "raw": "이전 소비자 검증 소스, 조사 자료 및 출처를 확인하지 못한 파일은\n`resources/.recovery/build-history-20261030/`에 보존한다.\n"
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 12,
+      "end_line": 12,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "html",
+      "start_line": 13,
+      "end_line": 13,
+      "raw": "<!-- workspace-docs:document-map:start -->\n"
+    },
+    {
+      "id": "b000010",
+      "kind": "heading",
+      "start_line": 14,
+      "end_line": 14,
       "raw": "## Human and agent document map\n",
       "level": 2,
       "title": "Human and agent document map"
     },
     {
-      "id": "b000005",
+      "id": "b000011",
       "kind": "blank",
-      "start_line": 5,
-      "end_line": 5,
+      "start_line": 15,
+      "end_line": 15,
       "raw": "\n"
     },
     {
-      "id": "b000006",
+      "id": "b000012",
       "kind": "paragraph",
-      "start_line": 6,
-      "end_line": 6,
+      "start_line": 16,
+      "end_line": 16,
       "raw": "Markdown is the maintained human source. Agent JSON is a structured, source-traceable projection.\n"
     },
     {
-      "id": "b000007",
+      "id": "b000013",
       "kind": "blank",
-      "start_line": 7,
-      "end_line": 7,
+      "start_line": 17,
+      "end_line": 17,
       "raw": "\n"
     },
     {
-      "id": "b000008",
+      "id": "b000014",
       "kind": "table",
-      "start_line": 8,
-      "end_line": 21,
-      "raw": "| Document | Agent JSON |\n| --- | --- |\n| [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.generated.agent.json) |\n| [`README.md`](../README.md) | [JSON](entrypoints/README.generated.agent.json) |\n| [`docs/Execution.md`](Execution.md) | [JSON](Execution.generated.agent.json) |\n| [`docs/Migration.md`](Migration.md) | [JSON](Migration.agent.json) |\n| [`docs/Providers.md`](Providers.md) | [JSON](Providers.generated.agent.json) |\n| [`docs/Review.md`](Review.md) | [JSON](Review.generated.agent.json) |\n| [`docs/SourceLayout.md`](SourceLayout.md) | [JSON](SourceLayout.agent.json) |\n| [`docs/UrlImport.md`](UrlImport.md) | [JSON](UrlImport.agent.json) |\n| [`docs/Verification.md`](Verification.md) | [JSON](Verification.generated.agent.json) |\n| [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |\n| [`docs/YouTube.md`](YouTube.md) | [JSON](YouTube.generated.agent.json) |\n| [`docs/documentation-structure.md`](documentation-structure.md) | [JSON](documentation-structure.generated.agent.json) |\n",
+      "start_line": 18,
+      "end_line": 32,
+      "raw": "| Document | Agent JSON |\n| --- | --- |\n| [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.generated.agent.json) |\n| [`README.md`](../README.md) | [JSON](entrypoints/README.generated.agent.json) |\n| [`docs/DynamicLinking.md`](DynamicLinking.md) | [JSON](DynamicLinking.agent.json) |\n| [`docs/Execution.md`](Execution.md) | [JSON](Execution.generated.agent.json) |\n| [`docs/Migration.md`](Migration.md) | [JSON](Migration.agent.json) |\n| [`docs/Providers.md`](Providers.md) | [JSON](Providers.generated.agent.json) |\n| [`docs/Review.md`](Review.md) | [JSON](Review.generated.agent.json) |\n| [`docs/SourceLayout.md`](SourceLayout.md) | [JSON](SourceLayout.agent.json) |\n| [`docs/UrlImport.md`](UrlImport.md) | [JSON](UrlImport.agent.json) |\n| [`docs/Verification.md`](Verification.md) | [JSON](Verification.generated.agent.json) |\n| [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |\n| [`docs/YouTube.md`](YouTube.md) | [JSON](YouTube.generated.agent.json) |\n| [`docs/documentation-structure.md`](documentation-structure.md) | [JSON](documentation-structure.generated.agent.json) |\n",
       "columns": [
         "Document",
         "Agent JSON"
@@ -93,6 +137,10 @@
         [
           "[`README.md`](../README.md)",
           "[JSON](entrypoints/README.generated.agent.json)"
+        ],
+        [
+          "[`docs/DynamicLinking.md`](DynamicLinking.md)",
+          "[JSON](DynamicLinking.agent.json)"
         ],
         [
           "[`docs/Execution.md`](Execution.md)",
@@ -137,10 +185,10 @@
       ]
     },
     {
-      "id": "b000009",
+      "id": "b000015",
       "kind": "html",
-      "start_line": 22,
-      "end_line": 22,
+      "start_line": 33,
+      "end_line": 33,
       "raw": "<!-- workspace-docs:document-map:end -->\n"
     }
   ],
@@ -154,190 +202,227 @@
       "start_line": 1
     },
     {
-      "block_id": "b000004",
+      "block_id": "b000003",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "테스트 리소스",
+      "anchor": "테스트-리소스",
+      "start_line": 3
+    },
+    {
+      "block_id": "b000010",
       "parent_id": "b000001",
       "level": 2,
       "title": "Human and agent document map",
       "anchor": "human-and-agent-document-map",
-      "start_line": 4
+      "start_line": 14
     }
   ],
   "indexes": {
-    "directive_candidates": [],
+    "directive_candidates": [
+      {
+        "block_id": "b000005",
+        "line": 6,
+        "text": "로컬 TLS 검증 인증서와 키는 테스트 전용이며 실제 계정이나 서비스에 사용하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000005",
+        "line": 7,
+        "text": "인증서는 10년 유효 기간으로 생성되었으며 만료 전에 갱신해야 한다. 테스트는",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
     "commands": [],
     "links": [
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`AGENT.md`",
         "target": "../AGENT.md",
         "kind": "relative",
-        "line": 10
+        "line": 20
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "entrypoints/AGENT.generated.agent.json",
         "kind": "relative",
-        "line": 10
+        "line": 20
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`README.md`",
         "target": "../README.md",
         "kind": "relative",
-        "line": 11
+        "line": 21
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "entrypoints/README.generated.agent.json",
         "kind": "relative",
-        "line": 11
+        "line": 21
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
+        "label": "`docs/DynamicLinking.md`",
+        "target": "DynamicLinking.md",
+        "kind": "relative",
+        "line": 22
+      },
+      {
+        "block_id": "b000014",
+        "label": "JSON",
+        "target": "DynamicLinking.agent.json",
+        "kind": "relative",
+        "line": 22
+      },
+      {
+        "block_id": "b000014",
         "label": "`docs/Execution.md`",
         "target": "Execution.md",
         "kind": "relative",
-        "line": 12
+        "line": 23
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "Execution.generated.agent.json",
         "kind": "relative",
-        "line": 12
+        "line": 23
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`docs/Migration.md`",
         "target": "Migration.md",
         "kind": "relative",
-        "line": 13
+        "line": 24
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "Migration.agent.json",
         "kind": "relative",
-        "line": 13
+        "line": 24
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`docs/Providers.md`",
         "target": "Providers.md",
         "kind": "relative",
-        "line": 14
+        "line": 25
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "Providers.generated.agent.json",
         "kind": "relative",
-        "line": 14
+        "line": 25
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`docs/Review.md`",
         "target": "Review.md",
         "kind": "relative",
-        "line": 15
+        "line": 26
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "Review.generated.agent.json",
         "kind": "relative",
-        "line": 15
+        "line": 26
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`docs/SourceLayout.md`",
         "target": "SourceLayout.md",
         "kind": "relative",
-        "line": 16
+        "line": 27
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "SourceLayout.agent.json",
         "kind": "relative",
-        "line": 16
+        "line": 27
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`docs/UrlImport.md`",
         "target": "UrlImport.md",
         "kind": "relative",
-        "line": 17
+        "line": 28
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "UrlImport.agent.json",
         "kind": "relative",
-        "line": 17
+        "line": 28
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`docs/Verification.md`",
         "target": "Verification.md",
         "kind": "relative",
-        "line": 18
+        "line": 29
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "Verification.generated.agent.json",
         "kind": "relative",
-        "line": 18
+        "line": 29
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`docs/WindowsBuildAndRun.md`",
         "target": "WindowsBuildAndRun.md",
         "kind": "relative",
-        "line": 19
+        "line": 30
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "WindowsBuildAndRun.generated.agent.json",
         "kind": "relative",
-        "line": 19
+        "line": 30
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`docs/YouTube.md`",
         "target": "YouTube.md",
         "kind": "relative",
-        "line": 20
+        "line": 31
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "YouTube.generated.agent.json",
         "kind": "relative",
-        "line": 20
+        "line": 31
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "`docs/documentation-structure.md`",
         "target": "documentation-structure.md",
         "kind": "relative",
-        "line": 21
+        "line": 32
       },
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "label": "JSON",
         "target": "documentation-structure.generated.agent.json",
         "kind": "relative",
-        "line": 21
+        "line": 32
       }
     ],
     "tables": [
       {
-        "block_id": "b000008",
+        "block_id": "b000014",
         "columns": [
           "Document",
           "Agent JSON"
@@ -350,6 +435,10 @@
           [
             "[`README.md`](../README.md)",
             "[JSON](entrypoints/README.generated.agent.json)"
+          ],
+          [
+            "[`docs/DynamicLinking.md`](DynamicLinking.md)",
+            "[JSON](DynamicLinking.agent.json)"
           ],
           [
             "[`docs/Execution.md`](Execution.md)",

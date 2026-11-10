@@ -1,0 +1,100 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:f8c09d03ee4bf6360ad4ab2865a441b1efe2a72f04e4610899e7f5082d0fbb6d",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialIntegration",
+    "name": "iiSocialIntegration",
+    "root": "SDK/iiSocialIntegration",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/DynamicLinking.md",
+    "sha256": "caeaf8aa2b53647fa9162b28f40e4df9a01fc62556aeaf2bc4df90c37bc80cda",
+    "bytes": 589,
+    "line_count": 9,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "동적 라이브러리 빌드",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# 동적 라이브러리 빌드\n",
+      "level": 1,
+      "title": "동적 라이브러리 빌드"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 6,
+      "raw": "`iiSocialIntegration`은 기본적으로 공유 라이브러리로 빌드한다. 기존\n`iiSocialPublish` CMake 이름은 동일 타깃의 호환 별칭이다. 정적 산출물은\n`BUILD_SHARED_LIBS=OFF`로 선택한다. Windows에서는 DLL 심볼을 내보내고\niOS에서는 프레임워크로 설치하며, 앱은 연결된 런타임을 자체 포함해야 한다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 7,
+      "end_line": 7,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 8,
+      "end_line": 9,
+      "raw": "연결 검사는 테스트 실행 파일의 종속 정보를 검사하고 앱을 실행하지 않는다.\n각 플랫폼에서의 실제 구동은 별도의 검증 결과로 취급한다.\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "동적 라이브러리 빌드",
+      "anchor": "동적-라이브러리-빌드",
+      "start_line": 1
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000003",
+        "line": 6,
+        "text": "iOS에서는 프레임워크로 설치하며, 앱은 연결된 런타임을 자체 포함해야 한다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000005",
+        "line": 8,
+        "text": "연결 검사는 테스트 실행 파일의 종속 정보를 검사하고 앱을 실행하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [],
+    "links": [],
+    "tables": []
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

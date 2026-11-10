@@ -127,14 +127,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
 
 def main():
-    executable, folder, openssl, url_executable = sys.argv[1:]
-    folder = Path(folder)
-    folder.mkdir(parents=True, exist_ok=True)
-    certificate, key = folder / "certificate.pem", folder / "key.pem"
-    subprocess.run([openssl, "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "1",
-                    "-subj", "/CN=127.0.0.1", "-addext", "subjectAltName=IP:127.0.0.1",
-                    "-keyout", str(key), "-out", str(certificate)], check=True,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    executable, certificate, key, url_executable = sys.argv[1:]
+    certificate, key = Path(certificate), Path(key)
     server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain(certificate, key)
@@ -143,9 +137,9 @@ def main():
     thread.start()
     try:
         subprocess.run([executable, "transport", f"https://127.0.0.1:{server.server_port}", str(certificate)],
-                       check=True, timeout=45, cwd=folder.parent)
+                       check=True, timeout=45)
         subprocess.run([url_executable, "--loopback", f"https://127.0.0.1:{server.server_port}", str(certificate)],
-                       check=True, timeout=45, cwd=folder.parent)
+                       check=True, timeout=45)
     finally:
         server.shutdown()
         server.server_close()

@@ -1,7 +1,6 @@
 #include <iiSocialIntegration/Publishing.h>
 #include <nlohmann/json.hpp>
 #include <deque>
-#include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <thread>
@@ -41,10 +40,8 @@ std::string header(const Request& r, const std::string& name) {
 struct Fixture {
     std::filesystem::path path;
     Fixture() {
-        auto root = std::filesystem::current_path() / "fixtures";
-        std::filesystem::create_directories(root);
-        path = root / ("canvas export-" + std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()) + ".bin");
-        std::ofstream(path, std::ios::binary).write("abcdEFGH", 8);
+        path = std::filesystem::path(IISOCIAL_TEST_RESOURCE_DIR) / "canvas export.bin";
+        check(std::filesystem::is_regular_file(path), "Missing publishing fixture");
     }
     Media image() const { return {MediaKind::Image, path, {}, "image/png", "Image description"}; }
     Media video() const { return {MediaKind::Video, path, {}, "video/mp4", "Video description"}; }
@@ -239,7 +236,7 @@ void youtube() {
     check(result.postId == "video_1" && result.url == "https://www.youtube.com/watch?v=video_1", "YouTube result link/ID lost");
 
     // Chunk acknowledgement, then a lost final response: reconcile in the same session.
-    std::filesystem::resize_file(f.path, 4 * 1024 * 1024 + 8);
+    p.media[0].localFile = std::filesystem::path(IISOCIAL_TEST_RESOURCE_DIR) / "canvas large.bin";
     beginYouTube(fake);
     fake.add("PUT", youtubeUpload, nullptr, 308, [](const auto& r) {
         check(r.file->length == 4 * 1024 * 1024 && header(r, "Content-Range") == "bytes 0-4194303/4194312", "YouTube chunk is not a 256 KiB multiple");
@@ -253,7 +250,7 @@ void youtube() {
     done(fake, publish(Platform::YouTube, fake, p));
 
     // A partially received request resumes at the server-confirmed byte, not at zero.
-    std::filesystem::resize_file(f.path, 8);
+    p.media[0].localFile = f.path;
     p.visibility = "private"; p.youtube = {}; p.media[0].mimeType = "application/octet-stream";
     beginYouTube(fake, [](const auto& r) {
         const auto status = Json::parse(r.body)["status"];

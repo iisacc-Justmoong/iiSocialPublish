@@ -3,6 +3,7 @@ project(iiSocialIntegration VERSION 0.2.0 LANGUAGES CXX)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(CTest)
+option(BUILD_SHARED_LIBS "Build iiSocialIntegration as a shared library" ON)
 find_package(CURL 7.68 REQUIRED)
 find_package(LibXml2 2.9 REQUIRED)
 find_package(Threads REQUIRED)
@@ -21,10 +22,18 @@ foreach(_name Publishing.h Review.h Compatibility.h)
     file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/include/iiSocialPublish/${_name}"
         CONTENT "#pragma once\n#include \"${CMAKE_CURRENT_SOURCE_DIR}/src/Compatibility/${_name}\"\n")
 endforeach()
-add_library(iiSocialIntegration STATIC src/Publishing/Publishing.cpp src/Transport/CurlTransport.cpp src/Transport/CurlRuntime.cpp src/Review/Review.cpp src/Migration/Migration.cpp src/Import/UrlImport.cpp)
+add_library(iiSocialIntegration src/Publishing/Publishing.cpp src/Transport/CurlTransport.cpp src/Transport/CurlRuntime.cpp src/Review/Review.cpp src/Migration/Migration.cpp src/Import/UrlImport.cpp)
 add_library(iiSocialIntegration::iiSocialIntegration ALIAS iiSocialIntegration)
 add_library(iiSocialPublish::iiSocialPublish ALIAS iiSocialIntegration)
-set_target_properties(iiSocialIntegration PROPERTIES CXX_EXTENSIONS OFF POSITION_INDEPENDENT_CODE ON)
+set_target_properties(iiSocialIntegration PROPERTIES CXX_EXTENSIONS OFF POSITION_INDEPENDENT_CODE ON WINDOWS_EXPORT_ALL_SYMBOLS ON)
+if(BUILD_SHARED_LIBS AND CMAKE_SYSTEM_NAME STREQUAL "iOS")
+    set_target_properties(iiSocialIntegration PROPERTIES FRAMEWORK TRUE FRAMEWORK_VERSION A
+        MACOSX_FRAMEWORK_IDENTIFIER "com.iisacc.iiSocialIntegration")
+elseif(BUILD_SHARED_LIBS AND APPLE)
+    set_property(TARGET iiSocialIntegration APPEND PROPERTY INSTALL_RPATH "@loader_path")
+elseif(BUILD_SHARED_LIBS AND UNIX)
+    set_property(TARGET iiSocialIntegration APPEND PROPERTY INSTALL_RPATH "$ORIGIN")
+endif()
 target_compile_features(iiSocialIntegration PUBLIC cxx_std_23)
 target_include_directories(iiSocialIntegration PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
@@ -37,7 +46,9 @@ else()
     target_compile_options(iiSocialIntegration PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 set(_package_dir "${CMAKE_INSTALL_LIBDIR}/cmake/iiSocialIntegration")
-install(TARGETS iiSocialIntegration EXPORT iiSocialIntegrationTargets ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS iiSocialIntegration EXPORT iiSocialIntegrationTargets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${_social_public_headers}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiSocialIntegration)
 install(FILES src/Compatibility/Publishing.h src/Compatibility/Review.h src/Compatibility/Compatibility.h
@@ -65,10 +76,18 @@ if(BUILD_TESTING)
         "-DSOURCE_ROOT=${CMAKE_CURRENT_SOURCE_DIR}" -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/source_layout.cmake")
     add_executable(iiSocialIntegrationReviewTests tests/ReviewTest.cpp)
     target_link_libraries(iiSocialIntegrationReviewTests PRIVATE iiSocialIntegration::iiSocialIntegration)
+    target_compile_definitions(iiSocialIntegrationReviewTests PRIVATE "IISOCIAL_TEST_RESOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/test-fixtures\"")
     target_include_directories(iiSocialIntegrationReviewTests PRIVATE third_party)
     add_test(NAME iiSocialIntegration.Review COMMAND iiSocialIntegrationReviewTests)
     add_executable(iiSocialIntegrationTests tests/PublishingTest.cpp)
     target_link_libraries(iiSocialIntegrationTests PRIVATE iiSocialIntegration::iiSocialIntegration)
+    if(BUILD_SHARED_LIBS AND NOT CMAKE_CROSSCOMPILING)
+        add_test(NAME iiSocialIntegration.shared_link COMMAND ${CMAKE_COMMAND}
+            "-DIMAGE=$<TARGET_FILE:iiSocialIntegrationTests>"
+            "-DEXPECTED=$<TARGET_FILE:iiSocialIntegration>"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/shared_link.cmake")
+    endif()
+    target_compile_definitions(iiSocialIntegrationTests PRIVATE "IISOCIAL_TEST_RESOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/test-fixtures\"")
     target_include_directories(iiSocialIntegrationTests PRIVATE third_party)
     foreach(_case catalog validation x facebook instagram threads pinterest tumblr mastodon linkedin youtube youtube_validation youtube_errors errors transport)
         add_test(NAME iiSocialIntegration.${_case} COMMAND iiSocialIntegrationTests ${_case})
@@ -84,10 +103,15 @@ if(BUILD_TESTING)
     target_link_libraries(iiSocialIntegrationUrlImportTests PRIVATE iiSocialIntegration::iiSocialIntegration)
     add_test(NAME iiSocialIntegration.UrlImport COMMAND iiSocialIntegrationUrlImportTests)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
-    find_program(IISOCIALINTEGRATION_OPENSSL openssl REQUIRED)
     add_test(NAME iiSocialIntegration.TlsLoopback
         COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/TransportLoopback.py"
-            "$<TARGET_FILE:iiSocialIntegrationTests>" "${CMAKE_CURRENT_BINARY_DIR}/tls-loopback" "${IISOCIALINTEGRATION_OPENSSL}"
+            "$<TARGET_FILE:iiSocialIntegrationTests>" "${CMAKE_CURRENT_SOURCE_DIR}/resources/test-fixtures/certificate.pem"
+            "${CMAKE_CURRENT_SOURCE_DIR}/resources/test-fixtures/key.pem"
             "$<TARGET_FILE:iiSocialIntegrationUrlImportTests>")
     set_tests_properties(iiSocialIntegration.TlsLoopback PROPERTIES TIMEOUT 60)
+    add_test(NAME iiSocialIntegration.ResourceBoundary COMMAND "${CMAKE_COMMAND}"
+        "-DSOURCE_ROOT=${CMAKE_CURRENT_SOURCE_DIR}" "-DBUILD_ROOT=${CMAKE_CURRENT_BINARY_DIR}"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/ResourceBoundary.cmake")
+    set_tests_properties(iiSocialIntegration.ResourceBoundary PROPERTIES
+        DEPENDS "iiSocialIntegration.Review;iiSocialIntegration.youtube;iiSocialIntegration.TlsLoopback")
 endif()
