@@ -10,11 +10,11 @@
   },
   "source": {
     "path": "docs/Providers.md",
-    "sha256": "ec4ba968bf17e7c747945cef70ce0dc27904da6a873e23e924bbb22837a45dbe",
-    "bytes": 8315,
-    "line_count": 79,
+    "sha256": "fc8cd45b4303b45a7b22f9129ac5a6fb21f26d8d66c6e98b45e867a580df39b7",
+    "bytes": 10586,
+    "line_count": 109,
     "encoding": "utf-8",
-    "language": "en"
+    "language": "ko"
   },
   "document": {
     "title": "Official publishing contracts",
@@ -57,7 +57,7 @@
       "kind": "table",
       "start_line": 10,
       "end_line": 22,
-      "raw": "| Object | Implemented route and media workflow | Required account configuration |\n| --- | --- | --- |\n| XPublisher | `POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded. | User OAuth `tweet.read`, `tweet.write`, `users.read`, plus `media.write` for media. X API access is billable; `allowBillableRequests` defaults to false. |\n| FacebookPublisher | Page `/photos` uploads with `published=false` followed by `/feed` for text/photo albums; Graph Video `/videos` for a single video, followed by processing reads. | Page access token, numeric Page ID, `pages_manage_posts`, `pages_read_engagement`, explicit Graph version. Personal profile posting is unsupported. |\n| InstagramPublisher | Instagram Login `/media`, container status, `/media_publish`; image, Reel or mixed image/video carousel. | Professional account, numeric IG user ID, `instagram_business_basic`, `instagram_business_content_publish`, explicit Graph version. Media must be available at public HTTPS URLs. |\n| ThreadsPublisher | `/v1.0/{user}/threads`, container status, `/threads_publish`; text, image, video or carousel. | Threads user token/ID, `threads_basic`, `threads_content_publish`; public HTTPS media URLs. |\n| PinterestPublisher | `/v5/pins` with `image_url` or `image_base64`; `/v5/media`, signed multipart video upload, media processing, then a `video_id` Pin. | `pins:write`, `boards:read`, destination board ID, approved app/access tier. A video requires a cover image URL. |\n| TumblrPublisher | `/v2/blog/{blog}/posts` using Neue Post Format JSON and multipart `json` + identifier-mapped media parts. Text, images and video. | OAuth2 `write` user token and an explicit blog hostname or immutable UUID. |\n| MastodonPublisher | Per-instance `/api/v2/instance`, `/api/v2/media`, async media reads, `/api/v1/statuses`. | HTTPS instance origin, instance-issued token, `write:statuses` and `write:media` for attachments (or `write`). Instance attachment count is read at runtime. Visibility, content warning, sensitive flag, alt text and Idempotency-Key are supported. |\n| LinkedInPublisher | `/rest/images?action=initializeUpload`, media PUT and status; videos initialize, byte-range PUT with ordered ETags, finalize and status; `/rest/posts`. Text, image, multiple images or a single video. | User token, explicit person/organization author URN, `w_member_social` or `w_organization_social` and organization role/access, explicit supported YYYYMM version. |\n| YouTubePublisher | Data API v3 `POST /upload/youtube/v3/videos?uploadType=resumable`, metadata JSON, streamed 4 MiB `PUT` chunks, 308 byte acknowledgements and bounded same-session status/recovery PUTs. | Google user OAuth `https://www.googleapis.com/auth/youtube.upload` or an accepted broader upload scope; the grant selects the YouTube channel. One local video and title. `targetId` must be empty. See [YouTube](YouTube.md). |\n| UnsupportedPublisher (Pixiv) | Returns `unsupported` before any networking. | No official public publishing contract was verified. This is a statement about verified integration support, not a claim that private partner APIs can never exist. |\n| UnsupportedPublisher (ArtStation) | Returns `unsupported` before any networking. | Same restriction; no undocumented project-upload or login-session endpoint is used. |\n",
+      "raw": "| Object | Implemented route and media workflow | Required account configuration |\n| --- | --- | --- |\n| XPublisher | `POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text via `POST /2/media/metadata` using the v2 `id` and `metadata.alt_text.text` fields. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded. | User OAuth `tweet.read`, `tweet.write`, `users.read`, plus `media.write` for media. X API access is billable; `allowBillableRequests` defaults to false. |\n| FacebookPublisher | Page `/photos` uploads with `published=false` followed by `/feed` for text/photo albums; Graph Video `/videos` for a single video, followed by processing reads. | Page access token, numeric Page ID, `pages_manage_posts`, `pages_read_engagement`, explicit Graph version. Personal profile posting is unsupported. |\n| InstagramPublisher | Instagram Login `/media`, container status, `/media_publish`; image, Reel or mixed image/video carousel. | Professional account, numeric IG user ID, `instagram_business_basic`, `instagram_business_content_publish`, explicit Graph version. Media must be available at public HTTPS URLs. |\n| ThreadsPublisher | `/v1.0/{user}/threads`, container status, `/threads_publish`; text, image, video or carousel. | Threads user token/ID, `threads_basic`, `threads_content_publish`; public HTTPS media URLs. |\n| PinterestPublisher | `/v5/pins` with `image_url` or `image_base64`; `/v5/media`, signed multipart video upload, media processing, then a `video_id` Pin. | `pins:write`, `boards:read`, destination board ID, approved app/access tier. A video requires a cover image URL. |\n| TumblrPublisher | `/v2/blog/{blog}/posts` using Neue Post Format JSON and multipart `json` + identifier-mapped media parts. Text, images and video. | OAuth2 `write` user token and an explicit blog hostname or immutable UUID. |\n| MastodonPublisher | Per-instance `/api/v2/instance`, `/api/v2/media`, async media reads, `/api/v1/statuses`. | HTTPS instance origin, instance-issued token, `write:statuses` and `write:media` for attachments (or `write`). Instance attachment count is read at runtime. Visibility, content warning, sensitive flag, alt text and Idempotency-Key are supported. |\n| LinkedInPublisher | `/rest/images?action=initializeUpload`, media PUT and status; videos initialize, byte-range PUT with ordered ETags, finalize and status; `/rest/posts`. Text, image, multiple images or a single video. | User token, explicit person/organization author URN, `w_member_social` or `w_organization_social` and organization role/access, explicit supported YYYYMM version. |\n| YouTubePublisher | Data API v3 `POST /upload/youtube/v3/videos?uploadType=resumable`, metadata JSON, streamed 4 MiB `PUT` chunks, 308 byte acknowledgements and bounded same-session status/recovery PUTs. | Google user OAuth `https://www.googleapis.com/auth/youtube.upload` or an accepted broader upload scope; the grant selects the YouTube channel. One local video and title. `targetId` must be empty. See [YouTube](YouTube.md). |\n| UnsupportedPublisher (Pixiv) | Returns `unsupported` before any networking. | No official public publishing contract was verified. This is a statement about verified integration support, not a claim that private partner APIs can never exist. |\n| UnsupportedPublisher (ArtStation) | Returns `unsupported` before any networking. | Same restriction; no undocumented project-upload or login-session endpoint is used. |\n",
       "columns": [
         "Object",
         "Implemented route and media workflow",
@@ -66,7 +66,7 @@
       "rows": [
         [
           "XPublisher",
-          "`POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded.",
+          "`POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text via `POST /2/media/metadata` using the v2 `id` and `metadata.alt_text.text` fields. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded.",
           "User OAuth `tweet.read`, `tweet.write`, `users.read`, plus `media.write` for media. X API access is billable; `allowBillableRequests` defaults to false."
         ],
         [
@@ -130,53 +130,123 @@
     },
     {
       "id": "b000007",
-      "kind": "paragraph",
+      "kind": "heading",
       "start_line": 24,
-      "end_line": 31,
-      "raw": "The adapter deliberately supports a bounded common export shape: images/videos,\nnot arbitrary IISC documents, live streams, ads, stories, polls or document\nposts. It does not resize, transcode, crop, expose local files on a public\nserver, or silently choose a board/Page/author. Image/video MIME types must\nmatch their declared kind. Provider-specific size, aspect ratio, duration,\nweighted text length, account eligibility and posting quotas remain\nauthoritative at the API. The adapter rejects invalid file paths and mixed\nvideo batches where its implemented publishing route cannot support them.\n"
+      "end_line": 24,
+      "raw": "## Pixiv and ArtStation: non-API publishing assessment\n",
+      "level": 2,
+      "title": "Pixiv and ArtStation: non-API publishing assessment"
     },
     {
       "id": "b000008",
       "kind": "blank",
-      "start_line": 32,
-      "end_line": 32,
+      "start_line": 25,
+      "end_line": 25,
       "raw": "\n"
     },
     {
       "id": "b000009",
       "kind": "paragraph",
-      "start_line": 33,
-      "end_line": 42,
-      "raw": "Text includes the supplied `link` and hashtag list except where the provider\nhas native link/tag fields (Facebook/Pinterest link, Tumblr/YouTube tags). Titles are\nused by Pinterest, Tumblr, Facebook video, LinkedIn media and YouTube. YouTube\nrequires a title; its description contains `text` and `link`, with tags in the\nnative metadata array. Visibility/CW/sensitivity controls apply to Mastodon;\nYouTube supports public/unlisted/private visibility. Other adapters accept\npublic visibility only. X's `madeWithAi` is a supported API disclosure, not a general provider\nlabeling policy. The SDK does not infer such disclosure from media pixels.\nYouTube uses the explicit optional `youtube.containsSyntheticMedia` and\n`youtube.madeForKids` declarations; the generic AI flag is not substituted.\n"
+      "start_line": 26,
+      "end_line": 29,
+      "raw": "Reviewed on 2026-10-28. Both services provide a user-operated publishing flow,\nbut this investigation did not establish an executable, verified SDK publishing\nintegration for either service. The unsupported publisher and review blocker\nremain in place; a manual website flow is not reported as an SDK publication.\n"
     },
     {
       "id": "b000010",
+      "kind": "blank",
+      "start_line": 30,
+      "end_line": 30,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "list",
+      "start_line": 31,
+      "end_line": 42,
+      "raw": "- **Pixiv:** its [illustration posting guide](https://www.pixiv.help/hc/en-us/articles/235584588-How-can-I-post-illustrations-on-pixiv)\n  describes selecting local files and entering tags, age restriction and AI\n  disclosure after signing in. JPG, PNG and non-animated GIF are accepted up to\n  32 MB per file according to that guide. The guide describes user-operated\n  posting, not a documented third-party automated upload contract.\n- **ArtStation:** its [video-clip guide](https://help.artstation.com/en/articles/16155107-how-to-add-video-clips)\n  describes adding an MP4 in Manage Portfolio, and the [ArtStation team](https://magazine.artstation.com/2026/05/new-on-artstation-showcasing-pro-artists-new-reactions-message-request-system/)\n  says a mature-content selection is required for new projects. The\n  [terms](https://www.artstation.com/tos) restrict reverse engineering,\n  third-party account access and circumvention of access controls. These sources\n  do not establish whether a particular user-operated browser automation is\n  permitted or works end to end.\n",
+      "items": [
+        {
+          "marker": "-",
+          "text": "**Pixiv:** its [illustration posting guide](https://www.pixiv.help/hc/en-us/articles/235584588-How-can-I-post-illustrations-on-pixiv)",
+          "checked": null
+        },
+        {
+          "marker": "-",
+          "text": "**ArtStation:** its [video-clip guide](https://help.artstation.com/en/articles/16155107-how-to-add-video-clips)",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000012",
       "kind": "blank",
       "start_line": 43,
       "end_line": 43,
       "raw": "\n"
     },
     {
-      "id": "b000011",
-      "kind": "heading",
+      "id": "b000013",
+      "kind": "paragraph",
       "start_line": 44,
-      "end_line": 44,
+      "end_line": 50,
+      "raw": "For this review, the computer-use site-safety policy blocked access to the\nPixiv site and the available ArtStation browser session was signed out. No\nauthenticated editor, upload, submission, or returned post identifier was\nverified. A future browser-based implementation would need a verified permitted\ninteraction, access to a controlled signed-in test account, and evidence of the\nactual submission and result; it must handle changes and challenges without\nclaiming success or bypassing site security.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 51,
+      "end_line": 51,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "paragraph",
+      "start_line": 52,
+      "end_line": 59,
+      "raw": "The adapter deliberately supports a bounded common export shape: images/videos,\nnot arbitrary IISC documents, live streams, ads, stories, polls or document\nposts. It does not resize, transcode, crop, expose local files on a public\nserver, or silently choose a board/Page/author. Image/video MIME types must\nmatch their declared kind. Provider-specific size, aspect ratio, duration,\nweighted text length, account eligibility and posting quotas remain\nauthoritative at the API. The adapter rejects invalid file paths and mixed\nvideo batches where its implemented publishing route cannot support them.\n"
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 60,
+      "end_line": 60,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 61,
+      "end_line": 70,
+      "raw": "Text includes the supplied `link` and hashtag list except where the provider\nhas native link/tag fields (Facebook/Pinterest link, Tumblr/YouTube tags). Titles are\nused by Pinterest, Tumblr, Facebook video, LinkedIn media and YouTube. YouTube\nrequires a title; its description contains `text` and `link`, with tags in the\nnative metadata array. Visibility/CW/sensitivity controls apply to Mastodon;\nYouTube supports public/unlisted/private visibility. Other adapters accept\npublic visibility only. X's `madeWithAi` is a supported API disclosure, not a general provider\nlabeling policy. The SDK does not infer such disclosure from media pixels.\nYouTube uses the explicit optional `youtube.containsSyntheticMedia` and\n`youtube.madeForKids` declarations; the generic AI flag is not substituted.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 71,
+      "end_line": 71,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "heading",
+      "start_line": 72,
+      "end_line": 72,
       "raw": "## Primary references\n",
       "level": 2,
       "title": "Primary references"
     },
     {
-      "id": "b000012",
+      "id": "b000020",
       "kind": "blank",
-      "start_line": 45,
-      "end_line": 45,
+      "start_line": 73,
+      "end_line": 73,
       "raw": "\n"
     },
     {
-      "id": "b000013",
+      "id": "b000021",
       "kind": "list",
-      "start_line": 46,
-      "end_line": 73,
+      "start_line": 74,
+      "end_line": 101,
       "raw": "- [X create post](https://docs.x.com/x-api/posts/create-post),\n  [v2 chunked media upload](https://docs.x.com/x-api/media/quickstart/media-upload-chunked),\n  [X developer platform/access](https://developer.x.com/).\n- [Facebook Page posts](https://developers.facebook.com/docs/pages-api/posts/),\n  [video publishing](https://developers.facebook.com/docs/video-api/guides/publishing/).\n- [Instagram Login content publishing](https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/content-publishing/),\n  [Meta Instagram Login scopes](https://www.postman.com/meta/instagram/folder/6raa77c/instagram-api-with-instagram-login),\n  [Meta's official Instagram API collection](https://www.postman.com/meta/instagram/documentation/23987686-9386f468-7714-490f-9bfc-9442db5c8f00).\n- [Threads publishing](https://developers.facebook.com/docs/threads/posts/),\n  [Meta's official Threads API collection](https://www.postman.com/meta/threads/documentation/dht3nzz/threads-api).\n- [Pinterest organic Pins/media guide](https://developers.pinterest.com/docs/work-with-organic-content-and-users/create-boards-and-pins/),\n  [media upload state definitions](https://developers.pinterest.com/docs/work-with-ads/manage-media-library-assets/),\n  [app access](https://developers.pinterest.com/docs/getting-started/connect-app/).\n- [Tumblr official OAuth2 and NPF API](https://github.com/tumblr/docs/blob/master/api.md),\n  [NPF media schema](https://github.com/tumblr/docs/blob/master/npf-spec.md).\n- [Mastodon media](https://docs.joinmastodon.org/methods/media/),\n  [statuses](https://docs.joinmastodon.org/methods/statuses/),\n  [instance limits](https://docs.joinmastodon.org/methods/instance/).\n- [LinkedIn Posts](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api),\n  [Images](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/images-api),\n  [Videos](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/videos-api).\n  [LinkedIn image/video upload authorization](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/vector-asset-api#upload-the-image)\n  documents the required image PUT token and the token-free video PUT.\n- [YouTube videos.insert](https://developers.google.com/youtube/data/reference/rest/v3/videos/insert),\n  [resumable upload protocol](https://developers.google.com/youtube/data/guides/using_resumable_upload_protocol),\n  [video metadata](https://developers.google.com/youtube/data/reference/rest/v3/videos).\n- [Pixiv official help](https://www.pixiv.help/hc/en-us),\n  [ArtStation official help](https://help.artstation.com/en/).\n",
       "items": [
         {
@@ -232,18 +302,32 @@
       ]
     },
     {
-      "id": "b000014",
+      "id": "b000022",
       "kind": "blank",
-      "start_line": 74,
-      "end_line": 74,
+      "start_line": 102,
+      "end_line": 102,
       "raw": "\n"
     },
     {
-      "id": "b000015",
+      "id": "b000023",
       "kind": "paragraph",
-      "start_line": 75,
-      "end_line": 79,
+      "start_line": 103,
+      "end_line": 107,
       "raw": "Meta's direct documentation returned access/rate-limit errors in this research\nsession; the implementation was also checked against Meta's official Postman\ncollections. No third-party reverse-engineered API is treated as a contract.\nApp registration/review, live OAuth consent, paid access provisioning and live\npublishing have not been performed by the test suite.\n"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 108,
+      "end_line": 108,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "paragraph",
+      "start_line": 109,
+      "end_line": 109,
+      "raw": "X의 미디어 메타데이터는 [공식 v2 요청 형식](https://docs.x.com/x-api/media/create-media-metadata)의 `id`와 `metadata` 객체를 사용한다. 메타데이터 단계가 실패하면 새 게시물을 만들지 않는다.\n"
     }
   ],
   "outline": [
@@ -256,12 +340,20 @@
       "start_line": 1
     },
     {
-      "block_id": "b000011",
+      "block_id": "b000007",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "Pixiv and ArtStation: non-API publishing assessment",
+      "anchor": "pixiv-and-artstation-non-api-publishing-assessment",
+      "start_line": 24
+    },
+    {
+      "block_id": "b000019",
       "parent_id": "b000001",
       "level": 2,
       "title": "Primary references",
       "anchor": "primary-references",
-      "start_line": 44
+      "start_line": 72
     }
   ],
   "indexes": {
@@ -309,15 +401,36 @@
         "context": "table"
       },
       {
-        "block_id": "b000007",
-        "line": 27,
+        "block_id": "b000011",
+        "line": 38,
+        "text": "says a mature-content selection is required for new projects. The",
+        "basis": "lexical_match",
+        "context": "list"
+      },
+      {
+        "block_id": "b000011",
+        "line": 41,
+        "text": "do not establish whether a particular user-operated browser automation is",
+        "basis": "lexical_match",
+        "context": "list"
+      },
+      {
+        "block_id": "b000013",
+        "line": 49,
+        "text": "actual submission and result; it must handle changes and challenges without",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000015",
+        "line": 55,
         "text": "server, or silently choose a board/Page/author. Image/video MIME types must",
         "basis": "lexical_match",
         "context": "paragraph"
       },
       {
-        "block_id": "b000013",
-        "line": 68,
+        "block_id": "b000021",
+        "line": 96,
         "text": "documents the required image PUT token and the token-free video PUT.",
         "basis": "lexical_match",
         "context": "list"
@@ -333,193 +446,228 @@
         "line": 20
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000011",
+        "label": "illustration posting guide",
+        "target": "https://www.pixiv.help/hc/en-us/articles/235584588-How-can-I-post-illustrations-on-pixiv",
+        "kind": "external",
+        "line": 31
+      },
+      {
+        "block_id": "b000011",
+        "label": "video-clip guide",
+        "target": "https://help.artstation.com/en/articles/16155107-how-to-add-video-clips",
+        "kind": "external",
+        "line": 36
+      },
+      {
+        "block_id": "b000011",
+        "label": "ArtStation team",
+        "target": "https://magazine.artstation.com/2026/05/new-on-artstation-showcasing-pro-artists-new-reactions-message-request-system/",
+        "kind": "external",
+        "line": 37
+      },
+      {
+        "block_id": "b000011",
+        "label": "terms",
+        "target": "https://www.artstation.com/tos",
+        "kind": "external",
+        "line": 39
+      },
+      {
+        "block_id": "b000021",
         "label": "X create post",
         "target": "https://docs.x.com/x-api/posts/create-post",
         "kind": "external",
-        "line": 46
+        "line": 74
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "v2 chunked media upload",
         "target": "https://docs.x.com/x-api/media/quickstart/media-upload-chunked",
         "kind": "external",
-        "line": 47
+        "line": 75
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "X developer platform/access",
         "target": "https://developer.x.com/",
         "kind": "external",
-        "line": 48
+        "line": 76
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Facebook Page posts",
         "target": "https://developers.facebook.com/docs/pages-api/posts/",
         "kind": "external",
-        "line": 49
+        "line": 77
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "video publishing",
         "target": "https://developers.facebook.com/docs/video-api/guides/publishing/",
         "kind": "external",
-        "line": 50
+        "line": 78
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Instagram Login content publishing",
         "target": "https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/content-publishing/",
         "kind": "external",
-        "line": 51
+        "line": 79
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Meta Instagram Login scopes",
         "target": "https://www.postman.com/meta/instagram/folder/6raa77c/instagram-api-with-instagram-login",
         "kind": "external",
-        "line": 52
+        "line": 80
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Meta's official Instagram API collection",
         "target": "https://www.postman.com/meta/instagram/documentation/23987686-9386f468-7714-490f-9bfc-9442db5c8f00",
         "kind": "external",
-        "line": 53
+        "line": 81
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Threads publishing",
         "target": "https://developers.facebook.com/docs/threads/posts/",
         "kind": "external",
-        "line": 54
+        "line": 82
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Meta's official Threads API collection",
         "target": "https://www.postman.com/meta/threads/documentation/dht3nzz/threads-api",
         "kind": "external",
-        "line": 55
+        "line": 83
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Pinterest organic Pins/media guide",
         "target": "https://developers.pinterest.com/docs/work-with-organic-content-and-users/create-boards-and-pins/",
         "kind": "external",
-        "line": 56
+        "line": 84
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "media upload state definitions",
         "target": "https://developers.pinterest.com/docs/work-with-ads/manage-media-library-assets/",
         "kind": "external",
-        "line": 57
+        "line": 85
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "app access",
         "target": "https://developers.pinterest.com/docs/getting-started/connect-app/",
         "kind": "external",
-        "line": 58
+        "line": 86
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Tumblr official OAuth2 and NPF API",
         "target": "https://github.com/tumblr/docs/blob/master/api.md",
         "kind": "external",
-        "line": 59
+        "line": 87
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "NPF media schema",
         "target": "https://github.com/tumblr/docs/blob/master/npf-spec.md",
         "kind": "external",
-        "line": 60
+        "line": 88
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Mastodon media",
         "target": "https://docs.joinmastodon.org/methods/media/",
         "kind": "external",
-        "line": 61
+        "line": 89
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "statuses",
         "target": "https://docs.joinmastodon.org/methods/statuses/",
         "kind": "external",
-        "line": 62
+        "line": 90
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "instance limits",
         "target": "https://docs.joinmastodon.org/methods/instance/",
         "kind": "external",
-        "line": 63
+        "line": 91
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "LinkedIn Posts",
         "target": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api",
         "kind": "external",
-        "line": 64
+        "line": 92
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Images",
         "target": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/images-api",
         "kind": "external",
-        "line": 65
+        "line": 93
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Videos",
         "target": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/videos-api",
         "kind": "external",
-        "line": 66
+        "line": 94
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "LinkedIn image/video upload authorization",
         "target": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/vector-asset-api#upload-the-image",
         "kind": "external",
-        "line": 67
+        "line": 95
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "YouTube videos.insert",
         "target": "https://developers.google.com/youtube/data/reference/rest/v3/videos/insert",
         "kind": "external",
-        "line": 69
+        "line": 97
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "resumable upload protocol",
         "target": "https://developers.google.com/youtube/data/guides/using_resumable_upload_protocol",
         "kind": "external",
-        "line": 70
+        "line": 98
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "video metadata",
         "target": "https://developers.google.com/youtube/data/reference/rest/v3/videos",
         "kind": "external",
-        "line": 71
+        "line": 99
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "Pixiv official help",
         "target": "https://www.pixiv.help/hc/en-us",
         "kind": "external",
-        "line": 72
+        "line": 100
       },
       {
-        "block_id": "b000013",
+        "block_id": "b000021",
         "label": "ArtStation official help",
         "target": "https://help.artstation.com/en/",
         "kind": "external",
-        "line": 73
+        "line": 101
+      },
+      {
+        "block_id": "b000025",
+        "label": "공식 v2 요청 형식",
+        "target": "https://docs.x.com/x-api/media/create-media-metadata",
+        "kind": "external",
+        "line": 109
       }
     ],
     "tables": [
@@ -533,7 +681,7 @@
         "rows": [
           [
             "XPublisher",
-            "`POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded.",
+            "`POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text via `POST /2/media/metadata` using the v2 `id` and `metadata.alt_text.text` fields. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded.",
             "User OAuth `tweet.read`, `tweet.write`, `users.read`, plus `media.write` for media. X API access is billable; `allowBillableRequests` defaults to false."
           ],
           [

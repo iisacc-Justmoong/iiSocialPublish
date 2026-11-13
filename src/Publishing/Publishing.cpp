@@ -316,7 +316,7 @@ public:
                 r.pause(std::chrono::seconds(std::min(seconds, 300u)));
                 data = r.json("GET", "https://api.x.com/2/media/upload?command=STATUS&media_id=" + encode(resource)).at("data");
             }
-            if (!media.altText.empty()) r.json("POST", "https://api.x.com/2/media/metadata", {{"media_id", resource}, {"alt_text", {{"text", media.altText}}}}, false, false, true);
+            if (!media.altText.empty()) r.json("POST", "https://api.x.com/2/media/metadata", {{"id", resource}, {"metadata", {{"alt_text", {{"text", media.altText}}}}}}, false, false, true);
             ids.push_back(resource);
         }
         Json body{{"text", text(post)}};

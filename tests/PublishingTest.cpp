@@ -114,7 +114,11 @@ void x() {
     fake.add("POST", "https://api.x.com/2/media/upload/m1/append", nullptr, 204, [](auto& r) { check(r.parts.size() == 2 && r.parts[1].file->offset == 0 && r.parts[1].file->length == 8, "X did not stream a bounded chunk"); });
     fake.add("POST", "https://api.x.com/2/media/upload/m1/finalize", {{"data", {{"processing_info", {{"state", "pending"}, {"check_after_secs", 1}}}}}});
     fake.add("GET", "https://api.x.com/2/media/upload?command=STATUS&media_id=m1", {{"data", {{"processing_info", {{"state", "succeeded"}}}}}});
-    fake.add("POST", "https://api.x.com/2/media/metadata", nullptr, 204);
+    fake.add("POST", "https://api.x.com/2/media/metadata", nullptr, 204, [](const auto& r) {
+        const auto body = Json::parse(r.body);
+        check(body == Json{{"id", "m1"}, {"metadata", {{"alt_text", {{"text", "Video description"}}}}}},
+              "X media metadata does not follow the v2 id/metadata schema");
+    });
     fake.add("POST", "https://api.x.com/2/tweets", {{"data", {{"id", "post-x"}}}}, 201, [](auto& r) { auto body = Json::parse(r.body); check(body["media"]["media_ids"][0] == "m1" && body["made_with_ai"] == true, "X publish lost media or AI disclosure"); });
     done(fake, publish(Platform::X, fake, p));
 }

@@ -9,7 +9,7 @@ configuration or claims of app approval.
 
 | Object | Implemented route and media workflow | Required account configuration |
 | --- | --- | --- |
-| XPublisher | `POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded. | User OAuth `tweet.read`, `tweet.write`, `users.read`, plus `media.write` for media. X API access is billable; `allowBillableRequests` defaults to false. |
+| XPublisher | `POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text via `POST /2/media/metadata` using the v2 `id` and `metadata.alt_text.text` fields. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded. | User OAuth `tweet.read`, `tweet.write`, `users.read`, plus `media.write` for media. X API access is billable; `allowBillableRequests` defaults to false. |
 | FacebookPublisher | Page `/photos` uploads with `published=false` followed by `/feed` for text/photo albums; Graph Video `/videos` for a single video, followed by processing reads. | Page access token, numeric Page ID, `pages_manage_posts`, `pages_read_engagement`, explicit Graph version. Personal profile posting is unsupported. |
 | InstagramPublisher | Instagram Login `/media`, container status, `/media_publish`; image, Reel or mixed image/video carousel. | Professional account, numeric IG user ID, `instagram_business_basic`, `instagram_business_content_publish`, explicit Graph version. Media must be available at public HTTPS URLs. |
 | ThreadsPublisher | `/v1.0/{user}/threads`, container status, `/threads_publish`; text, image, video or carousel. | Threads user token/ID, `threads_basic`, `threads_content_publish`; public HTTPS media URLs. |
@@ -105,3 +105,5 @@ session; the implementation was also checked against Meta's official Postman
 collections. No third-party reverse-engineered API is treated as a contract.
 App registration/review, live OAuth consent, paid access provisioning and live
 publishing have not been performed by the test suite.
+
+X의 미디어 메타데이터는 [공식 v2 요청 형식](https://docs.x.com/x-api/media/create-media-metadata)의 `id`와 `metadata` 객체를 사용한다. 메타데이터 단계가 실패하면 새 게시물을 만들지 않는다.

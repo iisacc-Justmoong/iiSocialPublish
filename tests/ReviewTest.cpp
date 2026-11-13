@@ -16,8 +16,8 @@ struct Fake : Transport {
         if (r.url.ends_with("/append")) return {204};
         if (r.url.ends_with("/metadata")) {
             auto body=Json::parse(r.body);
-            auto index=std::stoul(body["media_id"].get<std::string>())-701;
-            check(body["alt_text"]["text"]=="Alt "+std::to_string(index),"Alt text was assigned to another source image");
+            auto index=std::stoul(body["id"].get<std::string>())-701;
+            check(body["metadata"]["alt_text"]["text"]=="Alt "+std::to_string(index),"Alt text was assigned to another source image");
             return {204};
         }
         if (r.url.ends_with("/finalize")) return {200, {}, R"({"data":{"id":"700"}})"};
