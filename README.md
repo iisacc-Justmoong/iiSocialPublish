@@ -91,6 +91,12 @@ See [provider API contracts](docs/Providers.md),
 construction and transport behavior, not successful live publication to any
 social account.
 
+The C++23 and Python [GraphQL integration](docs/GraphQL.md) exposes publishing
+and caller-selected official social APIs through a bounded in-process GraphQL
+bridge. A separate client forwards unmodified documents to a host-configured
+GraphQL server. REST-only providers are never presented as native GraphQL
+servers; provider permissions and API availability still apply.
+
 ## License
 
 SPDX-License-Identifier: MIT

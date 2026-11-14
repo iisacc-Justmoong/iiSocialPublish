@@ -7,6 +7,7 @@ endif()
 foreach(_file Publishing/Publishing.h Publishing/Publishing.cpp Review/Review.h Review/Review.cpp
         Migration/Migration.h Migration/Migration.cpp Import/UrlImport.h Import/UrlImport.cpp
         Transport/CurlRuntime.h Transport/CurlRuntime.cpp Transport/CurlTransport.cpp
+        GraphQL/GraphQL.h GraphQL/GraphQL.cpp GraphQL/GraphQLC.h GraphQL/GraphQLC.cpp GraphQL/iiSocialIntegration.py
         Compatibility/Publishing.h Compatibility/Review.h Compatibility/Compatibility.h)
     if(NOT EXISTS "${SOURCE_ROOT}/src/${_file}")
         message(FATAL_ERROR "Missing source in its responsibility directory: ${_file}")

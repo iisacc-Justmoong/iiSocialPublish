@@ -12,6 +12,8 @@ set(_social_public_headers
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Review/Review.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Migration/Migration.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Import/UrlImport.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GraphQL/GraphQL.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GraphQL/GraphQLC.h"
 )
 foreach(_header IN LISTS _social_public_headers)
     get_filename_component(_name "${_header}" NAME)
@@ -22,7 +24,7 @@ foreach(_name Publishing.h Review.h Compatibility.h)
     file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/include/iiSocialPublish/${_name}"
         CONTENT "#pragma once\n#include \"${CMAKE_CURRENT_SOURCE_DIR}/src/Compatibility/${_name}\"\n")
 endforeach()
-add_library(iiSocialIntegration src/Publishing/Publishing.cpp src/Transport/CurlTransport.cpp src/Transport/CurlRuntime.cpp src/Review/Review.cpp src/Migration/Migration.cpp src/Import/UrlImport.cpp)
+add_library(iiSocialIntegration src/Publishing/Publishing.cpp src/Transport/CurlTransport.cpp src/Transport/CurlRuntime.cpp src/Review/Review.cpp src/Migration/Migration.cpp src/Import/UrlImport.cpp src/GraphQL/GraphQL.cpp src/GraphQL/GraphQLC.cpp)
 add_library(iiSocialIntegration::iiSocialIntegration ALIAS iiSocialIntegration)
 add_library(iiSocialPublish::iiSocialPublish ALIAS iiSocialIntegration)
 set_target_properties(iiSocialIntegration PROPERTIES CXX_EXTENSIONS OFF POSITION_INDEPENDENT_CODE ON WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -51,6 +53,8 @@ install(TARGETS iiSocialIntegration EXPORT iiSocialIntegrationTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${_social_public_headers}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiSocialIntegration)
+install(FILES src/GraphQL/iiSocialIntegration.py
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/python)
 install(FILES src/Compatibility/Publishing.h src/Compatibility/Review.h src/Compatibility/Compatibility.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/iiSocialPublish)
 install(EXPORT iiSocialIntegrationTargets NAMESPACE iiSocialIntegration:: DESTINATION "${_package_dir}")
@@ -72,6 +76,10 @@ install(DIRECTORY docs/ DESTINATION ${CMAKE_INSTALL_DATADIR}/iiSocialIntegration
 install(DIRECTORY third_party/licenses/ DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/iiSocialIntegration)
 install(FILES third_party/dependencies.json DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/iiSocialIntegration)
 if(BUILD_TESTING)
+    add_executable(iiSocialIntegrationGraphQLTests tests/GraphQLTest.cpp)
+    target_link_libraries(iiSocialIntegrationGraphQLTests PRIVATE iiSocialIntegration::iiSocialIntegration)
+    target_include_directories(iiSocialIntegrationGraphQLTests PRIVATE third_party)
+    add_test(NAME iiSocialIntegration.GraphQL COMMAND iiSocialIntegrationGraphQLTests)
     add_test(NAME iiSocialIntegration.SourceLayout COMMAND ${CMAKE_COMMAND}
         "-DSOURCE_ROOT=${CMAKE_CURRENT_SOURCE_DIR}" -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/source_layout.cmake")
     add_executable(iiSocialIntegrationReviewTests tests/ReviewTest.cpp)
@@ -103,11 +111,15 @@ if(BUILD_TESTING)
     target_link_libraries(iiSocialIntegrationUrlImportTests PRIVATE iiSocialIntegration::iiSocialIntegration)
     add_test(NAME iiSocialIntegration.UrlImport COMMAND iiSocialIntegrationUrlImportTests)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
+    add_test(NAME iiSocialIntegration.GraphQLPython
+        COMMAND "${Python3_EXECUTABLE}" -B "${CMAKE_CURRENT_SOURCE_DIR}/tests/GraphQLPythonTest.py"
+            "$<TARGET_FILE:iiSocialIntegration>" "${CMAKE_CURRENT_SOURCE_DIR}/src/GraphQL")
     add_test(NAME iiSocialIntegration.TlsLoopback
         COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/TransportLoopback.py"
             "$<TARGET_FILE:iiSocialIntegrationTests>" "${CMAKE_CURRENT_SOURCE_DIR}/resources/test-fixtures/certificate.pem"
             "${CMAKE_CURRENT_SOURCE_DIR}/resources/test-fixtures/key.pem"
-            "$<TARGET_FILE:iiSocialIntegrationUrlImportTests>")
+            "$<TARGET_FILE:iiSocialIntegrationUrlImportTests>"
+            "$<TARGET_FILE:iiSocialIntegration>" "${CMAKE_CURRENT_SOURCE_DIR}/src/GraphQL")
     set_tests_properties(iiSocialIntegration.TlsLoopback PROPERTIES TIMEOUT 60)
     add_test(NAME iiSocialIntegration.ResourceBoundary COMMAND "${CMAKE_COMMAND}"
         "-DSOURCE_ROOT=${CMAKE_CURRENT_SOURCE_DIR}" "-DBUILD_ROOT=${CMAKE_CURRENT_BINARY_DIR}"

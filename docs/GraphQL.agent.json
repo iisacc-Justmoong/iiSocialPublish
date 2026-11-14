@@ -1,0 +1,782 @@
+{
+  "format": "iisacc.agent-document",
+  "schema_version": 1,
+  "document_id": "urn:iisacc:document:69db71fb43729da0b926885aaae9703b10c8188580a6e8239e75f2adf9f6c1b2",
+  "project": {
+    "id": "urn:iisacc:project:SDK%2FiiSocialIntegration",
+    "name": "iiSocialIntegration",
+    "root": "SDK/iiSocialIntegration",
+    "kind": "sdk"
+  },
+  "source": {
+    "path": "docs/GraphQL.md",
+    "sha256": "43a03185d3c22fbb0da2f6913e73968d6edf658f6ad2ce95379e23b09ae9617c",
+    "bytes": 11673,
+    "line_count": 201,
+    "encoding": "utf-8",
+    "language": "ko"
+  },
+  "document": {
+    "title": "소셜 API의 GraphQL 경계",
+    "role": "guide",
+    "authority": "markdown_source"
+  },
+  "blocks": [
+    {
+      "id": "b000001",
+      "kind": "heading",
+      "start_line": 1,
+      "end_line": 1,
+      "raw": "# 소셜 API의 GraphQL 경계\n",
+      "level": 1,
+      "title": "소셜 API의 GraphQL 경계"
+    },
+    {
+      "id": "b000002",
+      "kind": "blank",
+      "start_line": 2,
+      "end_line": 2,
+      "raw": "\n"
+    },
+    {
+      "id": "b000003",
+      "kind": "paragraph",
+      "start_line": 3,
+      "end_line": 7,
+      "raw": "앱은 C++23 `GraphQLGateway`, C ABI 또는 Python `GraphQLClient`로 소셜 API를\n호출할 수 있다. 소셜 계정, 권한과 전송 객체는 호스트가 공급한다. 게시뿐 아니라\n권한이 허용하는 계정 정보, 목록, 통계, 설정 등도 요청할 수 있다. 모듈은 생성자에서\n서버나 스레드를 시작하지 않고 요청하지 않은 조회·폴링을 수행하지 않는다. 네트워크\n호출은 동기식이므로 앱의 작업 실행기에서 호출한다.\n"
+    },
+    {
+      "id": "b000004",
+      "kind": "blank",
+      "start_line": 8,
+      "end_line": 8,
+      "raw": "\n"
+    },
+    {
+      "id": "b000005",
+      "kind": "paragraph",
+      "start_line": 9,
+      "end_line": 9,
+      "raw": "두 경로는 명확히 다르다.\n"
+    },
+    {
+      "id": "b000006",
+      "kind": "blank",
+      "start_line": 10,
+      "end_line": 10,
+      "raw": "\n"
+    },
+    {
+      "id": "b000007",
+      "kind": "list",
+      "start_line": 11,
+      "end_line": 17,
+      "raw": "* **SDK 내부 브리지:** GraphQL `request`를 선택한 제공자의 공식 HTTP API로\n  변환한다. `publish`는 기존 `Publisher`를 호출해 업로드와 기존 검증·취소·복구\n  계약을 유지한다. 호스트 HTTP 서버는 `executeEnvelope`로 표준 JSON 요청 봉투를\n  전달할 수 있다. 이 모듈은 HTTP 리스너를 열지 않는다.\n* **원격 GraphQL 클라이언트:** `sendGraphQL`은 호스트가 신뢰하는 HTTPS GraphQL\n  서버에 문서·변수·작업 이름을 그대로 전송하고 서버의 응답 봉투를 반환한다.\n  이 경로에는 SDK 내부 브리지의 문법 제한이 적용되지 않는다.\n",
+      "items": [
+        {
+          "marker": "*",
+          "text": "**SDK 내부 브리지:** GraphQL `request`를 선택한 제공자의 공식 HTTP API로",
+          "checked": null
+        },
+        {
+          "marker": "*",
+          "text": "**원격 GraphQL 클라이언트:** `sendGraphQL`은 호스트가 신뢰하는 HTTPS GraphQL",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "id": "b000008",
+      "kind": "blank",
+      "start_line": 18,
+      "end_line": 18,
+      "raw": "\n"
+    },
+    {
+      "id": "b000009",
+      "kind": "paragraph",
+      "start_line": 19,
+      "end_line": 25,
+      "raw": "Meta의 Graph API는 HTTP 기반 소셜 그래프 API이며 GraphQL과 다른 계약이다.\n[Meta 공식 개요](https://developers.facebook.com/docs/graph-api/overview),\n[Mastodon REST API](https://docs.joinmastodon.org/api/),\n[YouTube Data API](https://developers.google.com/youtube/v3/getting-started),\n[LinkedIn OpenID Connect](https://learn.microsoft.com/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2)를\n참조한다. 제공자의 HTTP 응답을 받았다는 사실은 해당 제공자가 GraphQL 서버를\n운영한다는 뜻이 아니다.\n"
+    },
+    {
+      "id": "b000010",
+      "kind": "blank",
+      "start_line": 26,
+      "end_line": 26,
+      "raw": "\n"
+    },
+    {
+      "id": "b000011",
+      "kind": "heading",
+      "start_line": 27,
+      "end_line": 27,
+      "raw": "## 내부 브리지의 스키마와 지원 범위\n",
+      "level": 2,
+      "title": "내부 브리지의 스키마와 지원 범위"
+    },
+    {
+      "id": "b000012",
+      "kind": "blank",
+      "start_line": 28,
+      "end_line": 28,
+      "raw": "\n"
+    },
+    {
+      "id": "b000013",
+      "kind": "paragraph",
+      "start_line": 29,
+      "end_line": 30,
+      "raw": "`providers`, `request`, `publish`가 루트 필드이다. 아래는 API의 형태를\n설명하는 스키마이며 런타임에서 스키마 정의 문서를 입력받는다는 뜻이 아니다.\n"
+    },
+    {
+      "id": "b000014",
+      "kind": "blank",
+      "start_line": 31,
+      "end_line": 31,
+      "raw": "\n"
+    },
+    {
+      "id": "b000015",
+      "kind": "fenced_code",
+      "start_line": 32,
+      "end_line": 51,
+      "raw": "```graphql\nscalar JSON\ninput SocialRequestInput {\n  platform: String!, method: String!, path: String!, apiFamily: String\n  query: JSON, headers: JSON, anonymous: Boolean, body: JSON\n  bodyText: String, bodyBase64: String, contentType: String\n}\ninput SocialPublishInput { platform: String!, post: JSON! }\ntype SocialProvider { id: String!, name: String!, officialApi: Boolean!, publishingApi: Boolean! }\ntype SocialResponse { status: Int!, body: JSON, bodyBase64: String!, headers: JSON!, outcomeUnknown: Boolean! }\ntype SocialPublishResult {\n  published: Boolean!, postId: String!, url: String!, error: String!, message: String!\n  httpStatus: Int!, retryAfterSeconds: Int!, requiresReconciliation: Boolean!\n}\ntype Query { providers: [SocialProvider!]!, request(input: SocialRequestInput!): SocialResponse }\ntype Mutation {\n  request(input: SocialRequestInput!): SocialResponse\n  publish(input: SocialPublishInput!): SocialPublishResult\n}\n```\n",
+      "language": "graphql",
+      "code": "scalar JSON\ninput SocialRequestInput {\n  platform: String!, method: String!, path: String!, apiFamily: String\n  query: JSON, headers: JSON, anonymous: Boolean, body: JSON\n  bodyText: String, bodyBase64: String, contentType: String\n}\ninput SocialPublishInput { platform: String!, post: JSON! }\ntype SocialProvider { id: String!, name: String!, officialApi: Boolean!, publishingApi: Boolean! }\ntype SocialResponse { status: Int!, body: JSON, bodyBase64: String!, headers: JSON!, outcomeUnknown: Boolean! }\ntype SocialPublishResult {\n  published: Boolean!, postId: String!, url: String!, error: String!, message: String!\n  httpStatus: Int!, retryAfterSeconds: Int!, requiresReconciliation: Boolean!\n}\ntype Query { providers: [SocialProvider!]!, request(input: SocialRequestInput!): SocialResponse }\ntype Mutation {\n  request(input: SocialRequestInput!): SocialResponse\n  publish(input: SocialPublishInput!): SocialPublishResult\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000016",
+      "kind": "blank",
+      "start_line": 52,
+      "end_line": 52,
+      "raw": "\n"
+    },
+    {
+      "id": "b000017",
+      "kind": "paragraph",
+      "start_line": 53,
+      "end_line": 57,
+      "raw": "문서에는 `query`와 `mutation`, 이름 있는 다중 작업, `operationName`,\n변수·기본값, 별칭, 주석, 스칼라·배열·객체 인자와 여러 루트 필드를 사용할 수\n있다. 응답의 `body`·`headers`는 JSON 스칼라이며 내부에 GraphQL 선택 집합을\n붙이지 않는다. API가 지원하는 필드 선택이나 페이지 커서는 제공자별 `query`\n인자로 전달한다.\n"
+    },
+    {
+      "id": "b000018",
+      "kind": "blank",
+      "start_line": 58,
+      "end_line": 58,
+      "raw": "\n"
+    },
+    {
+      "id": "b000019",
+      "kind": "paragraph",
+      "start_line": 59,
+      "end_line": 62,
+      "raw": "**내부 브리지는 전체 GraphQL 엔진이 아니다.** 프래그먼트, 디렉티브,\n인스펙션, 구독, 복잡한 스키마 검증과 중복 응답 필드 병합은 지원하지 않으며\n명시적 오류를 반환한다. 원격 서버에 필요한 전체 GraphQL 문법은 `sendGraphQL`로\n그 서버에 전달한다. 호스트는 이 제한을 감안해 클라이언트를 구성해야 한다.\n"
+    },
+    {
+      "id": "b000020",
+      "kind": "blank",
+      "start_line": 63,
+      "end_line": 63,
+      "raw": "\n"
+    },
+    {
+      "id": "b000021",
+      "kind": "heading",
+      "start_line": 64,
+      "end_line": 64,
+      "raw": "## 제공자 API 조회와 변경\n",
+      "level": 2,
+      "title": "제공자 API 조회와 변경"
+    },
+    {
+      "id": "b000022",
+      "kind": "blank",
+      "start_line": 65,
+      "end_line": 65,
+      "raw": "\n"
+    },
+    {
+      "id": "b000023",
+      "kind": "fenced_code",
+      "start_line": 66,
+      "end_line": 70,
+      "raw": "```graphql\nquery Profile($input: SocialRequestInput!) {\n  account: request(input: $input) { status body headers }\n}\n```\n",
+      "language": "graphql",
+      "code": "query Profile($input: SocialRequestInput!) {\n  account: request(input: $input) { status body headers }\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 71,
+      "end_line": 71,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "fenced_code",
+      "start_line": 72,
+      "end_line": 80,
+      "raw": "```json\n{\n  \"input\": {\n    \"platform\": \"mastodon\",\n    \"method\": \"GET\",\n    \"path\": \"/api/v1/accounts/verify_credentials\"\n  }\n}\n```\n",
+      "language": "json",
+      "code": "{\n  \"input\": {\n    \"platform\": \"mastodon\",\n    \"method\": \"GET\",\n    \"path\": \"/api/v1/accounts/verify_credentials\"\n  }\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000026",
+      "kind": "blank",
+      "start_line": 81,
+      "end_line": 81,
+      "raw": "\n"
+    },
+    {
+      "id": "b000027",
+      "kind": "paragraph",
+      "start_line": 82,
+      "end_line": 87,
+      "raw": "`SocialRequestInput`은 `platform`, `method`, `path`를 필수로 받는다.\n선택 필드는 `apiFamily`, `query`, `headers`, `anonymous`, `body`,\n`bodyText`, `bodyBase64`, `contentType`이다. `query`는 문자열·숫자·불리언\n또는 그 배열의 JSON 객체이다. 세 본문 필드는 서로 배타적이다. `body`는 JSON,\n`bodyText`는 UTF-8 텍스트, `bodyBase64`는 바이트를 나타낸다.\n`contentType`을 지정하지 않은 JSON 본문에는 `application/json`을 사용한다.\n"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 88,
+      "end_line": 88,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "paragraph",
+      "start_line": 89,
+      "end_line": 93,
+      "raw": "`query` 작업은 GET만 허용한다. `mutation`은 POST·PUT·PATCH·DELETE를\n허용한다. `anonymous: true`는 명시적 GET에서만 토큰 전송을 생략한다. 이 경우에도\n호스트가 선택한 플랫폼의 인스턴스나 버전 설정을 공급해야 하며, 제공자가 공개\n접근을 허용한다는 보장은 없다. 요청별 OAuth 범위와 제공자 심사·요금은 호스트가\n확인하고 제공자가 최종 판정한다.\n"
+    },
+    {
+      "id": "b000030",
+      "kind": "blank",
+      "start_line": 94,
+      "end_line": 94,
+      "raw": "\n"
+    },
+    {
+      "id": "b000031",
+      "kind": "paragraph",
+      "start_line": 95,
+      "end_line": 101,
+      "raw": "경로는 표의 원점에 상대적이다. 절대 URL, 쿼리 문자열, 역슬래시, 기입된 퍼센트\n인코딩과 `.`·`..` 경로 구성요소는 받지 않는다. 경로와 질의 값은 SDK가\n퍼센트 인코딩한다. 토큰, 비밀번호와 같은 자격 증명은 문서·변수·경로·질의에 넣지\n않고 호스트의 계정 공급자로 전달한다. `Authorization` 같은 헤더는 직접 덮어쓸\n수 없다. 요청 헤더는 `If-Match`, `If-None-Match`, `Idempotency-Key`,\n`Accept-Language`, `X-RestLi-Method`만 허용한다. GraphQL 객체 리터럴에서\n하이픈 대신 밑줄을 사용할 수 있다.\n"
+    },
+    {
+      "id": "b000032",
+      "kind": "blank",
+      "start_line": 102,
+      "end_line": 102,
+      "raw": "\n"
+    },
+    {
+      "id": "b000033",
+      "kind": "table",
+      "start_line": 103,
+      "end_line": 114,
+      "raw": "| 플랫폼 | 기본 공식 API 주소 | 추가 `apiFamily` |\n| --- | --- | --- |\n| X | `https://api.x.com` | 없음 |\n| Facebook | `https://graph.facebook.com/{apiVersion}` | `video`: `graph-video.facebook.com` |\n| Instagram | `https://graph.instagram.com/{apiVersion}` | `facebook`: `graph.facebook.com` |\n| Threads | `https://graph.threads.net/v1.0` | 없음 |\n| Pinterest | `https://api.pinterest.com/v5` | 없음 |\n| Tumblr | `https://api.tumblr.com/v2` | 없음 |\n| Mastodon | 호스트가 지정한 HTTPS 인스턴스 원점 | 없음 |\n| LinkedIn | `https://api.linkedin.com/rest` | `v2`: `https://api.linkedin.com/v2` |\n| YouTube | `https://www.googleapis.com/youtube/v3` | `upload`: `/upload/youtube/v3` |\n| Pixiv·ArtStation | 미지원 | 검증된 공식 통합 계약을 확보하기 전에는 전송하지 않음 |\n",
+      "columns": [
+        "플랫폼",
+        "기본 공식 API 주소",
+        "추가 `apiFamily`"
+      ],
+      "rows": [
+        [
+          "X",
+          "`https://api.x.com`",
+          "없음"
+        ],
+        [
+          "Facebook",
+          "`https://graph.facebook.com/{apiVersion}`",
+          "`video`: `graph-video.facebook.com`"
+        ],
+        [
+          "Instagram",
+          "`https://graph.instagram.com/{apiVersion}`",
+          "`facebook`: `graph.facebook.com`"
+        ],
+        [
+          "Threads",
+          "`https://graph.threads.net/v1.0`",
+          "없음"
+        ],
+        [
+          "Pinterest",
+          "`https://api.pinterest.com/v5`",
+          "없음"
+        ],
+        [
+          "Tumblr",
+          "`https://api.tumblr.com/v2`",
+          "없음"
+        ],
+        [
+          "Mastodon",
+          "호스트가 지정한 HTTPS 인스턴스 원점",
+          "없음"
+        ],
+        [
+          "LinkedIn",
+          "`https://api.linkedin.com/rest`",
+          "`v2`: `https://api.linkedin.com/v2`"
+        ],
+        [
+          "YouTube",
+          "`https://www.googleapis.com/youtube/v3`",
+          "`upload`: `/upload/youtube/v3`"
+        ],
+        [
+          "Pixiv·ArtStation",
+          "미지원",
+          "검증된 공식 통합 계약을 확보하기 전에는 전송하지 않음"
+        ]
+      ]
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 115,
+      "end_line": 115,
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "paragraph",
+      "start_line": 116,
+      "end_line": 120,
+      "raw": "Meta의 `apiVersion`과 LinkedIn `rest`의 YYYYMM 버전은 호스트가 명시한다.\nLinkedIn의 `v2/userinfo`에는 마케팅 API 버전 헤더를 붙이지 않는다. X API는\n`allowBillableRequests`가 명시적으로 활성화된 계정에서만 호출한다.\n`providers.officialApi`는 이 브리지에 공식 API 원점이 구성되었다는 의미이지,\n모든 개별 엔드포인트·권한이 승인되었음을 뜻하지 않는다.\n"
+    },
+    {
+      "id": "b000036",
+      "kind": "blank",
+      "start_line": 121,
+      "end_line": 121,
+      "raw": "\n"
+    },
+    {
+      "id": "b000037",
+      "kind": "heading",
+      "start_line": 122,
+      "end_line": 122,
+      "raw": "## 기존 게시 기능\n",
+      "level": 2,
+      "title": "기존 게시 기능"
+    },
+    {
+      "id": "b000038",
+      "kind": "blank",
+      "start_line": 123,
+      "end_line": 123,
+      "raw": "\n"
+    },
+    {
+      "id": "b000039",
+      "kind": "fenced_code",
+      "start_line": 124,
+      "end_line": 128,
+      "raw": "```graphql\nmutation Publish($input: SocialPublishInput!) {\n  publish(input: $input) { published postId error requiresReconciliation }\n}\n```\n",
+      "language": "graphql",
+      "code": "mutation Publish($input: SocialPublishInput!) {\n  publish(input: $input) { published postId error requiresReconciliation }\n}\n",
+      "closed": true
+    },
+    {
+      "id": "b000040",
+      "kind": "blank",
+      "start_line": 129,
+      "end_line": 129,
+      "raw": "\n"
+    },
+    {
+      "id": "b000041",
+      "kind": "paragraph",
+      "start_line": 130,
+      "end_line": 138,
+      "raw": "`input`은 `platform`과 `post`를 받는다. `post`의 필드는 C++ `Post`와\n같은 `text`, `title`, `link`, `tags`, `media`, `coverImageUrl`,\n`visibility`, `contentWarning`, `sensitive`, `madeWithAi`, `idempotencyKey`,\n`replyToId`, `language`, `replyControl`, `youtube`이다. 미디어 항목은\n`kind`(`image` 또는 `video`), `localFile`, `publicUrl`, `mimeType`,\n`altText`를 사용한다. 로컬 경로는 신뢰된 호스트만 공급해야 한다.\n제공자별 지원 형식·권한·업로드 제한은 [게시 제공자 명세](Providers.md)와\n[실행 명세](Execution.md)를 따른다. 일반 `request`의 인라인 본문과 응답에는\n크기 제한이 있으므로 대용량 게시 미디어는 기존 스트리밍 퍼블리셔를 사용한다.\n"
+    },
+    {
+      "id": "b000042",
+      "kind": "blank",
+      "start_line": 139,
+      "end_line": 139,
+      "raw": "\n"
+    },
+    {
+      "id": "b000043",
+      "kind": "heading",
+      "start_line": 140,
+      "end_line": 140,
+      "raw": "## C++와 Python\n",
+      "level": 2,
+      "title": "C++와 Python"
+    },
+    {
+      "id": "b000044",
+      "kind": "blank",
+      "start_line": 141,
+      "end_line": 141,
+      "raw": "\n"
+    },
+    {
+      "id": "b000045",
+      "kind": "fenced_code",
+      "start_line": 142,
+      "end_line": 154,
+      "raw": "```cpp\n#include <iiSocialIntegration/GraphQL.h>\nusing namespace iiSocialIntegration;\n\nCurlTransport transport;\nGraphQLGateway gateway(transport, [](Platform provider) -> std::optional<Account> {\n    // 앱의 인증 저장소에서 해당 제공자 계정을 가져온다.\n    return accountForProvider(provider);\n});\nGraphQLDocument document{queryText, variablesJson, \"Profile\"};\nauto result = gateway.execute(document, stopToken);\n// result.responseJson은 GraphQL 응답 봉투이고 result.error는 전송 상태이다.\n```\n",
+      "language": "cpp",
+      "code": "#include <iiSocialIntegration/GraphQL.h>\nusing namespace iiSocialIntegration;\n\nCurlTransport transport;\nGraphQLGateway gateway(transport, [](Platform provider) -> std::optional<Account> {\n    // 앱의 인증 저장소에서 해당 제공자 계정을 가져온다.\n    return accountForProvider(provider);\n});\nGraphQLDocument document{queryText, variablesJson, \"Profile\"};\nauto result = gateway.execute(document, stopToken);\n// result.responseJson은 GraphQL 응답 봉투이고 result.error는 전송 상태이다.\n",
+      "closed": true
+    },
+    {
+      "id": "b000046",
+      "kind": "blank",
+      "start_line": 155,
+      "end_line": 155,
+      "raw": "\n"
+    },
+    {
+      "id": "b000047",
+      "kind": "paragraph",
+      "start_line": 156,
+      "end_line": 157,
+      "raw": "설치된 Python 파일은 `lib/python/iiSocialIntegration.py`에 있다. 네이티브 공유\n라이브러리를 명시하거나 시스템 로더가 찾을 수 있도록 설정한다.\n"
+    },
+    {
+      "id": "b000048",
+      "kind": "blank",
+      "start_line": 158,
+      "end_line": 158,
+      "raw": "\n"
+    },
+    {
+      "id": "b000049",
+      "kind": "fenced_code",
+      "start_line": 159,
+      "end_line": 166,
+      "raw": "```python\nfrom iiSocialIntegration import GraphQLClient\n\nclient = GraphQLClient(library_path)\nresult = client.execute(query, variables, operation_name=\"Profile\",\n                        accounts={\"mastodon\": account_from_secure_store})\nresponse = result[\"response\"]\n```\n",
+      "language": "python",
+      "code": "from iiSocialIntegration import GraphQLClient\n\nclient = GraphQLClient(library_path)\nresult = client.execute(query, variables, operation_name=\"Profile\",\n                        accounts={\"mastodon\": account_from_secure_store})\nresponse = result[\"response\"]\n",
+      "closed": true
+    },
+    {
+      "id": "b000050",
+      "kind": "blank",
+      "start_line": 167,
+      "end_line": 167,
+      "raw": "\n"
+    },
+    {
+      "id": "b000051",
+      "kind": "paragraph",
+      "start_line": 168,
+      "end_line": 174,
+      "raw": "Python 계정 객체는 `accessToken`, `instanceUrl`, `apiVersion`, `targetId`,\n`scopes`, `expiresAt`(Unix 초), `allowBillableRequests`,\n`allowSelfThreadReplies`를 사용할 수 있다. 원격 서버는\n`client.execute_remote(endpoint, query, variables, operation_name=..., access_token=...)`로\n호출한다. C 사용자는 `GraphQLC.h`의 JSON 호출 함수와 대응하는 해제 함수를 쓴다.\nPython 바인딩은 공유 라이브러리를 필요로 하며 네이티브 라이브러리 자체는 Python\n인터프리터를 요구하지 않는다.\n"
+    },
+    {
+      "id": "b000052",
+      "kind": "blank",
+      "start_line": 175,
+      "end_line": 175,
+      "raw": "\n"
+    },
+    {
+      "id": "b000053",
+      "kind": "heading",
+      "start_line": 176,
+      "end_line": 176,
+      "raw": "## 오류, 크기 및 수명\n",
+      "level": 2,
+      "title": "오류, 크기 및 수명"
+    },
+    {
+      "id": "b000054",
+      "kind": "blank",
+      "start_line": 177,
+      "end_line": 177,
+      "raw": "\n"
+    },
+    {
+      "id": "b000055",
+      "kind": "paragraph",
+      "start_line": 178,
+      "end_line": 187,
+      "raw": "전체 문서와 모든 루트 입력을 먼저 검사하므로 잘못된 뒤쪽 필드 때문에 앞선 변경이\n실행되지는 않는다. 실행 중 독립 필드가 실패하면 그 필드는 `null`과 경로가 있는\nGraphQL 오류로 반환되고 다른 필드의 성공 데이터는 유지된다. HTTP 오류 응답은\n`status`, 허용된 응답 `headers`, JSON `body`로 받을 수 있다.\n`Set-Cookie`와 인증 헤더는 반환하지 않는다. JSON이 아닌 본문은 `body`가\n`null`이며 `bodyBase64`로 받을 수 있다. 본문과 GraphQL 데이터는 제공자에서\n받은 사적 정보를 포함할 수 있으므로 호출자가 접근과 기록을 관리해야 한다.\n페이지 이동용 `Link`와 업로드 등에 사용되는 `Location` 헤더도 반환한다.\n이 값에 임시 접근 권한이나 민감한 쿼리 값이 포함될 수 있으므로 기록하지 않아야\n하며 SDK가 해당 주소를 자동으로 따라가거나 토큰을 전달하지는 않는다.\n"
+    },
+    {
+      "id": "b000056",
+      "kind": "blank",
+      "start_line": 188,
+      "end_line": 188,
+      "raw": "\n"
+    },
+    {
+      "id": "b000057",
+      "kind": "paragraph",
+      "start_line": 189,
+      "end_line": 194,
+      "raw": "중단·전송 오류 뒤 변경 요청이 이미 전송되었거나 변경 요청이 5xx를 받으면\n`outcome_unknown`을 반환한다. 일반 `request`와 `sendGraphQL`은 자동\n재시도하지 않으며 호출자는 원격 상태를 확인해야 한다. `publish`는 기존\n퍼블리셔를 사용하므로 YouTube의 동일 업로드 세션에 대한 제한된 상태 확인·재개는\n기존 [실행 계약](Execution.md)을 따른다. 게시 결과의 `requiresReconciliation`도\n기존 퍼블리셔 결과를 그대로 반영한다. 취소는 C++ `stop_token`으로 전달한다.\n"
+    },
+    {
+      "id": "b000058",
+      "kind": "blank",
+      "start_line": 195,
+      "end_line": 195,
+      "raw": "\n"
+    },
+    {
+      "id": "b000059",
+      "kind": "paragraph",
+      "start_line": 196,
+      "end_line": 201,
+      "raw": "문서는 최대 64 KiB, 변수는 1 MiB, 루트 필드는 32개, 선택 필드는 128개이다.\n개별 응답 본문은 최대 2 MiB, 한 내부 브리지 요청의 전체 응답 본문은 최대 8 MiB이다.\n입력 변수와 응답 JSON은 최대 20단계의 중첩을 허용한다.\n기본 `CurlTransport`는 HTTPS와 인증서·호스트 검증을 강제하고 리다이렉트를\n따라가지 않는다. 호스트가 직접 제공하는 `Transport`는 동일한 보안 계약을\n지켜야 한다. 이 API는 신뢰된 앱 백엔드용이며 무인증 범용 프록시로 노출해서는 안 된다.\n"
+    }
+  ],
+  "outline": [
+    {
+      "block_id": "b000001",
+      "parent_id": null,
+      "level": 1,
+      "title": "소셜 API의 GraphQL 경계",
+      "anchor": "소셜-api의-graphql-경계",
+      "start_line": 1
+    },
+    {
+      "block_id": "b000011",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "내부 브리지의 스키마와 지원 범위",
+      "anchor": "내부-브리지의-스키마와-지원-범위",
+      "start_line": 27
+    },
+    {
+      "block_id": "b000021",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "제공자 API 조회와 변경",
+      "anchor": "제공자-api-조회와-변경",
+      "start_line": 64
+    },
+    {
+      "block_id": "b000037",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "기존 게시 기능",
+      "anchor": "기존-게시-기능",
+      "start_line": 122
+    },
+    {
+      "block_id": "b000043",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "C++와 Python",
+      "anchor": "c와-python",
+      "start_line": 140
+    },
+    {
+      "block_id": "b000053",
+      "parent_id": "b000001",
+      "level": 2,
+      "title": "오류, 크기 및 수명",
+      "anchor": "오류-크기-및-수명",
+      "start_line": 176
+    }
+  ],
+  "indexes": {
+    "directive_candidates": [
+      {
+        "block_id": "b000003",
+        "line": 6,
+        "text": "서버나 스레드를 시작하지 않고 요청하지 않은 조회·폴링을 수행하지 않는다. 네트워크",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000019",
+        "line": 62,
+        "text": "그 서버에 전달한다. 호스트는 이 제한을 감안해 클라이언트를 구성해야 한다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000027",
+        "line": 82,
+        "text": "`SocialRequestInput`은 `platform`, `method`, `path`를 필수로 받는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000035",
+        "line": 120,
+        "text": "모든 개별 엔드포인트·권한이 승인되었음을 뜻하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000041",
+        "line": 135,
+        "text": "`altText`를 사용한다. 로컬 경로는 신뢰된 호스트만 공급해야 한다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000051",
+        "line": 174,
+        "text": "인터프리터를 요구하지 않는다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000055",
+        "line": 182,
+        "text": "`Set-Cookie`와 인증 헤더는 반환하지 않는다. JSON이 아닌 본문은 `body`가",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000055",
+        "line": 184,
+        "text": "받은 사적 정보를 포함할 수 있으므로 호출자가 접근과 기록을 관리해야 한다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000057",
+        "line": 191,
+        "text": "재시도하지 않으며 호출자는 원격 상태를 확인해야 한다. `publish`는 기존",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000059",
+        "line": 201,
+        "text": "지켜야 한다. 이 API는 신뢰된 앱 백엔드용이며 무인증 범용 프록시로 노출해서는 안 된다.",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      }
+    ],
+    "commands": [],
+    "links": [
+      {
+        "block_id": "b000009",
+        "label": "Meta 공식 개요",
+        "target": "https://developers.facebook.com/docs/graph-api/overview",
+        "kind": "external",
+        "line": 20
+      },
+      {
+        "block_id": "b000009",
+        "label": "Mastodon REST API",
+        "target": "https://docs.joinmastodon.org/api/",
+        "kind": "external",
+        "line": 21
+      },
+      {
+        "block_id": "b000009",
+        "label": "YouTube Data API",
+        "target": "https://developers.google.com/youtube/v3/getting-started",
+        "kind": "external",
+        "line": 22
+      },
+      {
+        "block_id": "b000009",
+        "label": "LinkedIn OpenID Connect",
+        "target": "https://learn.microsoft.com/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2",
+        "kind": "external",
+        "line": 23
+      },
+      {
+        "block_id": "b000041",
+        "label": "게시 제공자 명세",
+        "target": "Providers.md",
+        "kind": "relative",
+        "line": 136
+      },
+      {
+        "block_id": "b000041",
+        "label": "실행 명세",
+        "target": "Execution.md",
+        "kind": "relative",
+        "line": 137
+      },
+      {
+        "block_id": "b000057",
+        "label": "실행 계약",
+        "target": "Execution.md",
+        "kind": "relative",
+        "line": 193
+      }
+    ],
+    "tables": [
+      {
+        "block_id": "b000033",
+        "columns": [
+          "플랫폼",
+          "기본 공식 API 주소",
+          "추가 `apiFamily`"
+        ],
+        "rows": [
+          [
+            "X",
+            "`https://api.x.com`",
+            "없음"
+          ],
+          [
+            "Facebook",
+            "`https://graph.facebook.com/{apiVersion}`",
+            "`video`: `graph-video.facebook.com`"
+          ],
+          [
+            "Instagram",
+            "`https://graph.instagram.com/{apiVersion}`",
+            "`facebook`: `graph.facebook.com`"
+          ],
+          [
+            "Threads",
+            "`https://graph.threads.net/v1.0`",
+            "없음"
+          ],
+          [
+            "Pinterest",
+            "`https://api.pinterest.com/v5`",
+            "없음"
+          ],
+          [
+            "Tumblr",
+            "`https://api.tumblr.com/v2`",
+            "없음"
+          ],
+          [
+            "Mastodon",
+            "호스트가 지정한 HTTPS 인스턴스 원점",
+            "없음"
+          ],
+          [
+            "LinkedIn",
+            "`https://api.linkedin.com/rest`",
+            "`v2`: `https://api.linkedin.com/v2`"
+          ],
+          [
+            "YouTube",
+            "`https://www.googleapis.com/youtube/v3`",
+            "`upload`: `/upload/youtube/v3`"
+          ],
+          [
+            "Pixiv·ArtStation",
+            "미지원",
+            "검증된 공식 통합 계약을 확보하기 전에는 전송하지 않음"
+          ]
+        ]
+      }
+    ]
+  },
+  "provenance": {
+    "generator": "workspace-docs",
+    "version": "1.0.0",
+    "profile": "lossless-blocks-v1",
+    "derived": true
+  }
+}

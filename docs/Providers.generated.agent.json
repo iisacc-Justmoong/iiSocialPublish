@@ -10,11 +10,11 @@
   },
   "source": {
     "path": "docs/Providers.md",
-    "sha256": "ea48c47f086035ca5daa9c4408bfc74c14b94af5245176e4960a59123e829ae4",
-    "bytes": 10265,
-    "line_count": 107,
+    "sha256": "fc8cd45b4303b45a7b22f9129ac5a6fb21f26d8d66c6e98b45e867a580df39b7",
+    "bytes": 10586,
+    "line_count": 109,
     "encoding": "utf-8",
-    "language": "en"
+    "language": "ko"
   },
   "document": {
     "title": "Official publishing contracts",
@@ -57,7 +57,7 @@
       "kind": "table",
       "start_line": 10,
       "end_line": 22,
-      "raw": "| Object | Implemented route and media workflow | Required account configuration |\n| --- | --- | --- |\n| XPublisher | `POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded. | User OAuth `tweet.read`, `tweet.write`, `users.read`, plus `media.write` for media. X API access is billable; `allowBillableRequests` defaults to false. |\n| FacebookPublisher | Page `/photos` uploads with `published=false` followed by `/feed` for text/photo albums; Graph Video `/videos` for a single video, followed by processing reads. | Page access token, numeric Page ID, `pages_manage_posts`, `pages_read_engagement`, explicit Graph version. Personal profile posting is unsupported. |\n| InstagramPublisher | Instagram Login `/media`, container status, `/media_publish`; image, Reel or mixed image/video carousel. | Professional account, numeric IG user ID, `instagram_business_basic`, `instagram_business_content_publish`, explicit Graph version. Media must be available at public HTTPS URLs. |\n| ThreadsPublisher | `/v1.0/{user}/threads`, container status, `/threads_publish`; text, image, video or carousel. | Threads user token/ID, `threads_basic`, `threads_content_publish`; public HTTPS media URLs. |\n| PinterestPublisher | `/v5/pins` with `image_url` or `image_base64`; `/v5/media`, signed multipart video upload, media processing, then a `video_id` Pin. | `pins:write`, `boards:read`, destination board ID, approved app/access tier. A video requires a cover image URL. |\n| TumblrPublisher | `/v2/blog/{blog}/posts` using Neue Post Format JSON and multipart `json` + identifier-mapped media parts. Text, images and video. | OAuth2 `write` user token and an explicit blog hostname or immutable UUID. |\n| MastodonPublisher | Per-instance `/api/v2/instance`, `/api/v2/media`, async media reads, `/api/v1/statuses`. | HTTPS instance origin, instance-issued token, `write:statuses` and `write:media` for attachments (or `write`). Instance attachment count is read at runtime. Visibility, content warning, sensitive flag, alt text and Idempotency-Key are supported. |\n| LinkedInPublisher | `/rest/images?action=initializeUpload`, media PUT and status; videos initialize, byte-range PUT with ordered ETags, finalize and status; `/rest/posts`. Text, image, multiple images or a single video. | User token, explicit person/organization author URN, `w_member_social` or `w_organization_social` and organization role/access, explicit supported YYYYMM version. |\n| YouTubePublisher | Data API v3 `POST /upload/youtube/v3/videos?uploadType=resumable`, metadata JSON, streamed 4 MiB `PUT` chunks, 308 byte acknowledgements and bounded same-session status/recovery PUTs. | Google user OAuth `https://www.googleapis.com/auth/youtube.upload` or an accepted broader upload scope; the grant selects the YouTube channel. One local video and title. `targetId` must be empty. See [YouTube](YouTube.md). |\n| UnsupportedPublisher (Pixiv) | Returns `unsupported` before any networking. | No official public publishing contract was verified. This is a statement about verified integration support, not a claim that private partner APIs can never exist. |\n| UnsupportedPublisher (ArtStation) | Returns `unsupported` before any networking. | Same restriction; no undocumented project-upload or login-session endpoint is used. |\n",
+      "raw": "| Object | Implemented route and media workflow | Required account configuration |\n| --- | --- | --- |\n| XPublisher | `POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text via `POST /2/media/metadata` using the v2 `id` and `metadata.alt_text.text` fields. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded. | User OAuth `tweet.read`, `tweet.write`, `users.read`, plus `media.write` for media. X API access is billable; `allowBillableRequests` defaults to false. |\n| FacebookPublisher | Page `/photos` uploads with `published=false` followed by `/feed` for text/photo albums; Graph Video `/videos` for a single video, followed by processing reads. | Page access token, numeric Page ID, `pages_manage_posts`, `pages_read_engagement`, explicit Graph version. Personal profile posting is unsupported. |\n| InstagramPublisher | Instagram Login `/media`, container status, `/media_publish`; image, Reel or mixed image/video carousel. | Professional account, numeric IG user ID, `instagram_business_basic`, `instagram_business_content_publish`, explicit Graph version. Media must be available at public HTTPS URLs. |\n| ThreadsPublisher | `/v1.0/{user}/threads`, container status, `/threads_publish`; text, image, video or carousel. | Threads user token/ID, `threads_basic`, `threads_content_publish`; public HTTPS media URLs. |\n| PinterestPublisher | `/v5/pins` with `image_url` or `image_base64`; `/v5/media`, signed multipart video upload, media processing, then a `video_id` Pin. | `pins:write`, `boards:read`, destination board ID, approved app/access tier. A video requires a cover image URL. |\n| TumblrPublisher | `/v2/blog/{blog}/posts` using Neue Post Format JSON and multipart `json` + identifier-mapped media parts. Text, images and video. | OAuth2 `write` user token and an explicit blog hostname or immutable UUID. |\n| MastodonPublisher | Per-instance `/api/v2/instance`, `/api/v2/media`, async media reads, `/api/v1/statuses`. | HTTPS instance origin, instance-issued token, `write:statuses` and `write:media` for attachments (or `write`). Instance attachment count is read at runtime. Visibility, content warning, sensitive flag, alt text and Idempotency-Key are supported. |\n| LinkedInPublisher | `/rest/images?action=initializeUpload`, media PUT and status; videos initialize, byte-range PUT with ordered ETags, finalize and status; `/rest/posts`. Text, image, multiple images or a single video. | User token, explicit person/organization author URN, `w_member_social` or `w_organization_social` and organization role/access, explicit supported YYYYMM version. |\n| YouTubePublisher | Data API v3 `POST /upload/youtube/v3/videos?uploadType=resumable`, metadata JSON, streamed 4 MiB `PUT` chunks, 308 byte acknowledgements and bounded same-session status/recovery PUTs. | Google user OAuth `https://www.googleapis.com/auth/youtube.upload` or an accepted broader upload scope; the grant selects the YouTube channel. One local video and title. `targetId` must be empty. See [YouTube](YouTube.md). |\n| UnsupportedPublisher (Pixiv) | Returns `unsupported` before any networking. | No official public publishing contract was verified. This is a statement about verified integration support, not a claim that private partner APIs can never exist. |\n| UnsupportedPublisher (ArtStation) | Returns `unsupported` before any networking. | Same restriction; no undocumented project-upload or login-session endpoint is used. |\n",
       "columns": [
         "Object",
         "Implemented route and media workflow",
@@ -66,7 +66,7 @@
       "rows": [
         [
           "XPublisher",
-          "`POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded.",
+          "`POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text via `POST /2/media/metadata` using the v2 `id` and `metadata.alt_text.text` fields. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded.",
           "User OAuth `tweet.read`, `tweet.write`, `users.read`, plus `media.write` for media. X API access is billable; `allowBillableRequests` defaults to false."
         ],
         [
@@ -314,6 +314,20 @@
       "start_line": 103,
       "end_line": 107,
       "raw": "Meta's direct documentation returned access/rate-limit errors in this research\nsession; the implementation was also checked against Meta's official Postman\ncollections. No third-party reverse-engineered API is treated as a contract.\nApp registration/review, live OAuth consent, paid access provisioning and live\npublishing have not been performed by the test suite.\n"
+    },
+    {
+      "id": "b000024",
+      "kind": "blank",
+      "start_line": 108,
+      "end_line": 108,
+      "raw": "\n"
+    },
+    {
+      "id": "b000025",
+      "kind": "paragraph",
+      "start_line": 109,
+      "end_line": 109,
+      "raw": "X의 미디어 메타데이터는 [공식 v2 요청 형식](https://docs.x.com/x-api/media/create-media-metadata)의 `id`와 `metadata` 객체를 사용한다. 메타데이터 단계가 실패하면 새 게시물을 만들지 않는다.\n"
     }
   ],
   "outline": [
@@ -647,6 +661,13 @@
         "target": "https://help.artstation.com/en/",
         "kind": "external",
         "line": 101
+      },
+      {
+        "block_id": "b000025",
+        "label": "공식 v2 요청 형식",
+        "target": "https://docs.x.com/x-api/media/create-media-metadata",
+        "kind": "external",
+        "line": 109
       }
     ],
     "tables": [
@@ -660,7 +681,7 @@
         "rows": [
           [
             "XPublisher",
-            "`POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded.",
+            "`POST /2/tweets`; v2 initialize / append / finalize / STATUS; optional media alt text via `POST /2/media/metadata` using the v2 `id` and `metadata.alt_text.text` fields. Text, 1–4 images, a single GIF, or a single video. AI disclosure is forwarded.",
             "User OAuth `tweet.read`, `tweet.write`, `users.read`, plus `media.write` for media. X API access is billable; `allowBillableRequests` defaults to false."
           ],
           [

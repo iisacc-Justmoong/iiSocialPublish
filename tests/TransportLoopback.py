@@ -56,12 +56,47 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def do_POST(self):
         data = self.rfile.read(int(self.headers["Content-Length"]))
+        if self.path == "/graphql":
+            body = json.loads(data)
+            if self.headers.get("Authorization") != "Bearer loopback-fixture" or body.get("operationName") != "Viewer":
+                self.send_error(400)
+                return
+            self.reply({"data": {"viewer": {"id": body["variables"]["id"]}},
+                        "errors": [{"message": "fixture partial error"}]})
+            return
+        if self.path == "/api/v1/example":
+            if (self.headers.get("Authorization") != "Bearer loopback-fixture"
+                    or self.headers.get("Content-Type") != "application/octet-stream" or data != b"abc\0"):
+                self.send_error(400)
+                return
+            self.reply({"accepted": True})
+            return
         self.reply({"matched": b'name="json"' in data and b'application/json' in data
                     and b'name="file"; filename="media"' in data and b'\r\n\r\nabcd\r\n' in data
                     and b'EFGH' not in data})
 
+    def do_PATCH(self):
+        data = self.rfile.read(int(self.headers["Content-Length"]))
+        if self.path != "/api/v1/accounts/update_credentials" or self.headers.get("Authorization") != "Bearer loopback-fixture":
+            self.send_error(400)
+            return
+        self.reply({"id": "loopback-user", "display_name": json.loads(data)["display_name"]})
+
+    def do_DELETE(self):
+        if self.path != "/api/v1/example" or self.headers.get("Authorization") != "Bearer loopback-fixture":
+            self.send_error(400)
+            return
+        self.send_response(204)
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
     def do_GET(self):
-        if self.path == "/page-redirect":
+        if self.path == "/api/v1/accounts/verify_credentials":
+            if self.headers.get("Authorization") != "Bearer loopback-fixture":
+                self.send_error(400)
+                return
+            self.reply({"id": "loopback-user"})
+        elif self.path == "/page-redirect":
             self.send_response(302)
             self.send_header("Location", "/post/page")
             self.send_header("Content-Length", "0")
@@ -127,7 +162,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
 
 def main():
-    executable, certificate, key, url_executable = sys.argv[1:]
+    executable, certificate, key, url_executable, library, python_module = sys.argv[1:]
     certificate, key = Path(certificate), Path(key)
     server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
@@ -139,6 +174,9 @@ def main():
         subprocess.run([executable, "transport", f"https://127.0.0.1:{server.server_port}", str(certificate)],
                        check=True, timeout=45)
         subprocess.run([url_executable, "--loopback", f"https://127.0.0.1:{server.server_port}", str(certificate)],
+                       check=True, timeout=45)
+        subprocess.run([sys.executable, "-B", str(Path(__file__).with_name("GraphQLPythonTest.py")),
+                        library, python_module, f"https://127.0.0.1:{server.server_port}", str(certificate)],
                        check=True, timeout=45)
     finally:
         server.shutdown()

@@ -121,7 +121,8 @@ Response CurlTransport::send(const Request& request, std::stop_token stop) {
         if (!secure || !safeText(request.url)) return failed;
         const auto limit = request.responseSink ? maxStreamedResponse : maxBufferedResponse;
         if (request.maxResponseBytes == 0 || request.maxResponseBytes > limit) return failed;
-        if (request.method != "GET" && request.method != "POST" && request.method != "PUT") return failed;
+        if (request.method != "GET" && request.method != "POST" && request.method != "PUT"
+            && request.method != "PATCH" && request.method != "DELETE") return failed;
         if ((!request.body.empty() && (request.file || !request.parts.empty())) || (request.file && !request.parts.empty())) return failed;
         using Easy = std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>;
         Easy easy(curl_easy_init(), curl_easy_cleanup);

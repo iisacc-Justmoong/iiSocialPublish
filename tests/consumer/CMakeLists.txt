@@ -10,3 +10,6 @@ target_link_libraries(iiSocialInstalledUrlImport PRIVATE iiSocialIntegration::ii
 enable_testing()
 add_test(NAME iiSocialIntegration.InstalledCompatibility COMMAND iiSocialInstalledCompatibility)
 add_test(NAME iiSocialIntegration.InstalledUrlImport COMMAND iiSocialInstalledUrlImport)
+add_executable(iiSocialInstalledGraphQL GraphQLConsumer.cpp)
+target_link_libraries(iiSocialInstalledGraphQL PRIVATE iiSocialIntegration::iiSocialIntegration)
+add_test(NAME iiSocialIntegration.InstalledGraphQL COMMAND iiSocialInstalledGraphQL)

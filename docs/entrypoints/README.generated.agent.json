@@ -10,9 +10,9 @@
   },
   "source": {
     "path": "README.md",
-    "sha256": "9f35e763a3e0dad648a7da7ba2d7f305d6fa0b5dd4aab6da6b377126f642d705",
-    "bytes": 6003,
-    "line_count": 120,
+    "sha256": "03294d9f2be1d49dfb86779d90d4c00d62f58ec4e647c04cba6daa18d373c939",
+    "bytes": 6376,
+    "line_count": 126,
     "encoding": "utf-8",
     "language": "en"
   },
@@ -214,120 +214,134 @@
     },
     {
       "id": "b000027",
-      "kind": "heading",
+      "kind": "paragraph",
       "start_line": 94,
-      "end_line": 94,
+      "end_line": 98,
+      "raw": "The C++23 and Python [GraphQL integration](docs/GraphQL.md) exposes publishing\nand caller-selected official social APIs through a bounded in-process GraphQL\nbridge. A separate client forwards unmodified documents to a host-configured\nGraphQL server. REST-only providers are never presented as native GraphQL\nservers; provider permissions and API availability still apply.\n"
+    },
+    {
+      "id": "b000028",
+      "kind": "blank",
+      "start_line": 99,
+      "end_line": 99,
+      "raw": "\n"
+    },
+    {
+      "id": "b000029",
+      "kind": "heading",
+      "start_line": 100,
+      "end_line": 100,
       "raw": "## License\n",
       "level": 2,
       "title": "License"
     },
     {
-      "id": "b000028",
-      "kind": "blank",
-      "start_line": 95,
-      "end_line": 95,
-      "raw": "\n"
-    },
-    {
-      "id": "b000029",
-      "kind": "paragraph",
-      "start_line": 96,
-      "end_line": 96,
-      "raw": "SPDX-License-Identifier: MIT\n"
-    },
-    {
       "id": "b000030",
-      "kind": "blank",
-      "start_line": 97,
-      "end_line": 97,
-      "raw": "\n"
-    },
-    {
-      "id": "b000031",
-      "kind": "paragraph",
-      "start_line": 98,
-      "end_line": 100,
-      "raw": "The original code and documentation in this repository are licensed under the\n[MIT License](LICENSE). Third-party code, libraries, fonts, tools, and model\nweights retain their respective licenses.\n"
-    },
-    {
-      "id": "b000032",
       "kind": "blank",
       "start_line": 101,
       "end_line": 101,
       "raw": "\n"
     },
     {
-      "id": "b000033",
-      "kind": "heading",
+      "id": "b000031",
+      "kind": "paragraph",
       "start_line": 102,
       "end_line": 102,
-      "raw": "## Source header layout\n",
-      "level": 2,
-      "title": "Source header layout"
+      "raw": "SPDX-License-Identifier: MIT\n"
     },
     {
-      "id": "b000034",
+      "id": "b000032",
       "kind": "blank",
       "start_line": 103,
       "end_line": 103,
       "raw": "\n"
     },
     {
-      "id": "b000035",
+      "id": "b000033",
       "kind": "paragraph",
       "start_line": 104,
+      "end_line": 106,
+      "raw": "The original code and documentation in this repository are licensed under the\n[MIT License](LICENSE). Third-party code, libraries, fonts, tools, and model\nweights retain their respective licenses.\n"
+    },
+    {
+      "id": "b000034",
+      "kind": "blank",
+      "start_line": 107,
       "end_line": 107,
-      "raw": "Public headers and implementations live together in responsibility-specific directories under `src/`; see [source layout](docs/SourceLayout.md).\nThere is no separate authored `include/` tree. Legacy forwarding headers are\nprovided under `src/Compatibility/`. Generated export headers belong to\n`build/`, not to the authored source tree.\n"
+      "raw": "\n"
+    },
+    {
+      "id": "b000035",
+      "kind": "heading",
+      "start_line": 108,
+      "end_line": 108,
+      "raw": "## Source header layout\n",
+      "level": 2,
+      "title": "Source header layout"
     },
     {
       "id": "b000036",
       "kind": "blank",
-      "start_line": 108,
-      "end_line": 108,
+      "start_line": 109,
+      "end_line": 109,
       "raw": "\n"
     },
     {
       "id": "b000037",
       "kind": "paragraph",
-      "start_line": 109,
-      "end_line": 111,
-      "raw": "Validate this layout from the SDK workspace with\n`python3 -B tests/test_source_header_layout.py`. Reconfigure, build, run CTest,\nand verify a staged installed consumer after changing source/header paths.\n"
+      "start_line": 110,
+      "end_line": 113,
+      "raw": "Public headers and implementations live together in responsibility-specific directories under `src/`; see [source layout](docs/SourceLayout.md).\nThere is no separate authored `include/` tree. Legacy forwarding headers are\nprovided under `src/Compatibility/`. Generated export headers belong to\n`build/`, not to the authored source tree.\n"
     },
     {
       "id": "b000038",
       "kind": "blank",
-      "start_line": 112,
-      "end_line": 112,
+      "start_line": 114,
+      "end_line": 114,
       "raw": "\n"
     },
     {
       "id": "b000039",
-      "kind": "html",
-      "start_line": 113,
-      "end_line": 113,
-      "raw": "<!-- workspace-docs:readme:start -->\n"
+      "kind": "paragraph",
+      "start_line": 115,
+      "end_line": 117,
+      "raw": "Validate this layout from the SDK workspace with\n`python3 -B tests/test_source_header_layout.py`. Reconfigure, build, run CTest,\nand verify a staged installed consumer after changing source/header paths.\n"
     },
     {
       "id": "b000040",
+      "kind": "blank",
+      "start_line": 118,
+      "end_line": 118,
+      "raw": "\n"
+    },
+    {
+      "id": "b000041",
+      "kind": "html",
+      "start_line": 119,
+      "end_line": 119,
+      "raw": "<!-- workspace-docs:readme:start -->\n"
+    },
+    {
+      "id": "b000042",
       "kind": "heading",
-      "start_line": 114,
-      "end_line": 114,
+      "start_line": 120,
+      "end_line": 120,
       "raw": "## Documentation entry points\n",
       "level": 2,
       "title": "Documentation entry points"
     },
     {
-      "id": "b000041",
+      "id": "b000043",
       "kind": "blank",
-      "start_line": 115,
-      "end_line": 115,
+      "start_line": 121,
+      "end_line": 121,
       "raw": "\n"
     },
     {
-      "id": "b000042",
+      "id": "b000044",
       "kind": "list",
-      "start_line": 116,
-      "end_line": 119,
+      "start_line": 122,
+      "end_line": 125,
       "raw": "- Human overview: this English `README.md`.\n- Agent instructions: [AGENT.md](AGENT.md).\n- Human documentation: [documentation index](docs/README.md).\n- Structured agent documentation: [agent index](docs/agent-index.json).\n",
       "items": [
         {
@@ -353,10 +367,10 @@
       ]
     },
     {
-      "id": "b000043",
+      "id": "b000045",
       "kind": "html",
-      "start_line": 120,
-      "end_line": 120,
+      "start_line": 126,
+      "end_line": 126,
       "raw": "<!-- workspace-docs:readme:end -->\n"
     }
   ],
@@ -370,28 +384,28 @@
       "start_line": 1
     },
     {
-      "block_id": "b000027",
+      "block_id": "b000029",
       "parent_id": "b000001",
       "level": 2,
       "title": "License",
       "anchor": "license",
-      "start_line": 94
+      "start_line": 100
     },
     {
-      "block_id": "b000033",
+      "block_id": "b000035",
       "parent_id": "b000001",
       "level": 2,
       "title": "Source header layout",
       "anchor": "source-header-layout",
-      "start_line": 102
+      "start_line": 108
     },
     {
-      "block_id": "b000040",
+      "block_id": "b000042",
       "parent_id": "b000001",
       "level": 2,
       "title": "Documentation entry points",
       "anchor": "documentation-entry-points",
-      "start_line": 114
+      "start_line": 120
     }
   ],
   "indexes": {
@@ -421,6 +435,13 @@
         "block_id": "b000023",
         "line": 79,
         "text": "promised. Consumers with a hard-coded old installation prefix must point CMake",
+        "basis": "lexical_match",
+        "context": "paragraph"
+      },
+      {
+        "block_id": "b000027",
+        "line": 97,
+        "text": "GraphQL server. REST-only providers are never presented as native GraphQL",
         "basis": "lexical_match",
         "context": "paragraph"
       }
@@ -490,39 +511,46 @@
         "line": 90
       },
       {
-        "block_id": "b000031",
+        "block_id": "b000027",
+        "label": "GraphQL integration",
+        "target": "docs/GraphQL.md",
+        "kind": "relative",
+        "line": 94
+      },
+      {
+        "block_id": "b000033",
         "label": "MIT License",
         "target": "LICENSE",
         "kind": "relative",
-        "line": 99
+        "line": 105
       },
       {
-        "block_id": "b000035",
+        "block_id": "b000037",
         "label": "source layout",
         "target": "docs/SourceLayout.md",
         "kind": "relative",
-        "line": 104
+        "line": 110
       },
       {
-        "block_id": "b000042",
+        "block_id": "b000044",
         "label": "AGENT.md",
         "target": "AGENT.md",
         "kind": "relative",
-        "line": 117
+        "line": 123
       },
       {
-        "block_id": "b000042",
+        "block_id": "b000044",
         "label": "documentation index",
         "target": "docs/README.md",
         "kind": "relative",
-        "line": 118
+        "line": 124
       },
       {
-        "block_id": "b000042",
+        "block_id": "b000044",
         "label": "agent index",
         "target": "docs/agent-index.json",
         "kind": "relative",
-        "line": 119
+        "line": 125
       }
     ],
     "tables": []
