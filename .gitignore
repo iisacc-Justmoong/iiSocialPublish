@@ -6,3 +6,4 @@
 **/*.iisacc.json
 
 /resources/.recovery/
+resources/
