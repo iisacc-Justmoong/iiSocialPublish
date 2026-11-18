@@ -1,6 +1,7 @@
 @PACKAGE_INIT@
 include(CMakeFindDependencyMacro)
 find_dependency(iiSocialIntegration @PROJECT_VERSION@ CONFIG)
+set(iiSocialPublish_SPDX_LICENSE "Apache-2.0")
 set(iiSocialPublish_LICENSE_DIR "${iiSocialIntegration_LICENSE_DIR}")
 if(NOT TARGET iiSocialPublish::iiSocialPublish)
     add_library(iiSocialPublish::iiSocialPublish INTERFACE IMPORTED)

@@ -1,4 +1,5 @@
 @PACKAGE_INIT@
+set(iiSocialIntegration_SPDX_LICENSE "Apache-2.0")
 set(iiSocialIntegration_LICENSE_DIR "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_DATADIR@/licenses/iiSocialIntegration")
 include(CMakeFindDependencyMacro)
 find_dependency(CURL 7.68)

@@ -5,6 +5,14 @@
 - 외부 원본의 권한 확인, 미디어 검증·Society 등록과 게시 여부는 호출자의 책임이다.
 - `iiSocialPublish` 헤더와 CMake 패키지는 소스 호환용 별칭이다.
 
+## 라이선스
+
+이 저장소의 iiSDK 모듈은 Apache License 2.0이다. 자사 코드, 문서, 도구, 테스트가 포함된다. 저작권 표시는 `Copyright (c) 2026 iisacc`이고 고지는 루트 `NOTICE`에 있다. 사람용 한국어 설명은 [docs/License.md](docs/License.md)이다.
+
+`Product` 아래의 iisacc 제품은 GNU Affero General Public License(AGPL)이다.
+
+제3자와 벤더 코드는 원래 라이선스를 유지한다. 문서 재편 중에도 그 라이선스와 외부 원본은 보존한다.
+
 <!-- workspace-docs:agent:start -->
 ## 문서 구조와 에이전트 탐색
 
