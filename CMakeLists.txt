@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(iiSocialIntegration VERSION 0.2.0 LANGUAGES CXX)
+include(./cmake/ModuleImports.cmake)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(CTest)

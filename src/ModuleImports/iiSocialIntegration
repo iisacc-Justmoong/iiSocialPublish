@@ -1,0 +1,12 @@
+#pragma once
+
+// C++ public entry for iiSocialIntegration; the linked components select the API.
+#include <iiSocialIntegration/Publishing.h>
+#include <iiSocialIntegration/Review.h>
+#include <iiSocialIntegration/Migration.h>
+#include <iiSocialIntegration/UrlImport.h>
+#include <iiSocialIntegration/GraphQL.h>
+#include <iiSocialIntegration/GraphQLC.h>
+#include <iiSocialPublish/Publishing.h>
+#include <iiSocialPublish/Review.h>
+#include <iiSocialPublish/Compatibility.h>
