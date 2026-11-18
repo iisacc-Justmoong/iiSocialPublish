@@ -10,9 +10,9 @@
   },
   "source": {
     "path": "docs/README.md",
-    "sha256": "04efb614aafe4ced6efa780a0a2324c50cc86af6109dadcebbd54d5175934fa6",
-    "bytes": 2039,
-    "line_count": 34,
+    "sha256": "f8ae47aaf5c6adbaa8b763c6e0d14611fe12123331aaa97ca61382b058053f67",
+    "bytes": 2104,
+    "line_count": 35,
     "encoding": "utf-8",
     "language": "ko"
   },
@@ -123,8 +123,8 @@
       "id": "b000014",
       "kind": "table",
       "start_line": 18,
-      "end_line": 33,
-      "raw": "| Document | Agent JSON |\n| --- | --- |\n| [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.generated.agent.json) |\n| [`README.md`](../README.md) | [JSON](entrypoints/README.generated.agent.json) |\n| [`docs/DynamicLinking.md`](DynamicLinking.md) | [JSON](DynamicLinking.agent.json) |\n| [`docs/Execution.md`](Execution.md) | [JSON](Execution.generated.agent.json) |\n| [`docs/GraphQL.md`](GraphQL.md) | [JSON](GraphQL.agent.json) |\n| [`docs/Migration.md`](Migration.md) | [JSON](Migration.agent.json) |\n| [`docs/Providers.md`](Providers.md) | [JSON](Providers.generated.agent.json) |\n| [`docs/Review.md`](Review.md) | [JSON](Review.generated.agent.json) |\n| [`docs/SourceLayout.md`](SourceLayout.md) | [JSON](SourceLayout.agent.json) |\n| [`docs/UrlImport.md`](UrlImport.md) | [JSON](UrlImport.agent.json) |\n| [`docs/Verification.md`](Verification.md) | [JSON](Verification.generated.agent.json) |\n| [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |\n| [`docs/YouTube.md`](YouTube.md) | [JSON](YouTube.generated.agent.json) |\n| [`docs/documentation-structure.md`](documentation-structure.md) | [JSON](documentation-structure.generated.agent.json) |\n",
+      "end_line": 34,
+      "raw": "| Document | Agent JSON |\n| --- | --- |\n| [`AGENT.md`](../AGENT.md) | [JSON](entrypoints/AGENT.generated.agent.json) |\n| [`README.md`](../README.md) | [JSON](entrypoints/README.generated.agent.json) |\n| [`docs/DynamicLinking.md`](DynamicLinking.md) | [JSON](DynamicLinking.agent.json) |\n| [`docs/Execution.md`](Execution.md) | [JSON](Execution.generated.agent.json) |\n| [`docs/GraphQL.md`](GraphQL.md) | [JSON](GraphQL.agent.json) |\n| [`docs/License.md`](License.md) | [JSON](License.agent.json) |\n| [`docs/Migration.md`](Migration.md) | [JSON](Migration.agent.json) |\n| [`docs/Providers.md`](Providers.md) | [JSON](Providers.generated.agent.json) |\n| [`docs/Review.md`](Review.md) | [JSON](Review.generated.agent.json) |\n| [`docs/SourceLayout.md`](SourceLayout.md) | [JSON](SourceLayout.agent.json) |\n| [`docs/UrlImport.md`](UrlImport.md) | [JSON](UrlImport.agent.json) |\n| [`docs/Verification.md`](Verification.md) | [JSON](Verification.generated.agent.json) |\n| [`docs/WindowsBuildAndRun.md`](WindowsBuildAndRun.md) | [JSON](WindowsBuildAndRun.generated.agent.json) |\n| [`docs/YouTube.md`](YouTube.md) | [JSON](YouTube.generated.agent.json) |\n| [`docs/documentation-structure.md`](documentation-structure.md) | [JSON](documentation-structure.generated.agent.json) |\n",
       "columns": [
         "Document",
         "Agent JSON"
@@ -149,6 +149,10 @@
         [
           "[`docs/GraphQL.md`](GraphQL.md)",
           "[JSON](GraphQL.agent.json)"
+        ],
+        [
+          "[`docs/License.md`](License.md)",
+          "[JSON](License.agent.json)"
         ],
         [
           "[`docs/Migration.md`](Migration.md)",
@@ -191,8 +195,8 @@
     {
       "id": "b000015",
       "kind": "html",
-      "start_line": 34,
-      "end_line": 34,
+      "start_line": 35,
+      "end_line": 35,
       "raw": "<!-- workspace-docs:document-map:end -->\n"
     }
   ],
@@ -313,129 +317,143 @@
       },
       {
         "block_id": "b000014",
+        "label": "`docs/License.md`",
+        "target": "License.md",
+        "kind": "relative",
+        "line": 25
+      },
+      {
+        "block_id": "b000014",
+        "label": "JSON",
+        "target": "License.agent.json",
+        "kind": "relative",
+        "line": 25
+      },
+      {
+        "block_id": "b000014",
         "label": "`docs/Migration.md`",
         "target": "Migration.md",
         "kind": "relative",
-        "line": 25
+        "line": 26
       },
       {
         "block_id": "b000014",
         "label": "JSON",
         "target": "Migration.agent.json",
         "kind": "relative",
-        "line": 25
+        "line": 26
       },
       {
         "block_id": "b000014",
         "label": "`docs/Providers.md`",
         "target": "Providers.md",
         "kind": "relative",
-        "line": 26
+        "line": 27
       },
       {
         "block_id": "b000014",
         "label": "JSON",
         "target": "Providers.generated.agent.json",
         "kind": "relative",
-        "line": 26
+        "line": 27
       },
       {
         "block_id": "b000014",
         "label": "`docs/Review.md`",
         "target": "Review.md",
         "kind": "relative",
-        "line": 27
+        "line": 28
       },
       {
         "block_id": "b000014",
         "label": "JSON",
         "target": "Review.generated.agent.json",
         "kind": "relative",
-        "line": 27
+        "line": 28
       },
       {
         "block_id": "b000014",
         "label": "`docs/SourceLayout.md`",
         "target": "SourceLayout.md",
         "kind": "relative",
-        "line": 28
+        "line": 29
       },
       {
         "block_id": "b000014",
         "label": "JSON",
         "target": "SourceLayout.agent.json",
         "kind": "relative",
-        "line": 28
+        "line": 29
       },
       {
         "block_id": "b000014",
         "label": "`docs/UrlImport.md`",
         "target": "UrlImport.md",
         "kind": "relative",
-        "line": 29
+        "line": 30
       },
       {
         "block_id": "b000014",
         "label": "JSON",
         "target": "UrlImport.agent.json",
         "kind": "relative",
-        "line": 29
+        "line": 30
       },
       {
         "block_id": "b000014",
         "label": "`docs/Verification.md`",
         "target": "Verification.md",
         "kind": "relative",
-        "line": 30
+        "line": 31
       },
       {
         "block_id": "b000014",
         "label": "JSON",
         "target": "Verification.generated.agent.json",
         "kind": "relative",
-        "line": 30
+        "line": 31
       },
       {
         "block_id": "b000014",
         "label": "`docs/WindowsBuildAndRun.md`",
         "target": "WindowsBuildAndRun.md",
         "kind": "relative",
-        "line": 31
+        "line": 32
       },
       {
         "block_id": "b000014",
         "label": "JSON",
         "target": "WindowsBuildAndRun.generated.agent.json",
         "kind": "relative",
-        "line": 31
+        "line": 32
       },
       {
         "block_id": "b000014",
         "label": "`docs/YouTube.md`",
         "target": "YouTube.md",
         "kind": "relative",
-        "line": 32
+        "line": 33
       },
       {
         "block_id": "b000014",
         "label": "JSON",
         "target": "YouTube.generated.agent.json",
         "kind": "relative",
-        "line": 32
+        "line": 33
       },
       {
         "block_id": "b000014",
         "label": "`docs/documentation-structure.md`",
         "target": "documentation-structure.md",
         "kind": "relative",
-        "line": 33
+        "line": 34
       },
       {
         "block_id": "b000014",
         "label": "JSON",
         "target": "documentation-structure.generated.agent.json",
         "kind": "relative",
-        "line": 33
+        "line": 34
       }
     ],
     "tables": [
@@ -465,6 +483,10 @@
           [
             "[`docs/GraphQL.md`](GraphQL.md)",
             "[JSON](GraphQL.agent.json)"
+          ],
+          [
+            "[`docs/License.md`](License.md)",
+            "[JSON](License.agent.json)"
           ],
           [
             "[`docs/Migration.md`](Migration.md)",

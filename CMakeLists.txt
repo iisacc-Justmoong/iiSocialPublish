@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(iiSocialIntegration VERSION 0.2.0 LANGUAGES CXX)
+set(iiSocialIntegration_SPDX_LICENSE "Apache-2.0")
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(CTest)
@@ -71,8 +72,9 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/iiSocialPublishCon
     VERSION ${PROJECT_VERSION} COMPATIBILITY SameMinorVersion)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/iiSocialPublishConfig.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/iiSocialPublishConfigVersion.cmake" DESTINATION "${_legacy_package_dir}")
-install(FILES README.md DESTINATION ${CMAKE_INSTALL_DATADIR}/iiSocialIntegration)
+install(FILES README.md LICENSE NOTICE DESTINATION ${CMAKE_INSTALL_DATADIR}/iiSocialIntegration)
 install(DIRECTORY docs/ DESTINATION ${CMAKE_INSTALL_DATADIR}/iiSocialIntegration/docs)
+install(FILES LICENSE NOTICE DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/iiSocialIntegration)
 install(DIRECTORY third_party/licenses/ DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/iiSocialIntegration)
 install(FILES third_party/dependencies.json DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/iiSocialIntegration)
 if(BUILD_TESTING)
@@ -82,6 +84,11 @@ if(BUILD_TESTING)
     add_test(NAME iiSocialIntegration.GraphQL COMMAND iiSocialIntegrationGraphQLTests)
     add_test(NAME iiSocialIntegration.SourceLayout COMMAND ${CMAKE_COMMAND}
         "-DSOURCE_ROOT=${CMAKE_CURRENT_SOURCE_DIR}" -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/source_layout.cmake")
+    add_test(NAME iiSocialIntegration.License COMMAND ${CMAKE_COMMAND}
+        "-DSOURCE_ROOT=${CMAKE_CURRENT_SOURCE_DIR}"
+        "-DINTEGRATION_CONFIG=${CMAKE_CURRENT_BINARY_DIR}/iiSocialIntegrationConfig.cmake"
+        "-DPUBLISH_CONFIG=${CMAKE_CURRENT_BINARY_DIR}/iiSocialPublishConfig.cmake"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/license.cmake")
     add_executable(iiSocialIntegrationReviewTests tests/ReviewTest.cpp)
     target_link_libraries(iiSocialIntegrationReviewTests PRIVATE iiSocialIntegration::iiSocialIntegration)
     target_compile_definitions(iiSocialIntegrationReviewTests PRIVATE "IISOCIAL_TEST_RESOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/test-fixtures\"")
